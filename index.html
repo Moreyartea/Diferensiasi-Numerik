@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diferensiasi Numerik — Metode Numerik Bab 6</title>
+  <meta name="description" content="Presentasi Diferensiasi Numerik - Metode Numerik Bab 6 dengan desain minimalis putih, LaTeX KaTeX jernih, dan variasi transisi 3D inovatif.">
+
+  <!-- Local KaTeX with CDN Fallback -->
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <script defer src="vendor/katex/katex.min.js"></script>
+  <script defer src="vendor/katex/auto-render.min.js"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Top App Bar -->
+    <header class="top-nav">
+      <div class="nav-brand">
+        <span class="brand-badge">Bab 6</span>
+        <span class="brand-title">Diferensiasi Numerik</span>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Transition Selector -->
+        <div class="transition-select-wrapper" title="Pilih efek transisi slide">
+          <select id="transitionSelect" class="transition-dropdown">
+            <option value="auto">✨ Transisi: Otomatis (Variasi Tiap Slide)</option>
+            <option value="center-fold">📖 Kertas Dibalik Tengah (Center Fold)</option>
+            <option value="bottom-right-curl">📄 Dari Kanan Bawah (Corner Curl)</option>
+            <option value="curtain-roll">🎪 Tirai Digulung (Curtain Roll)</option>
+            <option value="cube">🎲 Kubus 3D (Origami Cube)</option>
+            <option value="doors">🚪 Pintu Terbuka (Double Doors)</option>
+            <option value="diagonal">↗️ Sapu Diagonal (Diagonal Glide)</option>
+          </select>
+          <span class="transition-select-icon">▾</span>
+        </div>
+
+        <!-- Replay Transition Button -->
+        <button id="btnReplayTransition" class="btn-icon" title="Ulangi Animasi Transisi Slide Ini">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+        </button>
+
+        <!-- Speaker Notes Button -->
+        <button id="btnToggleNotes" class="btn-pill" title="Catatan Pembicara (Shortcut: S)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Catatan
+        </button>
+
+        <!-- Overview Grid Button -->
+        <button id="btnToggleOverview" class="btn-pill" title="Daftar Semua Slide (Shortcut: O)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Semua Slide
+        </button>
+
+        <!-- Fullscreen Button -->
+        <button id="btnFullscreen" class="btn-icon" title="Mode Layar Penuh (Shortcut: F)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Stage Viewport (3D Scene) -->
+    <main class="stage-viewport">
+      <div class="slide-frame">
+
+        <!-- ====================================================================
+             SLIDE 1: JUDUL & COVER
+             ==================================================================== -->
+        <article class="slide active" data-slide="1">
+          <div class="slide-title-page">
+            <span class="slide-badge-pill" style="margin-bottom: 16px;">Metode Numerik — Bab 6</span>
+            <h1 class="title-main-heading">DIFERENSIASI<br>NUMERIK</h1>
+            <p class="slide-subtitle" style="font-size: 18px; margin-top: 8px; color: var(--text-muted);">
+              Pendekatan Turunan Fungsi Menggunakan Deret Polinomial & Ekstrapolasi Richardson
+            </p>
+
+            <div class="title-meta-box">
+              <div class="title-meta-item">
+                <span class="title-meta-label">Penyusun</span>
+                <span class="title-meta-value">[Nama Anggota Kelompok]</span>
+              </div>
+              <div class="title-meta-item">
+                <span class="title-meta-label">Dosen Pengampu</span>
+                <span class="title-meta-value">[Nama Dosen]</span>
+              </div>
+              <div class="title-meta-item">
+                <span class="title-meta-label">Program Studi / Universitas</span>
+                <span class="title-meta-value">[Program Studi, Universitas]</span>
+              </div>
+              <div class="title-meta-item">
+                <span class="title-meta-label">Tahun Akademik</span>
+                <span class="title-meta-value">2026</span>
+              </div>
+            </div>
+
+            <!-- Mathematical curve visual illustration -->
+            <svg class="title-page-accent" viewBox="0 0 300 300" fill="none">
+              <circle cx="150" cy="150" r="130" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <path d="M40 220 C 100 220, 140 180, 180 110 C 210 50, 250 40, 270 40" stroke="#1e3a8a" stroke-width="3.5" stroke-linecap="round"/>
+              <!-- Tangent line at (180, 110) -->
+              <line x1="110" y1="215" x2="250" y2="5" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6 4"/>
+              <circle cx="180" cy="110" r="6" fill="#1e3a8a" stroke="#ffffff" stroke-width="2"/>
+              <text x="195" y="115" font-family="Inter" font-size="12" font-weight="600" fill="#1e3a8a">P(x₀, f(x₀))</text>
+              <text x="140" y="240" font-family="Inter" font-size="12" fill="#64748b">m = f'(x₀) = kemiringan</text>
+            </svg>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron, Mardlijah & Asfihani (2022)</div>
+            <div class="slide-indicator">Slide 1 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 1):</strong></p>
+            <p>Sapa audiens, sebut judul dan bab. Jelaskan bahwa hari ini kita membahas cara memperkirakan turunan fungsi hanya dari nilai-nilai fungsi. Gambar kurva dengan garis singgung mewakili ide utama: turunan adalah kemiringan garis singgung. Isi placeholder nama, dosen, dan program studi sebelum presentasi.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 2: PENGERTIAN DIFERENSIASI NUMERIK
+             ==================================================================== -->
+        <article class="slide" data-slide="2">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">6 · Pengantar</span>
+              <span>Konsep Dasar</span>
+            </div>
+            <div class="slide-indicator">Slide 2 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Pengertian Diferensiasi Numerik</h2>
+            <p class="slide-subtitle">Fondasi, tujuan, serta perbedaan mendasar antara diferensiasi analitis dan numerik</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-3">
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">A</span>
+                  Pengertian
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item">Memperkirakan <strong>nilai turunan</strong> fungsi dari nilai fungsi di titik-titik diskret tertentu.</li>
+                  <li class="bullet-item">Sangat diperlukan saat turunan analitis <strong>sulit atau mustahil</strong> diperoleh secara eksak.</li>
+                  <li class="bullet-item">Metode utama ketika data yang tersedia hanya berupa <strong>tabel hasil eksperimen</strong>.</li>
+                </ul>
+              </div>
+
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">B</span>
+                  Tujuan Utama
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item">Memperkirakan <strong>laju perubahan</strong> sesaat pada sistem fisik/teknik.</li>
+                  <li class="bullet-item">Menghitung turunan langsung dari <strong>data diskret</strong> tanpa memerlukan persamaan analitik.</li>
+                  <li class="bullet-item">Membantu penyelesaian persamaan diferensial dan algoritma optimasi numerik.</li>
+                </ul>
+              </div>
+
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">C</span>
+                  Analitis vs Numerik
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item"><strong>Analitis:</strong> Hasil proses diferensiasi matematis formal menghasilkan fungsi kontinu eksak.</li>
+                  <li class="bullet-item"><strong>Numerik:</strong> Hasil <strong>pendekatan</strong> nilai di titik spesifik berdasarkan beda hingga nilai fungsi.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Box Contoh Motivasi Fisika -->
+            <div class="math-hero" style="margin-top: 18px;">
+              <div class="math-hero-title">📌 Contoh Motivasi Fisika (Buku Teks, hlm. 185)</div>
+              <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 6px;">
+                Fungsi jarak tempuh penerjun bebas / bola jatuh yang mengalami hambatan udara:
+              </p>
+              \[ z(t) = \frac{m}{c_d} \ln \cosh \left( \sqrt{\frac{g c_d}{m}} \, t \right) \]
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                Kecepatan jatuh \( v(t) = z'(t) \) pada model yang lebih rumit atau bertahanan non-linier sangat sulit diturunkan secara analitis, sehingga pendekatan numerik menjadi solusi utama.
+              </p>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 185</div>
+            <div class="slide-indicator">Slide 2 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 2):</strong></p>
+            <p>Turunan menyatakan laju perubahan. Kadang fungsi sulit diturunkan, atau kita hanya punya tabel data. Contoh di awal Bab 6 adalah fungsi jarak bola jatuh dengan ln cosh; kecepatannya sulit diturunkan secara analitik. Karena itu kita pakai pendekatan numerik. Bab ini memperkenalkan dua cara: pendekatan deret dan ekstrapolasi Richardson.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 3: PENERAPAN DI DUNIA NYATA
+             ==================================================================== -->
+        <article class="slide" data-slide="3">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Pengantar Tambahan</span>
+              <span>Aplikasi Praktis</span>
+            </div>
+            <div class="slide-indicator">Slide 3 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Penerapan di Dunia Nyata</h2>
+            <p class="slide-subtitle">Mengapa diferensiasi numerik esensial dalam sains, rekayasa, dan analisis data eksperimen</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2-1">
+              <div>
+                <div class="content-card">
+                  <div class="content-card-title">
+                    <span class="card-badge">Fisika & Teknik</span>
+                    Contoh Penerapan Nyata
+                  </div>
+                  <ul class="bullet-list">
+                    <li class="bullet-item"><strong>Kecepatan dari Posisi:</strong> \( v(t) = \frac{ds}{dt} \) dari sensor GPS atau rekaman kamera.</li>
+                    <li class="bullet-item"><strong>Percepatan dari Kecepatan:</strong> \( a(t) = \frac{dv}{dt} \) pada telemetri wahana antariksa/otomotif.</li>
+                    <li class="bullet-item"><strong>Fluks Kalor & Suhu:</strong> \( q = -k \frac{dT}{dx} \) (Hukum Fourier konduksi panas).</li>
+                    <li class="bullet-item"><strong>Laju Reaksi Kimia:</strong> \( r = -\frac{d[A]}{dt} \) pada data konsentrasi zat berjangka waktu.</li>
+                  </ul>
+                </div>
+
+                <div class="callout callout-warning">
+                  <strong>Penting:</strong> Pada eksperimen nyata, fungsi kontinu eksak <em>tidak diketahui</em>. Kita hanya memiliki barisan angka diskret berjarak \( h \), sehingga rumus beda hingga adalah satu-satunya alat hitung turunan.
+                </div>
+              </div>
+
+              <!-- Tabel Ilustrasi Fisika -->
+              <div>
+                <div class="content-card">
+                  <div class="content-card-title">
+                    <span class="card-badge">Studi Kasus</span>
+                    Posisi \( s(t) \to v(2) \)
+                  </div>
+                  <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">
+                    Data posisi gerak benda: \( t = 1, 2, 3 \text{ s} \to s = 1, 8, 27 \text{ m} \) (\( h = 1 \text{ s} \)). Dicari kecepatan \( v(2) = s'(2) \):
+                  </p>
+                  
+                  <div class="table-wrapper">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>Metode</th>
+                          <th>Perhitungan</th>
+                          <th>\( v(2) \)</th>
+                          <th>Galat</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>Maju</strong></td>
+                          <td>\( \frac{27 - 8}{1} \)</td>
+                          <td class="num">19 m/s</td>
+                          <td class="num">7</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Mundur</strong></td>
+                          <td>\( \frac{8 - 1}{1} \)</td>
+                          <td class="num">7 m/s</td>
+                          <td class="num">5</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Tengah</strong></td>
+                          <td>\( \frac{27 - 1}{2} \)</td>
+                          <td class="num highlight-cell">13 m/s</td>
+                          <td class="num highlight-cell">1</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+                    <em>Nilai eksak:</em> \( s(t) = t^3 \implies s'(2) = 3(2)^2 = \mathbf{12 \text{ m/s}} \). Selisih tengah paling dekat ke nilai sebenarnya!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Tambahan: ilustrasi dan hitungan sendiri; konteks umum: Burden & Faires [1]</div>
+            <div class="slide-indicator">Slide 3 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 3):</strong></p>
+            <p>Slide ini bukan dari buku; ini penjelasan tambahan agar audiens tahu untuk apa rumus-rumus Bab 6 dipakai. Datanya sengaja dibuat sederhana dari s(t) = t³ supaya kita tahu jawaban benarnya (12 m/s) dan bisa menilai galat. Pada data pengukuran nyata nilai eksak tidak diketahui, jadi kita hanya bisa membandingkan antarmetode atau memakai Richardson. Perhatikan: hasil maju 19 dan mundur 7 berbeda jauh karena h = 1 besar dan orde galatnya hanya O(h); selisih tengah O(h²) jauh lebih dekat. Rumus yang sama dipakai untuk menghitung percepatan dari data kecepatan.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 4: DASAR RUMUS: PENDEKATAN DERET
+             ==================================================================== -->
+        <article class="slide" data-slide="4">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span>Penurunan Matematis</span>
+            </div>
+            <div class="slide-indicator">Slide 4 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Dasar Rumus: Pendekatan Deret</h2>
+            <p class="slide-subtitle">Penurunan rumus diferensiasi melalui Polinomial Interpolasi Lagrange dan suku galatnya</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2">
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Penurunan</span>
+                  Polinomial Lagrange Orde 1
+                </div>
+                <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 6px;">
+                  Bentuk interpolasi pada titik \( x_0 \) dan \( x_1 = x_0 + h \):
+                </p>
+                \[ f(x) = P_{0,1}(x) + \frac{(x-x_0)(x-x_1)}{2!} f''(\xi(x)) \]
+                <p style="font-size: 13px; color: var(--text-muted);">
+                  dengan polinomial Lagrange berbobot:
+                </p>
+                \[ P_{0,1}(x) = \frac{f(x_0)(x-x_0-h)}{-h} + \frac{f(x_0+h)(x-x_0)}{h} \]
+                <ul class="bullet-list" style="margin-top: 8px;">
+                  <li class="bullet-item">Diferensiasikan kedua ruas terhadap \( x \).</li>
+                  <li class="bullet-item">Di titik \( x = x_0 \), suku koefisien \( D_x(f''(\xi(x))) \) bernilai nol, sehingga suku turunan galat dapat dirumuskan secara tegas.</li>
+                </ul>
+              </div>
+
+              <div>
+                <div class="math-hero">
+                  <div class="math-hero-title">Hasil Penurunan (Pers. 6.1 Buku)</div>
+                  \[ f'(x_0) = \frac{f(x_0+h) - f(x_0)}{h} - \frac{h}{2} f''(\xi) \]
+                  <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                    • <strong>Beda maju</strong> jika \( h > 0 \)<br>
+                    • <strong>Beda mundur</strong> jika \( h < 0 \)<br>
+                    • Suku \( -\frac{h}{2} f''(\xi) \) merupakan <strong>galat pemotongan (truncation error)</strong>
+                  </p>
+                </div>
+
+                <div class="callout">
+                  <strong>Pandangan Setara (Deret Taylor):</strong><br>
+                  \( f(x+h) = f(x) + h f'(x) + \frac{h^2}{2!} f''(x) + \cdots \implies f'(x) = \frac{f(x+h)-f(x)}{h} - O(h) \)
+                </div>
+              </div>
+            </div>
+
+            <!-- Flowchart visual alur deret -->
+            <div class="flowchart-row">
+              <div class="flow-step">
+                <div class="flow-step-num">1</div>
+                <div class="flow-step-text">Titik Data Diskret</div>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-step">
+                <div class="flow-step-num">2</div>
+                <div class="flow-step-text">Polinomial Lagrange / Deret</div>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-step">
+                <div class="flow-step-num">3</div>
+                <div class="flow-step-text">Rumus Diferensiasi</div>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-step">
+                <div class="flow-step-num">4</div>
+                <div class="flow-step-text">Analisis Suku Galat</div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 185–186</div>
+            <div class="slide-indicator">Slide 4 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 4):</strong></p>
+            <p>Buku menurunkan rumus lewat polinomial Lagrange dan suku galatnya, bukan langsung lewat Taylor. Intinya: fungsi didekati dengan polinomial yang melalui titik data, lalu diturunkan. Suku yang dibuang menjadi galat pemotongan. Rumus 6.1 adalah hasilnya: beda maju untuk h positif dan beda mundur untuk h negatif. Ekspansi Taylor saya tampilkan hanya sebagai sudut pandang setara yang umum dikenal.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 5: METODE SELISIH MAJU DAN MUNDUR
+             ==================================================================== -->
+        <article class="slide" data-slide="5">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span>Metode 2 Titik</span>
+            </div>
+            <div class="slide-indicator">Slide 5 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Metode Selisih Maju dan Mundur</h2>
+            <p class="slide-subtitle">Dua rumus diferensiasi numerik paling sederhana berorde pertama \( O(h) \)</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2">
+              <!-- Selisih Maju -->
+              <div class="content-card" style="border-top: 4px solid var(--primary);">
+                <div class="content-card-title">
+                  <span class="card-badge">Maju (Forward)</span>
+                  Selisih Maju
+                </div>
+                <div class="math-hero" style="border-left: none; background: #ffffff;">
+                  \[ f'(x) \approx \frac{f(x+h) - f(x)}{h} \]
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item">Menggunakan titik evaluasi \( x \) dan titik <strong>di depannya</strong> \( x+h \).</li>
+                  <li class="bullet-item">Sangat cocok untuk <strong>ujung kiri</strong> interval data di mana data sebelah kiri tidak tersedia.</li>
+                  <li class="bullet-item">Galat pemotongan: <strong>\( O(h) \)</strong> (galat linear terhadap ukuran langkah).</li>
+                </ul>
+              </div>
+
+              <!-- Selisih Mundur -->
+              <div class="content-card" style="border-top: 4px solid var(--accent-indigo);">
+                <div class="content-card-title">
+                  <span class="card-badge">Mundur (Backward)</span>
+                  Selisih Mundur
+                </div>
+                <div class="math-hero" style="border-left: none; background: #ffffff;">
+                  \[ f'(x) \approx \frac{f(x) - f(x-h)}{h} \]
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item">Menggunakan titik evaluasi \( x \) dan titik <strong>di belakangnya</strong> \( x-h \).</li>
+                  <li class="bullet-item">Sangat cocok untuk <strong>ujung kanan</strong> interval data di mana masa depan/data depan belum ada.</li>
+                  <li class="bullet-item">Galat pemotongan: <strong>\( O(h) \)</strong> (setara Pers. 6.1 dengan substitusi langkah negatif).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout" style="margin-top: 20px;">
+              <strong>Karakteristik & Kesimpulan Praktis:</strong><br>
+              Kedua metode ini sangat mudah diterapkan karena hanya membutuhkan dua nilai fungsi. Namun, karena hanya berorde \( O(h) \), untuk memperoleh akurasi tinggi nilai \( h \) harus cukup kecil. Jika \( h \) dibagi 2, galat pemotongan hanya berkurang separuhnya.
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 186</div>
+            <div class="slide-indicator">Slide 5 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 5):</strong></p>
+            <p>Dua rumus ini adalah yang paling sederhana. Maju memakai titik di depan, mundur memakai titik di belakang. Keduanya hanya butuh dua nilai fungsi dan galatnya berorde h, jadi h harus kecil. Di buku, rumus mundur tidak ditulis terpisah: ia adalah Persamaan 6.1 dengan h negatif.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 6: METODE SELISIH TENGAH
+             ==================================================================== -->
+        <article class="slide" data-slide="6">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span>Metode Simetris</span>
+            </div>
+            <div class="slide-indicator">Slide 6 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Metode Selisih Tengah (Central Difference)</h2>
+            <p class="slide-subtitle">Pendekatan simetris yang meniadakan suku galat orde pertama menghasilkan ketelitian \( O(h^2) \)</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2-1">
+              <div>
+                <div class="math-hero" style="border-left-color: var(--accent-emerald);">
+                  <div class="math-hero-title">Rumus Tiga Titik Tengah (Pers. 6.5)</div>
+                  \[ f'(x_0) \approx \frac{f(x_0+h) - f(x_0-h)}{2h} \]
+                  <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                    Suku galat pemotongan eksak:
+                  </p>
+                  \[ -\frac{h^2}{6} f'''(\xi_1), \quad \xi_1 \in (x_0-h, x_0+h) \]
+                </div>
+
+                <ul class="bullet-list" style="margin-top: 14px;">
+                  <li class="bullet-item">Mengambil titik berjarak simetris di <strong>sebelah kiri</strong> \( (x_0-h) \) dan <strong>sebelah kanan</strong> \( (x_0+h) \).</li>
+                  <li class="bullet-item">Nilai \( f(x_0) \) di titik tengah itu sendiri <strong>tidak perlu dihitung</strong> dalam pembagian!</li>
+                  <li class="bullet-item">Orde ketelitian: <strong>\( O(h^2) \)</strong>. Jika ukuran langkah \( h \) dibagi 2, galat turun drastis menjadi <strong>\( 1/4 \)</strong> lipatnya.</li>
+                </ul>
+              </div>
+
+              <div>
+                <div class="content-card">
+                  <div class="content-card-title">
+                    <span class="card-badge" style="background: var(--accent-emerald-soft); color: var(--accent-emerald);">Evaluasi</span>
+                    Kelebihan & Keterbatasan
+                  </div>
+                  
+                  <div style="margin-bottom: 12px;">
+                    <strong style="color: var(--accent-emerald); font-size: 13px;">✔ Kelebihan:</strong>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                      Jauh lebih teliti daripada metode selisih maju dan mundur untuk ukuran langkah \( h \) yang sama, karena sifat simetri meniadakan suku ganjil pada ekspansi Taylor.
+                    </p>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--accent-amber); font-size: 13px;">⚠ Keterbatasan:</strong>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                      Wajib memiliki data di kedua sisi titik (kiri dan kanan). Tidak dapat diterapkan pada titik batas paling ujung dari kumpulan data tabel.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 189</div>
+            <div class="slide-indicator">Slide 6 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 6):</strong></p>
+            <p>Selisih tengah adalah rumus tiga titik tengah di buku (6.5), tanpa memakai f(x₀) itu sendiri. Karena simetris, suku galat orde pertama saling meniadakan, sehingga galatnya berorde h². Syaratnya, kita punya data di kiri dan kanan titik. Di ujung interval rumus ini tidak bisa dipakai, dan itulah alasan slide berikutnya.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 7: RUMUS TIGA TITIK DAN LIMA TITIK
+             ==================================================================== -->
+        <article class="slide" data-slide="7">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span>Formulasi Tingkat Tinggi</span>
+            </div>
+            <div class="slide-indicator">Slide 7 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Rumus Tiga Titik dan Lima Titik</h2>
+            <p class="slide-subtitle">Formulasi khusus untuk titik ujung interval dan peningkatan akurasi tinggi hingga \( O(h^4) \)</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-3">
+              <!-- A. Tiga Titik Ujung -->
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Pers. 6.4</span>
+                  Tiga Titik Ujung
+                </div>
+                <div style="font-size: 12px; font-family: var(--font-mono); margin: 6px 0;">
+                  \[ f'(x_0) \approx \frac{-3f(x_0) + 4f(x_0+h) - f(x_0+2h)}{2h} \]
+                </div>
+                <p style="font-size: 12.5px; color: var(--text-muted);">
+                  • Menggunakan 3 nilai searah.<br>
+                  • Cocok di <strong>ujung interval</strong>.<br>
+                  • Suku galat: \( \frac{h^2}{3} f'''(\xi_0) \to \mathbf{O(h^2)} \)
+                </p>
+              </div>
+
+              <!-- B. Lima Titik Tengah -->
+              <div class="content-card" style="border-top: 3px solid var(--primary);">
+                <div class="content-card-title">
+                  <span class="card-badge" style="background: var(--primary-soft); color: var(--primary);">Pers. 6.7</span>
+                  Lima Titik Tengah
+                </div>
+                <div style="font-size: 12px; font-family: var(--font-mono); margin: 6px 0;">
+                  \[ f'(x_0) \approx \frac{f(x_0-2h) - 8f(x_0-h) + 8f(x_0+h) - f(x_0+2h)}{12h} \]
+                </div>
+                <p style="font-size: 12.5px; color: var(--text-muted);">
+                  • Simetris 2 titik kiri & 2 titik kanan.<br>
+                  • Akurasi sangat tinggi.<br>
+                  • Suku galat: \( \frac{h^4}{30} f^{(5)}(\xi) \to \mathbf{O(h^4)} \)
+                </p>
+              </div>
+
+              <!-- C. Lima Titik Ujung -->
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Pers. 6.6</span>
+                  Lima Titik Ujung
+                </div>
+                <div style="font-size: 11px; font-family: var(--font-mono); margin: 6px 0;">
+                  \[ \frac{-25f_0 + 48f_1 - 36f_2 + 16f_3 - 3f_4}{12h} \]
+                </div>
+                <p style="font-size: 12.5px; color: var(--text-muted);">
+                  • Lima titik ke satu arah (ujung).<br>
+                  • Sangat teliti di batas data tanpa data sisi luar.<br>
+                  • Suku galat: \( \frac{h^4}{5} f^{(5)}(\xi) \to \mathbf{O(h^4)} \)
+                </p>
+              </div>
+            </div>
+
+            <!-- Tabel Komparasi -->
+            <div class="table-wrapper" style="margin-top: 14px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Aspek</th>
+                    <th>Tiga Titik Ujung (6.4)</th>
+                    <th>Lima Titik Tengah (6.7)</th>
+                    <th>Lima Titik Ujung (6.6)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Jumlah Nilai Fungsi</strong></td>
+                    <td class="num">3 titik</td>
+                    <td class="num">5 titik</td>
+                    <td class="num">5 titik</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lokasi Penggunaan</strong></td>
+                    <td>Ujung batas interval</td>
+                    <td class="highlight-cell">Titik dalam (interior)</td>
+                    <td>Ujung batas interval</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Orde Galat Pemotongan</strong></td>
+                    <td class="num">\( O(h^2) \)</td>
+                    <td class="num highlight-cell">\( O(h^4) \)</td>
+                    <td class="num highlight-cell">\( O(h^4) \)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 189</div>
+            <div class="slide-indicator">Slide 7 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 7):</strong></p>
+            <p>Rumus tiga titik ujung dipakai saat titik yang dihitung ada di ujung data. Perhatikan koefisien −3, 4, −1 dan penyebut 2h. Rumus lima titik tengah memakai koefisien 1, −8, 8, −1 dan penyebut 12h; galatnya berorde h⁴. Rumus lima titik ujung (6.6) bekerja seperti tiga titik ujung tetapi memakai lima titik ke satu arah: koefisien −25, 48, −36, 16, −3 dan penyebut 12h. Untuk ujung kanan, pakai h negatif, seperti pada Contoh 6.1.3.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 8: CONTOH 6.1.1 — SELISIH MAJU f(x) = ln x
+             ==================================================================== -->
+        <article class="slide" data-slide="8">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Contoh 6.1.1</span>
+              <span>Studi Kasus Numerik</span>
+            </div>
+            <div class="slide-indicator">Slide 8 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Contoh: Selisih Maju untuk \( f(x) = \ln x \)</h2>
+            <p class="slide-subtitle">Evaluasi konvergensi nilai pendekatan selisih maju terhadap nilai eksak analitis pada titik \( x_0 = 1{,}8 \)</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="math-hero">
+              <div class="math-hero-title">Perhitungan untuk Ukuran Langkah \( h = 0{,}1 \)</div>
+              \[ f'(1{,}8) \approx \frac{\ln(1{,}9) - \ln(1{,}8)}{0{,}1} = \frac{0{,}64185389 - 0{,}58778667}{0{,}1} = \mathbf{0{,}5406722} \]
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+                <strong>Nilai Eksak:</strong> \( f'(x) = \frac{1}{x} \implies f'(1{,}8) = \frac{1}{1{,}8} \approx \mathbf{0{,}5555556} \)
+              </p>
+            </div>
+
+            <!-- Tabel Perbandingan Nilai h -->
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Langkah \( h \)</th>
+                    <th>Nilai Pendekatan</th>
+                    <th>Galat Aktual \( |\text{Eksak} - \text{Pend.}| \)</th>
+                    <th>Batas Atas Galat \( \frac{|h|}{2(1{,}8)^2} \)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="num">0,10</td>
+                    <td class="num">0,5406722</td>
+                    <td class="num">0,0148834</td>
+                    <td class="num">0,0154321</td>
+                  </tr>
+                  <tr>
+                    <td class="num">0,05</td>
+                    <td class="num">0,5479795</td>
+                    <td class="num">0,0075761</td>
+                    <td class="num">0,0077160</td>
+                  </tr>
+                  <tr>
+                    <td class="num">0,01</td>
+                    <td class="num highlight-cell">0,5540180</td>
+                    <td class="num highlight-cell">0,0015376</td>
+                    <td class="num">0,0015432</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="callout callout-success" style="margin-top: 10px;">
+              <strong>Temuan Kunci:</strong><br>
+              1. Ketika \( h \) diperkecil dari 0,1 ke 0,05 (dibagi 2), galat aktual berkurang sekitar setengahnya (\( 0{,}01488 \to 0{,}00758 \)), membuktikan perilaku orde \( O(h) \).<br>
+              2. Batas atas teoritis \( \frac{|h|}{2(1{,}8)^2} \) selalu bernilai sedikit lebih besar dari galat aktual, menjadikannya jaminan batas kesalahan yang valid.
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 186</div>
+            <div class="slide-indicator">Slide 8 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 8):</strong></p>
+            <p>Substitusikan x₀ = 1,8 dan h = 0,1 ke rumus beda maju: ln 1,9 dikurangi ln 1,8, dibagi 0,1, hasilnya 0,5406722. Karena f″(x) = 1/x² dan ξ berada di antara 1,8 dan 1,9, galatnya dibatasi |h|/(2·1,8²) = 0,0154321. Ulangi untuk h = 0,05 dan 0,01. Bandingkan dengan nilai eksak 1/1,8 = 0,5555556: makin kecil h, makin dekat. Kolom terakhir adalah batas galat, bukan galat sebenarnya.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 9: ANALISIS GALAT ATAU KESALAHAN PENDEKATAN
+             ==================================================================== -->
+        <article class="slide" data-slide="9">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Analisis Galat</span>
+              <span>Teori Kesalahan</span>
+            </div>
+            <div class="slide-indicator">Slide 9 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Galat atau Kesalahan Pendekatan</h2>
+            <p class="slide-subtitle">Klasifikasi galat pemotongan dan perbandingan laju penurunan galat berbagai orde</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2">
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Konsep</span>
+                  Pengertian & Sumber Galat
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item">Turunan numerik pada hakikatnya adalah sebuah <strong>pendekatan (aproksimasi)</strong>.</li>
+                  <li class="bullet-item"><strong>Galat Pemotongan (Truncation Error):</strong> Terjadi karena suku-suku deret tak hingga yang berorde lebih tinggi diabaikan dalam formulasi.</li>
+                  <li class="bullet-item"><strong>Galat Bertanda:</strong> \( \text{Eksak} - \text{Pendekatan} \) (bisa positif atau negatif).</li>
+                  <li class="bullet-item"><strong>Galat Absolut:</strong> Nilai mutlak kesalahan tanpa tanda \( |\text{Eksak} - \text{Pendekatan}| \).</li>
+                </ul>
+              </div>
+
+              <!-- Bar visual orde galat -->
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Visualisasi</span>
+                  Kecepatan Konvergensi saat \( h \to 0 \)
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                  Makin panjang batang = penurunan galat makin cepat saat ukuran langkah \( h \) mengecil:
+                </p>
+
+                <div class="order-bars-container">
+                  <div class="order-bar-item">
+                    <span class="order-bar-label">Selisih Maju</span>
+                    <div class="order-bar-track">
+                      <div class="order-bar-fill" style="width: 25%;">O(h)</div>
+                    </div>
+                  </div>
+                  <div class="order-bar-item">
+                    <span class="order-bar-label">Selisih Mundur</span>
+                    <div class="order-bar-track">
+                      <div class="order-bar-fill" style="width: 25%;">O(h)</div>
+                    </div>
+                  </div>
+                  <div class="order-bar-item">
+                    <span class="order-bar-label">Selisih Tengah</span>
+                    <div class="order-bar-track">
+                      <div class="order-bar-fill" style="width: 55%; background: linear-gradient(90deg, #3b82f6, #1d4ed8);">O(h²)</div>
+                    </div>
+                  </div>
+                  <div class="order-bar-item">
+                    <span class="order-bar-label">3 Titik Ujung</span>
+                    <div class="order-bar-track">
+                      <div class="order-bar-fill" style="width: 55%; background: linear-gradient(90deg, #3b82f6, #1d4ed8);">O(h²)</div>
+                    </div>
+                  </div>
+                  <div class="order-bar-item">
+                    <span class="order-bar-label">5 Titik Tengah</span>
+                    <div class="order-bar-track">
+                      <div class="order-bar-fill" style="width: 95%; background: linear-gradient(90deg, #10b981, #047857);">O(h⁴) ⭐</div>
+                    </div>
+                  </div>
+                  <div class="order-bar-item">
+                    <span class="order-bar-label">5 Titik Ujung</span>
+                    <div class="order-bar-track">
+                      <div class="order-bar-fill" style="width: 95%; background: linear-gradient(90deg, #10b981, #047857);">O(h⁴) ⭐</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="callout" style="margin-top: 14px;">
+              <strong>Peringatan Matematis:</strong> Notasi Big-O \( O(h^p) \) menggambarkan perilaku asimtotik galat ketika \( h \) cukup kecil, bukan jaminan bahwa nilai numerik galat selalu identik pada setiap fungsi non-linear.
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 186–189</div>
+            <div class="slide-indicator">Slide 9 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 9):</strong></p>
+            <p>Setiap rumus yang kita pakai hanya pendekatan. Galat pemotongan muncul karena suku-suku tertentu dibuang. Orde O(h), O(h²), O(h⁴) menunjukkan seberapa cepat galat mengecil ketika h dikecilkan: untuk orde empat, h dibagi 2 membuat galat turun sekitar 16 kali. Batang di slide hanya ilustrasi. Peringatan penting: h yang terlalu kecil memperbesar pengaruh galat pembulatan, jadi h perlu dipilih secara tepat.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 10: PENGARUH NILAI h DAN SUMBER GALAT (DILEMA PEMBULATAN)
+             ==================================================================== -->
+        <article class="slide" data-slide="10">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Analisis Galat Tambahan</span>
+              <span>Dilema Komputasi</span>
+            </div>
+            <div class="slide-indicator">Slide 10 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Pengaruh Nilai \( h \) dan Sumber Galat</h2>
+            <p class="slide-subtitle">Kompromi kritis antara galat pemotongan teoritis dan galat pembulatan aritmetika komputer</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2-1">
+              <div>
+                <ul class="bullet-list">
+                  <li class="bullet-item"><strong>Galat Pemotongan \( \sim h^p \):</strong> Selalu <em>turun</em> seiring mengecilnya langkah \( h \).</li>
+                  <li class="bullet-item"><strong>Galat Pembulatan / Noise \( \sim \frac{\delta}{h} \):</strong> Justru <em>meledak naik</em> saat \( h \) sangat kecil karena pembagian selisih angka hampir sama!</li>
+                </ul>
+
+                <div class="math-hero" style="margin-top: 12px; border-left-color: var(--accent-amber);">
+                  <div class="math-hero-title">Model Total Galat & Langkah Optimum \( h^* \)</div>
+                  \[ E(h) \lesssim \frac{M h^2}{6} + \frac{\delta}{h} \implies \mathbf{h^* \approx \sqrt[3]{\frac{3\delta}{M}}} \]
+                </div>
+
+                <div class="callout callout-warning">
+                  <strong>Kesimpulan Krusial:</strong> Nilai \( h \) yang semakin kecil <strong>TIDAK SELALU</strong> memberikan hasil yang lebih akurat pada komputer!
+                </div>
+              </div>
+
+              <!-- Tabel Bukti Numerik e^x di x=1 -->
+              <div>
+                <div class="table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Langkah \( h \)</th>
+                        <th>Galat Maju</th>
+                        <th>Galat Tengah</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="num">\( 10^{-1} \)</td>
+                        <td class="num">1,41 × 10⁻¹</td>
+                        <td class="num">4,53 × 10⁻³</td>
+                      </tr>
+                      <tr>
+                        <td class="num">\( 10^{-4} \)</td>
+                        <td class="num">1,36 × 10⁻⁴</td>
+                        <td class="num">4,53 × 10⁻⁹</td>
+                      </tr>
+                      <tr>
+                        <td class="num">\( 10^{-6} \)</td>
+                        <td class="num">1,36 × 10⁻⁶</td>
+                        <td class="num exact-cell">1,63 × 10⁻¹⁰ ⭐</td>
+                      </tr>
+                      <tr>
+                        <td class="num">\( 10^{-8} \)</td>
+                        <td class="num highlight-cell">6,60 × 10⁻⁹ ⭐</td>
+                        <td class="num">6,60 × 10⁻⁹</td>
+                      </tr>
+                      <tr>
+                        <td class="num">\( 10^{-12} \)</td>
+                        <td class="num" style="color: red;">4,32 × 10⁻⁴ ⬆</td>
+                        <td class="num" style="color: red;">2,10 × 10⁻⁴ ⬆</td>
+                      </tr>
+                      <tr>
+                        <td class="num">\( 10^{-14} \)</td>
+                        <td class="num" style="color: red;">9,34 × 10⁻³ ⬆</td>
+                        <td class="num" style="color: red;">9,34 × 10⁻³ ⬆</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 4px;">
+                  Uji coba \( f(x) = e^x \) pada \( x = 1 \). Galat menurun hingga titik optimum lalu melonjak kembali!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Tambahan: hitungan sendiri; konsep: Burden & Faires [1], catatan UMD [2]</div>
+            <div class="slide-indicator">Slide 10 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 10):</strong></p>
+            <p>Bagian ini di luar buku. Intinya: ada dua sumber galat yang bekerja berlawanan. Galat pemotongan mengecil bila h mengecil. Tetapi komputer menyimpan f dengan galat pembulatan; selisih dua nilai yang hampir sama dibagi 2h memperbesar galat itu sekitar delta/h. Karena itu total galat turun lalu naik lagi. Tabel dihitung sendiri dengan f(x) = eˣ di x = 1 memakai aritmetika double.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 11: GALAT ABSOLUT, RELATIF, DAN PERSENTASE
+             ==================================================================== -->
+        <article class="slide" data-slide="11">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Analisis Galat Tambahan</span>
+              <span>Metrik Kesalahan</span>
+            </div>
+            <div class="slide-indicator">Slide 11 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Galat Absolut, Relatif, dan Persentase</h2>
+            <p class="slide-subtitle">Metrik standar untuk mengukur deviasi perhitungan terhadap nilai referensi eksak</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-3">
+              <div class="math-hero" style="border-left-color: var(--primary);">
+                <div class="math-hero-title">Galat Absolut (\( E_a \))</div>
+                \[ E_a = |f'(x) - D_h| \]
+                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 6px;">
+                  Besaran kesalahan langsung dalam dimensi satuan yang sama dengan turunan \( f' \).
+                </p>
+              </div>
+
+              <div class="math-hero" style="border-left-color: var(--accent-indigo);">
+                <div class="math-hero-title">Galat Relatif (\( E_r \))</div>
+                \[ E_r = \frac{|f'(x) - D_h|}{|f'(x)|} \]
+                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 6px;">
+                  Perbandingan kesalahan proporsional terhadap besar turunan eksak.
+                </p>
+              </div>
+
+              <div class="math-hero" style="border-left-color: var(--accent-emerald);">
+                <div class="math-hero-title">Galat Persentase (\( E_{\%} \))</div>
+                \[ E_{\%} = E_r \times 100\% \]
+                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 6px;">
+                  Bentuk persentase galat yang mudah dipahami dalam interpretasi teknik.
+                </p>
+              </div>
+            </div>
+
+            <!-- Contoh Perhitungan Kasus ln x -->
+            <div class="content-card" style="margin-top: 14px;">
+              <div class="content-card-title">
+                <span class="card-badge">Contoh Aplikasi Hitung</span>
+                Kasus Contoh 6.1.1 (\( f = \ln x, x = 1{,}8, h = 0{,}1 \))
+              </div>
+              <p style="font-size: 13.5px; color: var(--text-muted);">
+                Diketahui hasil selisih maju \( D_h = 0{,}5406722 \) dan turunan eksak \( f'(1{,}8) = 0{,}5555556 \):
+              </p>
+              <div style="display: flex; gap: 30px; margin-top: 8px; flex-wrap: wrap;">
+                <div>\( E_a = |0{,}5555556 - 0{,}5406722| = \mathbf{0{,}0148834} \)</div>
+                <div>\( E_r = \frac{0{,}0148834}{0{,}5555556} \approx \mathbf{0{,}0267901} \)</div>
+                <div>\( E_{\%} \approx \mathbf{2{,}679\%} \)</div>
+              </div>
+            </div>
+
+            <div class="callout callout-warning" style="margin-top: 14px;">
+              <strong>Catatan Kritis:</strong> Jika \( f'(x) = 0 \) (misal titik stasioner \( \sin x \) pada \( x = \pi/2 \)), nilai \( E_r \) tidak terdefinisi karena terjadi pembagian nol! Pada situasi ini, selalu gunakan galat absolut \( E_a \).
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Tambahan: definisi umum [1] §1.2; contoh dari data Contoh 6.1.1</div>
+            <div class="slide-indicator">Slide 11 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 11):</strong></p>
+            <p>Slide ini melengkapi slide galat. E_a memberi besar kesalahan dalam satuan turunan. E_r membandingkannya dengan besar turunan, sehingga bisa dibandingkan antarfungsi. E_% hanya E_r dikali 100. Bila turunan eksak nol atau mendekati nol, E_r tidak terdefinisi atau menjadi sangat besar; pakai E_a.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 12: METODE EKSTRAPOLASI RICHARDSON
+             ==================================================================== -->
+        <article class="slide" data-slide="12">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">6.2 · Ekstrapolasi Richardson</span>
+              <span>Teknik Percepatan Konvergensi</span>
+            </div>
+            <div class="slide-indicator">Slide 12 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Metode Ekstrapolasi Richardson</h2>
+            <p class="slide-subtitle">Menggabungkan dua pendekatan dengan langkah berbeda untuk mengeliminasi suku galat dominan</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2">
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Prinsip Kerja</span>
+                  Ide Dasar Richardson
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item">Menggabungkan hasil aproksimasi langkah penuh \( N_1(h) \) dengan langkah setengahnya \( N_1(h/2) \).</li>
+                  <li class="bullet-item">Secara sistematis <strong>menghilangkan suku galat utama</strong> tanpa perlu menurunkan rumus analitik yang rumit.</li>
+                  <li class="bullet-item">Menghasilkan nilai pendekatan tingkat lanjut \( N_2(h) \) dengan orde ketelitian yang jauh lebih tinggi.</li>
+                </ul>
+              </div>
+
+              <div>
+                <!-- Kasus Galat Berpangkat Genap -->
+                <div class="math-hero" style="border-left-color: var(--primary);">
+                  <div class="math-hero-title">Galat Berpangkat Genap (Selisih Tengah)</div>
+                  \[ M = N_1(h) + K_1 h^2 + K_2 h^4 + \cdots \]
+                  \[ \mathbf{N_2(h) = \frac{4 N_1(h/2) - N_1(h)}{3}} \quad \longrightarrow O(h^4) \]
+                </div>
+
+                <!-- Kasus Galat Berpangkat Campuran -->
+                <div class="math-hero" style="border-left-color: var(--accent-indigo); margin-top: 10px;">
+                  <div class="math-hero-title">Galat Berpangkat Linear (Selisih Maju/Mundur)</div>
+                  \[ M = N_1(h) + K_1 h + K_2 h^2 + \cdots \]
+                  \[ \mathbf{N_2(h) = 2 N_1(h/2) - N_1(h)} \quad \longrightarrow O(h^2) \]
+                </div>
+              </div>
+            </div>
+
+            <!-- Rumus Umum Rekursif -->
+            <div class="content-card" style="margin-top: 12px; background: var(--bg-card);">
+              <div class="content-card-title">
+                <span class="card-badge">Rumus Rekursif Umum (Pangkat Genap)</span>
+                Tingkat \( j \)
+              </div>
+              \[ N_j(h) = N_{j-1}(h/2) + \frac{1}{4^{j-1} - 1} \left[ N_{j-1}(h/2) - N_{j-1}(h) \right] \]
+              <p style="font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 4px;">
+                <strong>Kunci Sukses:</strong> Wajib memeriksa bentuk ekspansi galat awal terlebih dahulu sebelum memilih rumus kombinasi!
+              </p>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 196–199</div>
+            <div class="slide-indicator">Slide 12 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 12):</strong></p>
+            <p>Ide Richardson: kalau galat punya bentuk yang bisa diprediksi, dua hasil dengan h berbeda bisa digabung agar suku galat utama hilang. Untuk galat pangkat 1, 2, 3 dan seterusnya, kurangkan persamaan dengan h dan dua kali persamaan dengan h/2, sehingga K₁ hilang; hasilnya N₂ = 2N₁(h/2) − N₁(h). Untuk galat hanya pangkat genap, kalikan 4 lalu bagi 3 untuk menghilangkan h². Kunci: periksa dulu bentuk galat awalnya, baru pilih rumus.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 13: CONTOH RICHARDSON 6.2.1 UNTUK f(x) = ln x
+             ==================================================================== -->
+        <article class="slide" data-slide="13">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Contoh 6.2.1</span>
+              <span>Aplikasi Richardson</span>
+            </div>
+            <div class="slide-indicator">Slide 13 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Contoh Richardson untuk \( f(x) = \ln x \)</h2>
+            <p class="slide-subtitle">Menggabungkan dua estimasi selisih maju untuk mendongkrak akurasi turunan di \( x_0 = 1{,}8 \)</p>
+          </div>
+
+          <div class="slide-body">
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 8px;">
+              Dari Contoh 6.1.1, diketahui nilai awal: \( N_1(0{,}1) = 0{,}5406722 \) dan \( N_1(0{,}05) = 0{,}5479795 \). Karena selisih maju berorde \( O(h) \), kita gunakan formula kombinasi orde 1:
+            </p>
+
+            <div class="math-hero">
+              \[ N_2(0{,}1) = 2 N_1(0{,}05) - N_1(0{,}1) = 2(0{,}5479795) - 0{,}5406722 \approx \mathbf{0{,}5552868} \]
+            </div>
+
+            <!-- Tabel Evaluasi Galat -->
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Metode</th>
+                    <th>Hasil Aproksimasi</th>
+                    <th>Galat Mutlak terhadap Eksak</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Selisih Maju (\( h = 0{,}1 \))</td>
+                    <td class="num">0,5406722</td>
+                    <td class="num">0,0148834</td>
+                  </tr>
+                  <tr>
+                    <td>Selisih Maju (\( h = 0{,}05 \))</td>
+                    <td class="num">0,5479795</td>
+                    <td class="num">0,0075761</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ekstrapolasi Richardson</strong></td>
+                    <td class="num exact-cell">0,5552868</td>
+                    <td class="num exact-cell">0,0002688 (2,69 × 10⁻⁴) ⭐</td>
+                  </tr>
+                  <tr style="background: #f8fafc;">
+                    <td><strong>Nilai Eksak (\( 1 / 1{,}8 \))</strong></td>
+                    <td class="num" style="font-weight: 700;">0,5555556</td>
+                    <td class="num">— (Referensi)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="callout callout-success">
+              <strong>Peningkatan Signifikan:</strong> Galat berkurang drastis dari \( 0{,}00758 \) menjadi \( 0{,}00027 \) (mengecil sekitar <strong>28 kali lipat</strong>) hanya dengan kombinasi aritmetika sederhana tanpa perlu menambah titik data baru!
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 197–198</div>
+            <div class="slide-indicator">Slide 13 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 13):</strong></p>
+            <p>Ambil dua hasil dari Slide 7. Karena galat awalnya berorde h, pakai N₂ = 2N₁(h/2) − N₁(h). Hitung: dua kali 0,5479795 adalah 1,0959590, dikurangi 0,5406722 menghasilkan 0,5552868. Hasil ini jauh lebih dekat ke 0,5555556 daripada kedua pendekatan awal. Galat Richardson yang tercatat di buku adalah 0,000258, sedangkan hitung ulang dari angka buku sendiri memberi 0,0002688.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 14: CONTOH 6.1.2 — DATA TABEL f(x) = x e^x
+             ==================================================================== -->
+        <article class="slide" data-slide="14">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Contoh 6.1.2</span>
+              <span>Data Tabel Diskret</span>
+            </div>
+            <div class="slide-indicator">Slide 14 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Penerapan pada Data Tabel: \( f(x) = x e^x \)</h2>
+            <p class="slide-subtitle">Menghitung turunan di titik tengah \( x_0 = 2{,}0 \) (\( h = 0{,}1 \)) dengan berbagai metode berorde tinggi</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2-1">
+              <div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">
+                  Diberikan data tabel diskret (\( h = 0{,}1 \)):
+                </p>
+                <div class="table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr><th>x</th><th>f(x)</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td class="num">1,8</td><td class="num">10,889365</td></tr>
+                      <tr><td class="num">1,9</td><td class="num">12,703199</td></tr>
+                      <tr style="background: var(--primary-soft);"><td class="num"><strong>2,0</strong></td><td class="num"><strong>14,778112</strong></td></tr>
+                      <tr><td class="num">2,1</td><td class="num">17,148957</td></tr>
+                      <tr><td class="num">2,2</td><td class="num">19,855030</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px;">
+                  <em>Nilai Eksak Analitis:</em> \( f'(x) = (1+x)e^x \implies f'(2) = 3e^2 \approx \mathbf{22{,}167168} \)
+                </p>
+              </div>
+
+              <div>
+                <div class="table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Rumus (\( h=0{,}1 \))</th>
+                        <th>Pendekatan \( f'(2) \)</th>
+                        <th>Galat Absolut</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Tiga Titik Ujung</td>
+                        <td class="num">22,032310</td>
+                        <td class="num">1,35 × 10⁻¹</td>
+                      </tr>
+                      <tr>
+                        <td>Tiga Titik Tengah</td>
+                        <td class="num">22,228790</td>
+                        <td class="num">6,16 × 10⁻²</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Lima Titik Tengah</strong></td>
+                        <td class="num exact-cell">22,166999</td>
+                        <td class="num exact-cell">1,69 × 10⁻⁴ ⭐</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="callout callout-success" style="margin-top: 8px;">
+                  <strong>Akurasi Lima Titik Tengah:</strong> Menghasilkan nilai \( 22{,}166999 \) yang sangat mendekati nilai eksak \( 22{,}167168 \) dengan galat hanya \( 0{,}000169 \) karena memiliki keunggulan orde tinggi \( O(h^4) \).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 190–191</div>
+            <div class="slide-indicator">Slide 14 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 14):</strong></p>
+            <p>Data hanya tabel lima titik. Tiga titik ujung: 5 × (−3(14,778112) + 4(17,148957) − 19,855030) = 22,032310. Tiga titik tengah: 5 × (17,148957 − 12,703199) = 22,228790. Lima titik tengah: (10,889365 − 8(12,703199) + 8(17,148957) − 19,855030)/1,2 = 22,166999. Di buku, teks galat nomor 5 tertulis "lima titik akhir", padahal yang dihitung adalah lima titik tengah.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 15: CONTOH 6.1.3 — MENGHITUNG TURUNAN DARI DATA TABEL
+             ==================================================================== -->
+        <article class="slide" data-slide="15">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Contoh 6.1.3</span>
+              <span>Strategi Pemilihan Rumus</span>
+            </div>
+            <div class="slide-indicator">Slide 15 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Contoh 6.1.3 — Menghitung Turunan Data Tabel</h2>
+            <p class="slide-subtitle">Panduan komprehensif penentuan rumus diferensiasi berdasarkan ketersediaan titik di sekitar posisi evaluasi</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2-1">
+              <div>
+                <div class="table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr><th>Titik \( x \)</th><th>Rumus yang Dapat Dipakai (\( h = 0{,}1 \))</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="num"><strong>1,1 (Ujung Kiri)</strong></td>
+                        <td>6.4 Ujung (\( h=0{,}1; 0{,}2 \)) · 6.6 Lima Titik Ujung</td>
+                      </tr>
+                      <tr>
+                        <td class="num"><strong>1,2 (Interior)</strong></td>
+                        <td>6.4 Ujung (\( h=0{,}1 \)) · 6.5 Tiga Titik Tengah</td>
+                      </tr>
+                      <tr>
+                        <td class="num highlight-cell"><strong>1,3 (Tengah Penuh)</strong></td>
+                        <td class="highlight-cell">6.4 Ujung · 6.5 Tengah (\( h=0{,}1; 0{,}2 \)) · <strong>6.7 Lima Titik Tengah</strong></td>
+                      </tr>
+                      <tr>
+                        <td class="num"><strong>1,4 (Interior)</strong></td>
+                        <td>6.4 Ujung (\( h=-0{,}1 \)) · 6.5 Tiga Titik Tengah</td>
+                      </tr>
+                      <tr>
+                        <td class="num"><strong>1,5 (Ujung Kanan)</strong></td>
+                        <td>6.4 Ujung (\( h=-0{,}1; -0{,}2 \)) · 6.6 Lima Titik Ujung</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div class="content-card">
+                  <div class="content-card-title">
+                    <span class="card-badge">Contoh Hitungan</span>
+                    Substitusi Angka Tabel
+                  </div>
+                  <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px;">
+                    <strong>Titik Ujung \( f'(1{,}1) \)</strong> (Pers. 6.4, \( h = 0{,}1 \)):
+                  </p>
+                  <div style="font-size: 11.5px; font-family: var(--font-mono);">
+                    \[ \frac{-3(9{,}025013) + 4(11{,}02318) - 13{,}46374}{0{,}2} = \mathbf{17{,}76971} \]
+                  </div>
+
+                  <p style="font-size: 12.5px; color: var(--text-muted); margin: 8px 0 6px;">
+                    <strong>Titik Tengah \( f'(1{,}3) \)</strong> (Pers. 6.7 Lima Titik Tengah):
+                  </p>
+                  <div style="font-size: 11px; font-family: var(--font-mono);">
+                    \[ \frac{9{,}025013 - 8(11{,}02318) + 8(16{,}44465) - 20{,}08554}{1{,}2} = \mathbf{26{,}92603} \]
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 191–195</div>
+            <div class="slide-indicator">Slide 15 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 15):</strong></p>
+            <p>Berbeda dari Contoh 6.1.2, di sini yang diminta adalah melengkapi kolom turunan dari data tabel dengan h = 0,1. Langkahnya: lihat posisi titik. Di ujung (1,1 dan 1,5) tidak ada data di salah satu sisi, jadi pakai rumus ujung (6.4 atau 6.6; di ujung kanan h dibuat negatif). Di titik dalam, rumus tengah 6.5 bisa dipakai, dan lima titik tengah 6.7 hanya untuk 1,3 karena butuh dua titik di tiap sisi.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 16: CONTOH 6.2.2 — EKSTRAPOLASI RICHARDSON f(x) = xe^x
+             ==================================================================== -->
+        <article class="slide" data-slide="16">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Contoh 6.2.2</span>
+              <span>Tabel Segitiga Richardson</span>
+            </div>
+            <div class="slide-indicator">Slide 16 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Contoh 6.2.2 — Richardson pada \( f(x) = x e^x \)</h2>
+            <p class="slide-subtitle">Membangun tabel rekursif tingkat 3 (\( N_1, N_2, N_3 \)) untuk mencapai presisi mutlak 6 digit desimal</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Tingkat</th>
+                    <th>Formula / Perhitungan</th>
+                    <th>Hasil Numerik</th>
+                    <th>Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>\( N_1(0{,}2) \)</td>
+                    <td>\( 2{,}5(19{,}855030 - 10{,}889365) \)</td>
+                    <td class="num">22,414160</td>
+                    <td>Selisih Tengah (\( h=0{,}2 \))</td>
+                  </tr>
+                  <tr>
+                    <td>\( N_1(0{,}1) \)</td>
+                    <td>\( 5(17{,}148957 - 12{,}703199) \)</td>
+                    <td class="num">22,228786</td>
+                    <td>Selisih Tengah (\( h=0{,}1 \))</td>
+                  </tr>
+                  <tr style="background: var(--primary-soft);">
+                    <td><strong>\( N_2(0{,}2) \)</strong></td>
+                    <td>\( 22{,}228786 + \frac{22{,}228786 - 22{,}414160}{3} \)</td>
+                    <td class="num"><strong>22,166995</strong></td>
+                    <td>Tingkat 2 (Orde \( O(h^4) \))</td>
+                  </tr>
+                  <tr>
+                    <td>\( N_1(0{,}05) \)</td>
+                    <td>\( 10(15{,}924197 - 13{,}705941) \)</td>
+                    <td class="num">22,182564</td>
+                    <td>Selisih Tengah (\( h=0{,}05 \))</td>
+                  </tr>
+                  <tr>
+                    <td>\( N_2(0{,}1) \)</td>
+                    <td>\( 22{,}182564 + \frac{22{,}182564 - 22{,}228786}{3} \)</td>
+                    <td class="num">22,167157</td>
+                    <td>Tingkat 2 (\( h=0{,}1 \))</td>
+                  </tr>
+                  <tr style="background: var(--accent-emerald-soft);">
+                    <td><strong>\( N_3(0{,}2) \)</strong></td>
+                    <td>\( 22{,}167157 + \frac{22{,}167157 - 22{,}166995}{15} \)</td>
+                    <td class="num exact-cell"><strong>22,167168</strong></td>
+                    <td><strong>Tingkat 3 (Identik Eksak!) ⭐</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="callout callout-success" style="margin-top: 10px;">
+              <strong>Presisi Sempurna:</strong> Nilai \( N_3(0{,}2) = \mathbf{22{,}167168} \) identik sempurna dengan nilai analitis eksak \( f'(2) = 3e^2 \approx 22{,}167168 \) hingga seluruh 6 digit desimal yang ditampilkan buku teks!
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 200–201</div>
+            <div class="slide-indicator">Slide 16 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 16):</strong></p>
+            <p>Rumus tengah punya galat berpangkat genap, jadi dipakai pembagi 3 (tingkat dua) lalu pembagi 15 (tingkat tiga; rumus umumnya 4^(j−1) − 1). Urutan: hitung N₁ untuk h = 0,2; 0,1; 0,05. Gabungkan N₁(0,1) dan N₁(0,2) menjadi N₂(0,2); gabungkan N₁(0,05) dan N₁(0,1) menjadi N₂(0,1); gabungkan kedua N₂ menjadi N₃(0,2). Di buku, rumus N₃ tertulis memakai N₂(0,1) − N₁(0,2); yang sesuai rumus umum adalah N₂(0,1) − N₂(0,2), dan angka buku cocok dengan itu.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 17: CONTOH 6.2.3 — RICHARDSON DARI DATA TABEL
+             ==================================================================== -->
+        <article class="slide" data-slide="17">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Contoh 6.2.3</span>
+              <span>Batas Ketersediaan Data</span>
+            </div>
+            <div class="slide-indicator">Slide 17 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Contoh 6.2.3 — Richardson dari Data Tabel</h2>
+            <p class="slide-subtitle">Evaluasi turunan \( f'(1{,}3) \) dan batasan komputasi tingkat lanjut ketika data diskret terbatas</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2">
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Data & Titik Awal</span>
+                  Titik \( x_0 = 1{,}3 \) dengan \( h = 0{,}2 \)
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">
+                  Pendekatan selisih tengah awal (\( O(h^2) \)):
+                </p>
+                <div style="font-size: 12px; font-family: var(--font-mono);">
+                  \[ N_1(0{,}2) = \frac{20{,}08554 - 9{,}025013}{0{,}4} = \mathbf{27{,}651318} \]
+                  \[ N_1(0{,}1) = \frac{16{,}44465 - 11{,}02318}{0{,}2} = \mathbf{27{,}10735} \]
+                </div>
+              </div>
+
+              <div class="content-card" style="border-top: 3px solid var(--accent-emerald);">
+                <div class="content-card-title">
+                  <span class="card-badge" style="background: var(--accent-emerald-soft); color: var(--accent-emerald);">Hasil Richardson</span>
+                  Kombinasi Galat Genap \( N_2(0{,}2) \)
+                </div>
+                <div style="font-size: 12px; font-family: var(--font-mono);">
+                  \[ N_2(0{,}2) = 27{,}10735 + \frac{27{,}10735 - 27{,}651318}{3} \]
+                  \[ \mathbf{N_2(0{,}2) \approx 26{,}926027} \]
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+                  Hasil ini berorde <strong>\( O(h^4) \)</strong> dan identik dengan hasil lima titik tengah pada Contoh 6.1.3!
+                </p>
+              </div>
+            </div>
+
+            <div class="callout callout-warning" style="margin-top: 14px;">
+              <strong>Batasan Nyata: Mengapa \( N_3 \) Tidak Bisa Dihitung?</strong><br>
+              Untuk menghitung tingkat ketiga \( N_3(0{,}2) \), kita membutuhkan \( N_1(0{,}05) \) yang memerlukan titik data fungsi di \( x = 1{,}35 \) dan \( x = 1{,}25 \). Karena data tabel eksperimen hanya berjarak \( 0{,}1 \) (\( 1{,}1; 1{,}2; 1{,}3; 1{,}4; 1{,}5 \)), maka rekursi Richardson harus berhenti di tingkat \( N_2 \).
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 201–202</div>
+            <div class="slide-indicator">Slide 17 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 17):</strong></p>
+            <p>Titik yang dihitung f′(1,3) dengan h = 0,2 dan 0,1; data hanya 1,1 sampai 1,5, jadi level ketiga tidak mungkin. Buku mencetak N₁(0,1) = (1/0,2)(f(1,4) − f(1,1)) = 27,10735 dan N₂(0,2) = 26,920273. Dua hal ini tidak cocok dengan substitusi yang tercetak: (16,44465 − 11,02318)/0,2 memakai f(1,2) dan menghasilkan 27,10735; dan 27,10735 + (27,10735 − 27,651318)/3 = 26,926027. Nilai 26,926027 juga sama persis dengan hasil lima titik tengah pada Contoh 6.1.3.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 18: RINGKASAN & PERBANDINGAN METODE
+             ==================================================================== -->
+        <article class="slide" data-slide="18">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Ringkasan Metode</span>
+              <span>Matriks Perbandingan</span>
+            </div>
+            <div class="slide-indicator">Slide 18 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Perbandingan Metode Diferensiasi Numerik</h2>
+            <p class="slide-subtitle">Ikhtisar komprehensif keunggulan, keterbatasan, dan kebutuhan data dari seluruh metode</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Metode</th>
+                    <th>Titik / Data</th>
+                    <th>Galat Pemotongan</th>
+                    <th>Kelebihan</th>
+                    <th>Keterbatasan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Selisih Maju</strong></td>
+                    <td class="num">\( x, x+h \)</td>
+                    <td class="num">\( O(h) \)</td>
+                    <td>Sederhana, cukup 2 nilai</td>
+                    <td>Kurang teliti</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Selisih Mundur</strong></td>
+                    <td class="num">\( x-h, x \)</td>
+                    <td class="num">\( O(h) \)</td>
+                    <td>Cocok di ujung kanan data</td>
+                    <td>Kurang teliti</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Selisih Tengah</strong></td>
+                    <td class="num">\( x-h, x+h \)</td>
+                    <td class="num highlight-cell">\( O(h^2) \)</td>
+                    <td>Simetris, lebih teliti</td>
+                    <td>Perlu data dua sisi</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tiga Titik Ujung</strong></td>
+                    <td class="num">\( x_0, x_0+h, x_0+2h \)</td>
+                    <td class="num highlight-cell">\( O(h^2) \)</td>
+                    <td>Dipakai di ujung interval</td>
+                    <td>Butuh 3 nilai searah</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lima Titik Tengah</strong></td>
+                    <td class="num">\( x_0 \pm h, x_0 \pm 2h \)</td>
+                    <td class="num exact-cell">\( O(h^4) \)</td>
+                    <td>Sangat teliti & presisi</td>
+                    <td>Butuh 5 nilai simetris</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lima Titik Ujung</strong></td>
+                    <td class="num">\( x_0 \dots x_0+4h \)</td>
+                    <td class="num exact-cell">\( O(h^4) \)</td>
+                    <td>Teliti pada data satu sisi</td>
+                    <td>Butuh 5 nilai searah</td>
+                  </tr>
+                  <tr style="background: var(--primary-soft);">
+                    <td><strong>Ekstrapolasi Richardson*</strong></td>
+                    <td>Hasil \( N_1(h) \) & \( N_1(h/2) \)</td>
+                    <td class="num">Sesuai skema (\( O(h^4) \dots \))</td>
+                    <td>Menaikkan ketelitian tinggi</td>
+                    <td>Bentuk galat harus sesuai</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+              *<em>Catatan:</em> Richardson bukan rumus diferensiasi langsung; ia adalah algoritma percepatan yang memperbaiki hasil aproksimasi rumus lain.
+            </p>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), Bab 6 (Ringkasan Komprehensif)</div>
+            <div class="slide-indicator">Slide 18 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 18):</strong></p>
+            <p>Gunakan tabel ini untuk merangkum. Maju dan mundur: sederhana tetapi O(h). Selisih tengah dan tiga titik ujung: O(h²). Lima titik tengah dan lima titik ujung: O(h⁴). Richardson berbeda jenis; ia tidak menurunkan rumus baru dari data, tetapi menggabungkan hasil rumus lain, sehingga ordenya bergantung pada orde awal dan skema ekstrapolasi.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 19: MEMILIH METODE: RUMUS DAN KONDISI PENGGUNAAN
+             ==================================================================== -->
+        <article class="slide" data-slide="19">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Ringkasan Metode</span>
+              <span>Panduan Pengambilan Keputusan</span>
+            </div>
+            <div class="slide-indicator">Slide 19 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Memilih Metode: Rumus & Kondisi Penggunaan</h2>
+            <p class="slide-subtitle">Kriteria praktis pemilihan rumus diferensiasi terbaik sesuai karakteristik masalah</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Metode</th>
+                    <th>Rumus / Prinsip Dasar</th>
+                    <th>Orde</th>
+                    <th>Kondisi Penggunaan Terbaik</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Selisih Maju</strong></td>
+                    <td class="num">\( [f(x+h) - f(x)] / h \)</td>
+                    <td class="num">\( O(h) \)</td>
+                    <td>Ujung kiri data; hanya ada data ke depan</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Selisih Mundur</strong></td>
+                    <td class="num">\( [f(x) - f(x-h)] / h \)</td>
+                    <td class="num">\( O(h) \)</td>
+                    <td>Ujung kanan data; hanya ada data sebelumnya</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Selisih Tengah</strong></td>
+                    <td class="num">\( [f(x+h) - f(x-h)] / (2h) \)</td>
+                    <td class="num highlight-cell">\( O(h^2) \)</td>
+                    <td>Titik dalam data; pilihan umum paling seimbang</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tiga Titik Ujung</strong></td>
+                    <td class="num">\( [-3f_0 + 4f_1 - f_2] / (2h) \)</td>
+                    <td class="num highlight-cell">\( O(h^2) \)</td>
+                    <td>Ujung interval yang membutuhkan akurasi orde 2</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lima Titik Tengah</strong></td>
+                    <td class="num">\( [f_{-2} - 8f_{-1} + 8f_1 - f_2] / (12h) \)</td>
+                    <td class="num exact-cell">\( O(h^4) \)</td>
+                    <td>Titik dalam; data berjarak rapat dan fungsi mulus</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lima Titik Ujung</strong></td>
+                    <td class="num">\( [-25f_0 + 48f_1 - 36f_2 + 16f_3 - 3f_4] / (12h) \)</td>
+                    <td class="num exact-cell">\( O(h^4) \)</td>
+                    <td>Ujung interval yang membutuhkan presisi tinggi \( O(h^4) \)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Richardson</strong></td>
+                    <td>Eliminasi suku galat utama \( N_1(h) \) & \( N_1(h/2) \)</td>
+                    <td class="num">Tinggi</td>
+                    <td>Tersedia beberapa nilai langkah \( h \) & bentuk galat diketahui</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="callout callout-warning" style="margin-top: 10px;">
+              <strong>Pesan Kunci:</strong> Tidak ada satu metode yang selalu terbaik di segala kondisi. Pada data pengukuran yang berisik (noisy data), rumus berorde tinggi dengan koefisien besar (seperti -25, 48, -36) justru dapat memperbesar gangguan galat acak!
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Rumus dan orde: Imron dkk. (2022); kondisi: tambahan [1]</div>
+            <div class="slide-indicator">Slide 19 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 19):</strong></p>
+            <p>Slide ini melengkapi slide 'Perbandingan Metode' sebelumnya: di sana fokus pada kelebihan dan keterbatasan, di sini pada rumus dasar dan kapan dipakai. Pesan penutup: jangan menyimpulkan satu metode selalu paling baik. Lima titik memiliki orde lebih tinggi, tetapi koefisiennya lebih besar sehingga lebih sensitif terhadap noise pada data.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 20: KESIMPULAN
+             ==================================================================== -->
+        <article class="slide" data-slide="20">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Penutup</span>
+              <span>Rangkuman Inti</span>
+            </div>
+            <div class="slide-indicator">Slide 20 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Kesimpulan</h2>
+            <p class="slide-subtitle">Rangkuman poin-poin utama materi Bab 6 Diferensiasi Numerik</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="grid-2">
+              <div class="content-card">
+                <div class="content-card-title">
+                  <span class="card-badge">Poin Utama</span>
+                  Esensi Pembahasan
+                </div>
+                <ul class="bullet-list">
+                  <li class="bullet-item">Diferensiasi numerik memperkirakan turunan dari nilai-nilai fungsi diskret.</li>
+                  <li class="bullet-item">Pendekatan deret (Polinomial Lagrange dan Deret Taylor) menjadi fondasi matematis utama seluruh rumus.</li>
+                  <li class="bullet-item">Selisih maju dan mundur menghasilkan galat pemotongan <strong>\( O(h) \)</strong>.</li>
+                  <li class="bullet-item">Selisih tengah dan tiga titik ujung mencapai akurasi <strong>\( O(h^2) \)</strong>.</li>
+                  <li class="bullet-item">Metode lima titik (tengah dan ujung) mencapai ketelitian tinggi <strong>\( O(h^4) \)</strong>.</li>
+                  <li class="bullet-item">Ekstrapolasi Richardson terbukti sangat efektif mendongkrak ketelitian dengan mengeliminasi suku galat dominan.</li>
+                </ul>
+              </div>
+
+              <div>
+                <div class="content-card" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                  <div class="content-card-title">
+                    <span class="card-badge" style="background: var(--primary-soft); color: var(--primary);">Prinsip Bijak</span>
+                    Pemilihan Ukuran Langkah \( h \)
+                  </div>
+                  <blockquote style="font-family: var(--font-serif); font-size: 18px; font-style: italic; line-height: 1.6; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 16px; margin: 16px 0;">
+                    “Ketelitian diferensiasi numerik tidak hanya ditentukan oleh rumus yang digunakan, tetapi juga oleh ukuran langkah \( h \), data yang tersedia, dan sifat fungsi.”
+                  </blockquote>
+                  <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                    Pemilihan \( h \) harus mempertimbangkan trade-off antara galat pemotongan dan akumulasi galat pembulatan komputer.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), Bab 6 (Ringkasan)</div>
+            <div class="slide-indicator">Slide 20 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 20):</strong></p>
+            <p>Rangkum perjalanan: dari definisi, dasar deret, rumus maju/mundur/tengah, rumus tiga dan lima titik, galat, lalu Richardson. Tekankan tiga hal: orde galat menentukan kecepatan perbaikan saat h mengecil, rumus harus cocok dengan posisi titik dan data yang ada, dan h tidak boleh terlalu kecil. Tutup dengan kalimat di bawah slide, lalu buka sesi tanya jawab.</p>
+          </div>
+        </article>
+
+        <!-- ====================================================================
+             SLIDE 21: DAFTAR PUSTAKA
+             ==================================================================== -->
+        <article class="slide" data-slide="21">
+          <header class="slide-header">
+            <div class="slide-category">
+              <span class="slide-badge-pill">Referensi</span>
+              <span>Daftar Pustaka & Literatur</span>
+            </div>
+            <div class="slide-indicator">Slide 21 dari 21</div>
+          </header>
+
+          <div class="slide-title-group">
+            <h2 class="slide-title">Daftar Pustaka</h2>
+            <p class="slide-subtitle">Sumber rujukan utama materi presentasi Metode Numerik</p>
+          </div>
+
+          <div class="slide-body">
+            <div class="content-card" style="margin-bottom: 16px; border-left: 4px solid var(--primary);">
+              <div class="content-card-title">
+                <span class="card-badge">Buku Teks Utama</span>
+                Referensi Bab 6
+              </div>
+              <p style="font-size: 14.5px; line-height: 1.6; color: var(--text-main);">
+                <strong>Imron, C., Mardlijah, & Asfihani, T. (2022).</strong> <em>Metode Numerik</em>. Departemen Matematika, Institut Teknologi Sepuluh Nopember (ITS). ISBN: 978-623-318-126-6.
+              </p>
+            </div>
+
+            <div class="content-card">
+              <div class="content-card-title">
+                <span class="card-badge">Referensi Tambahan</span>
+                Literatur Pendukung
+              </div>
+              <ul class="bullet-list">
+                <li class="bullet-item">
+                  <strong>[1] Burden, R. L., & Faires, J. D. (2010).</strong> <em>Numerical Analysis</em> (9th ed.). Cengage Learning. — §1.2 (Analisis Galat), §4.1 (Numerical Differentiation), §4.2 (Richardson’s Extrapolation).
+                </li>
+                <li class="bullet-item">
+                  <strong>[2] University of Maryland (AMSC 466).</strong> <em>Lecture Notes: Numerical Differentiation</em>. Catatan kuliah analitis trade-off galat pemotongan vs galat pembulatan komputer.
+                </li>
+              </ul>
+            </div>
+
+            <div class="callout" style="margin-top: 16px;">
+              <strong>Keterangan Metadata:</strong> Seluruh rumus, tabel latihan, dan data numerik diambil langsung dari Bab 6 buku <em>Metode Numerik</em> (ITS). Materi analisis galat komputer dan kondisi praktis diperkaya dari literatur standar Burden & Faires.
+            </div>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="slide-source"><strong>Sumber:</strong> Halaman Identitas Buku ITS & Literatur Terkait</div>
+            <div class="slide-indicator">Slide 21 dari 21</div>
+          </footer>
+
+          <div class="speaker-notes-data" style="display:none">
+            <p><strong>Catatan Penyaji (Slide 21):</strong></p>
+            <p>Sebutkan sumber utama presentasi: buku Metode Numerik karya Chairul Imron, Mardlijah, dan Tahiyatul Asfihani (2022), Bab 6. Semua rumus, contoh, dan angka diambil dari bab ini. Penerbit di halaman identitas adalah Departemen Matematika ITS.</p>
+          </div>
+        </article>
+
+      </div>
+    </main>
+
+    <!-- Bottom Navigation Bar & Progress Indicator -->
+    <footer class="bottom-bar">
+      <div class="progress-line-container">
+        <div id="progressLine" class="progress-line"></div>
+      </div>
+
+      <div class="nav-controls">
+        <button id="btnPrev" class="nav-btn" title="Slide Sebelumnya (← / PageUp)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          Sebelumnya
+        </button>
+        <button id="btnNext" class="nav-btn nav-btn-primary" title="Slide Selanjutnya (→ / Space)">
+          Selanjutnya
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <span id="slideCounterBadge" class="slide-counter-badge">1 / 21</span>
+      </div>
+
+      <div class="keyboard-hint">
+        <span class="kbd">←</span> <span class="kbd">→</span> Navigasi · 
+        <span class="kbd">S</span> Catatan · 
+        <span class="kbd">O</span> Overview · 
+        <span class="kbd">F</span> Layar Penuh
+      </div>
+    </footer>
+
+    <!-- Speaker Notes Drawer Modal -->
+    <aside id="notesDrawer" class="notes-drawer">
+      <div class="notes-header">
+        <div class="notes-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Catatan Pembicara
+        </div>
+        <button id="btnCloseNotes" class="btn-icon" style="width: 26px; height: 26px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="notesContent" class="notes-content">
+        <!-- Content dynamically injected from current slide's speaker-notes-data -->
+      </div>
+    </aside>
+
+    <!-- Overview Grid Modal -->
+    <div id="overviewModal" class="overview-modal">
+      <div class="overview-header">
+        <div style="font-size: 18px; font-weight: 700;">Navigasi Semua Slide (21 Slide)</div>
+        <button id="btnCloseOverview" class="btn-icon" style="color: #ffffff; background: rgba(255,255,255,0.15);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="overviewGrid" class="overview-grid">
+        <!-- Grid cards populated dynamically by presentation.js -->
+      </div>
+    </div>
+  </div>
+
+  <script src="presentation.js"></script>
+</body>
+</html>
