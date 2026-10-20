@@ -1,5 +1,5 @@
 /**
- * Presentation Engine - Bab 6 Diferensiasi Numerik
+ * Presentation Engine - Diferensiasi Numerik
  * Minimalist White Interactive PPT with KaTeX & 3D Transitions
  */
 
@@ -317,28 +317,15 @@ class PresentationController {
   }
 
   updateSpeakerNotes() {
-    if (!this.notesContent) return;
-    const currentSlide = this.slides[this.currentIndex];
-    const notesElem = currentSlide.querySelector('.speaker-notes-data');
-    if (notesElem) {
-      this.notesContent.innerHTML = notesElem.innerHTML;
-    } else {
-      this.notesContent.innerHTML = '<p><em>Tidak ada catatan khusus untuk slide ini.</em></p>';
-    }
+    // Catatan removed
   }
 
   toggleNotes() {
-    if (!this.notesDrawer) return;
-    this.notesDrawer.classList.toggle('open');
-    if (this.btnToggleNotes) {
-      this.btnToggleNotes.classList.toggle('active', this.notesDrawer.classList.contains('open'));
-    }
+    // Catatan removed
   }
 
   closeNotes() {
-    if (!this.notesDrawer) return;
-    this.notesDrawer.classList.remove('open');
-    if (this.btnToggleNotes) this.btnToggleNotes.classList.remove('active');
+    // Catatan removed
   }
 
   buildOverviewGrid() {
@@ -352,7 +339,7 @@ class PresentationController {
       const titleElem = slide.querySelector('.slide-title') || slide.querySelector('.title-main-heading');
       const titleText = titleElem ? titleElem.textContent.trim() : `Slide ${idx + 1}`;
       const catElem = slide.querySelector('.slide-category');
-      const catText = catElem ? catElem.textContent.trim() : `Bab 6`;
+      const catText = catElem ? catElem.textContent.trim() : `Diferensiasi Numerik`;
 
       card.innerHTML = `
         <div class="overview-card-num">${catText} · ${idx + 1}</div>

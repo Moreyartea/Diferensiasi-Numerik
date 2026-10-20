@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diferensiasi Numerik — Metode Numerik Bab 6</title>
-  <meta name="description" content="Presentasi Diferensiasi Numerik - Metode Numerik Bab 6 dengan desain minimalis putih, LaTeX KaTeX jernih, dan variasi transisi 3D inovatif.">
+  <title>Diferensiasi Numerik — Metode Numerik</title>
+  <meta name="description" content="Presentasi Diferensiasi Numerik - Metode Numerik dengan desain minimalis putih, LaTeX KaTeX jernih, dan variasi transisi 3D inovatif.">
 
   <!-- Local KaTeX with CDN Fallback -->
   <link rel="stylesheet" href="vendor/katex/katex.min.css">
@@ -23,35 +23,11 @@
     <!-- Top App Bar -->
     <header class="top-nav">
       <div class="nav-brand">
-        <span class="brand-badge">Bab 6</span>
+        <span class="brand-badge">Numerik</span>
         <span class="brand-title">Diferensiasi Numerik</span>
       </div>
 
       <div class="nav-actions">
-        <!-- Transition Selector -->
-        <div class="transition-select-wrapper" title="Pilih efek transisi slide">
-          <select id="transitionSelect" class="transition-dropdown">
-            <option value="auto">✨ Transisi: Otomatis (Variasi Tiap Slide)</option>
-            <option value="center-fold">📖 Kertas Dibalik Tengah (Center Fold)</option>
-            <option value="bottom-right-curl">📄 Dari Kanan Bawah (Corner Curl)</option>
-            <option value="curtain-roll">🎪 Tirai Digulung (Curtain Roll)</option>
-            <option value="cube">🎲 Kubus 3D (Origami Cube)</option>
-            <option value="doors">🚪 Pintu Terbuka (Double Doors)</option>
-            <option value="diagonal">↗️ Sapu Diagonal (Diagonal Glide)</option>
-          </select>
-          <span class="transition-select-icon">▾</span>
-        </div>
-
-        <!-- Replay Transition Button -->
-        <button id="btnReplayTransition" class="btn-icon" title="Ulangi Animasi Transisi Slide Ini">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
-        </button>
-
-        <!-- Speaker Notes Button -->
-        <button id="btnToggleNotes" class="btn-pill" title="Catatan Pembicara (Shortcut: S)">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Catatan
-        </button>
 
         <!-- Overview Grid Button -->
         <button id="btnToggleOverview" class="btn-pill" title="Daftar Semua Slide (Shortcut: O)">
@@ -75,24 +51,25 @@
              ==================================================================== -->
         <article class="slide active" data-slide="1">
           <div class="slide-title-page">
-            <span class="slide-badge-pill" style="margin-bottom: 16px;">Metode Numerik — Bab 6</span>
+            <span class="slide-badge-pill" style="margin-bottom: 16px;">Metode Numerik</span>
             <h1 class="title-main-heading">DIFERENSIASI<br>NUMERIK</h1>
             <p class="slide-subtitle" style="font-size: 18px; margin-top: 8px; color: var(--text-muted);">
               Pendekatan Turunan Fungsi Menggunakan Deret Polinomial & Ekstrapolasi Richardson
             </p>
 
-            <div class="title-meta-box">
-              <div class="title-meta-item">
-                <span class="title-meta-label">Penyusun</span>
-                <span class="title-meta-value">[Nama Anggota Kelompok]</span>
+            <div class="title-meta-box" style="max-width: 680px;">
+              <div class="title-meta-item" style="grid-column: span 2;">
+                <span class="title-meta-label">Anggota Kelompok</span>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin-top: 6px;">
+                  <span class="title-meta-value">1. Farel Luther Siagian <span style="color:var(--text-muted); font-size:12.5px; font-weight: 500;">(4253250041)</span></span>
+                  <span class="title-meta-value">2. Fatih Taqiyyuddin <span style="color:var(--text-muted); font-size:12.5px; font-weight: 500;">(4253250057)</span></span>
+                  <span class="title-meta-value">3. Siti Zulayka Maulida Amali <span style="color:var(--text-muted); font-size:12.5px; font-weight: 500;">(4253250001)</span></span>
+                  <span class="title-meta-value">4. Keegan Gibran Jehian <span style="color:var(--text-muted); font-size:12.5px; font-weight: 500;">(4253250029)</span></span>
+                </div>
               </div>
               <div class="title-meta-item">
                 <span class="title-meta-label">Dosen Pengampu</span>
-                <span class="title-meta-value">[Nama Dosen]</span>
-              </div>
-              <div class="title-meta-item">
-                <span class="title-meta-label">Program Studi / Universitas</span>
-                <span class="title-meta-value">[Program Studi, Universitas]</span>
+                <span class="title-meta-value">Debi Yandra Niska, S.Kom., M.Kom.</span>
               </div>
               <div class="title-meta-item">
                 <span class="title-meta-label">Tahun Akademik</span>
@@ -116,11 +93,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron, Mardlijah & Asfihani (2022)</div>
             <div class="slide-indicator">Slide 1 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 1):</strong></p>
-            <p>Sapa audiens, sebut judul dan bab. Jelaskan bahwa hari ini kita membahas cara memperkirakan turunan fungsi hanya dari nilai-nilai fungsi. Gambar kurva dengan garis singgung mewakili ide utama: turunan adalah kemiringan garis singgung. Isi placeholder nama, dosen, dan program studi sebelum presentasi.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -129,7 +101,7 @@
         <article class="slide" data-slide="2">
           <header class="slide-header">
             <div class="slide-category">
-              <span class="slide-badge-pill">6 · Pengantar</span>
+              <span class="slide-badge-pill">Pengantar</span>
               <span>Konsep Dasar</span>
             </div>
             <div class="slide-indicator">Slide 2 dari 21</div>
@@ -195,11 +167,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 185</div>
             <div class="slide-indicator">Slide 2 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 2):</strong></p>
-            <p>Turunan menyatakan laju perubahan. Kadang fungsi sulit diturunkan, atau kita hanya punya tabel data. Contoh di awal Bab 6 adalah fungsi jarak bola jatuh dengan ln cosh; kecepatannya sulit diturunkan secara analitik. Karena itu kita pakai pendekatan numerik. Bab ini memperkenalkan dua cara: pendekatan deret dan ekstrapolasi Richardson.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -296,11 +263,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Tambahan: ilustrasi dan hitungan sendiri; konteks umum: Burden & Faires [1]</div>
             <div class="slide-indicator">Slide 3 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 3):</strong></p>
-            <p>Slide ini bukan dari buku; ini penjelasan tambahan agar audiens tahu untuk apa rumus-rumus Bab 6 dipakai. Datanya sengaja dibuat sederhana dari s(t) = t³ supaya kita tahu jawaban benarnya (12 m/s) dan bisa menilai galat. Pada data pengukuran nyata nilai eksak tidak diketahui, jadi kita hanya bisa membandingkan antarmetode atau memakai Richardson. Perhatikan: hasil maju 19 dan mundur 7 berbeda jauh karena h = 1 besar dan orde galatnya hanya O(h); selisih tengah O(h²) jauh lebih dekat. Rumus yang sama dipakai untuk menghitung percepatan dari data kecepatan.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -309,7 +271,7 @@
         <article class="slide" data-slide="4">
           <header class="slide-header">
             <div class="slide-category">
-              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span class="slide-badge-pill">Pendekatan Deret</span>
               <span>Penurunan Matematis</span>
             </div>
             <div class="slide-indicator">Slide 4 dari 21</div>
@@ -387,11 +349,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 185–186</div>
             <div class="slide-indicator">Slide 4 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 4):</strong></p>
-            <p>Buku menurunkan rumus lewat polinomial Lagrange dan suku galatnya, bukan langsung lewat Taylor. Intinya: fungsi didekati dengan polinomial yang melalui titik data, lalu diturunkan. Suku yang dibuang menjadi galat pemotongan. Rumus 6.1 adalah hasilnya: beda maju untuk h positif dan beda mundur untuk h negatif. Ekspansi Taylor saya tampilkan hanya sebagai sudut pandang setara yang umum dikenal.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -400,7 +357,7 @@
         <article class="slide" data-slide="5">
           <header class="slide-header">
             <div class="slide-category">
-              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span class="slide-badge-pill">Pendekatan Deret</span>
               <span>Metode 2 Titik</span>
             </div>
             <div class="slide-indicator">Slide 5 dari 21</div>
@@ -456,11 +413,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 186</div>
             <div class="slide-indicator">Slide 5 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 5):</strong></p>
-            <p>Dua rumus ini adalah yang paling sederhana. Maju memakai titik di depan, mundur memakai titik di belakang. Keduanya hanya butuh dua nilai fungsi dan galatnya berorde h, jadi h harus kecil. Di buku, rumus mundur tidak ditulis terpisah: ia adalah Persamaan 6.1 dengan h negatif.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -469,7 +421,7 @@
         <article class="slide" data-slide="6">
           <header class="slide-header">
             <div class="slide-category">
-              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span class="slide-badge-pill">Pendekatan Deret</span>
               <span>Metode Simetris</span>
             </div>
             <div class="slide-indicator">Slide 6 dari 21</div>
@@ -528,11 +480,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 189</div>
             <div class="slide-indicator">Slide 6 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 6):</strong></p>
-            <p>Selisih tengah adalah rumus tiga titik tengah di buku (6.5), tanpa memakai f(x₀) itu sendiri. Karena simetris, suku galat orde pertama saling meniadakan, sehingga galatnya berorde h². Syaratnya, kita punya data di kiri dan kanan titik. Di ujung interval rumus ini tidak bisa dipakai, dan itulah alasan slide berikutnya.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -541,7 +488,7 @@
         <article class="slide" data-slide="7">
           <header class="slide-header">
             <div class="slide-category">
-              <span class="slide-badge-pill">6.1 · Pendekatan Deret</span>
+              <span class="slide-badge-pill">Pendekatan Deret</span>
               <span>Formulasi Tingkat Tinggi</span>
             </div>
             <div class="slide-indicator">Slide 7 dari 21</div>
@@ -642,11 +589,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 189</div>
             <div class="slide-indicator">Slide 7 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 7):</strong></p>
-            <p>Rumus tiga titik ujung dipakai saat titik yang dihitung ada di ujung data. Perhatikan koefisien −3, 4, −1 dan penyebut 2h. Rumus lima titik tengah memakai koefisien 1, −8, 8, −1 dan penyebut 12h; galatnya berorde h⁴. Rumus lima titik ujung (6.6) bekerja seperti tiga titik ujung tetapi memakai lima titik ke satu arah: koefisien −25, 48, −36, 16, −3 dan penyebut 12h. Untuk ujung kanan, pakai h negatif, seperti pada Contoh 6.1.3.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -720,11 +662,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 186</div>
             <div class="slide-indicator">Slide 8 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 8):</strong></p>
-            <p>Substitusikan x₀ = 1,8 dan h = 0,1 ke rumus beda maju: ln 1,9 dikurangi ln 1,8, dibagi 0,1, hasilnya 0,5406722. Karena f″(x) = 1/x² dan ξ berada di antara 1,8 dan 1,9, galatnya dibatasi |h|/(2·1,8²) = 0,0154321. Ulangi untuk h = 0,05 dan 0,01. Bandingkan dengan nilai eksak 1/1,8 = 0,5555556: makin kecil h, makin dekat. Kolom terakhir adalah batas galat, bukan galat sebenarnya.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -819,11 +756,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 186–189</div>
             <div class="slide-indicator">Slide 9 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 9):</strong></p>
-            <p>Setiap rumus yang kita pakai hanya pendekatan. Galat pemotongan muncul karena suku-suku tertentu dibuang. Orde O(h), O(h²), O(h⁴) menunjukkan seberapa cepat galat mengecil ketika h dikecilkan: untuk orde empat, h dibagi 2 membuat galat turun sekitar 16 kali. Batang di slide hanya ilustrasi. Peringatan penting: h yang terlalu kecil memperbesar pengaruh galat pembulatan, jadi h perlu dipilih secara tepat.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -917,11 +849,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Tambahan: hitungan sendiri; konsep: Burden & Faires [1], catatan UMD [2]</div>
             <div class="slide-indicator">Slide 10 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 10):</strong></p>
-            <p>Bagian ini di luar buku. Intinya: ada dua sumber galat yang bekerja berlawanan. Galat pemotongan mengecil bila h mengecil. Tetapi komputer menyimpan f dengan galat pembulatan; selisih dua nilai yang hampir sama dibagi 2h memperbesar galat itu sekitar delta/h. Karena itu total galat turun lalu naik lagi. Tabel dihitung sendiri dengan f(x) = eˣ di x = 1 memakai aritmetika double.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -985,7 +912,7 @@
             </div>
 
             <div class="callout callout-warning" style="margin-top: 14px;">
-              <strong>Catatan Kritis:</strong> Jika \( f'(x) = 0 \) (misal titik stasioner \( \sin x \) pada \( x = \pi/2 \)), nilai \( E_r \) tidak terdefinisi karena terjadi pembagian nol! Pada situasi ini, selalu gunakan galat absolut \( E_a \).
+              <strong>Peringatan:</strong> Jika \( f'(x) = 0 \) (misal titik stasioner \( \sin x \) pada \( x = \pi/2 \)), nilai \( E_r \) tidak terdefinisi karena terjadi pembagian nol! Pada situasi ini, selalu gunakan galat absolut \( E_a \).
             </div>
           </div>
 
@@ -993,11 +920,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Tambahan: definisi umum [1] §1.2; contoh dari data Contoh 6.1.1</div>
             <div class="slide-indicator">Slide 11 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 11):</strong></p>
-            <p>Slide ini melengkapi slide galat. E_a memberi besar kesalahan dalam satuan turunan. E_r membandingkannya dengan besar turunan, sehingga bisa dibandingkan antarfungsi. E_% hanya E_r dikali 100. Bila turunan eksak nol atau mendekati nol, E_r tidak terdefinisi atau menjadi sangat besar; pakai E_a.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1006,7 +928,7 @@
         <article class="slide" data-slide="12">
           <header class="slide-header">
             <div class="slide-category">
-              <span class="slide-badge-pill">6.2 · Ekstrapolasi Richardson</span>
+              <span class="slide-badge-pill">Ekstrapolasi Richardson</span>
               <span>Teknik Percepatan Konvergensi</span>
             </div>
             <div class="slide-indicator">Slide 12 dari 21</div>
@@ -1065,11 +987,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 196–199</div>
             <div class="slide-indicator">Slide 12 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 12):</strong></p>
-            <p>Ide Richardson: kalau galat punya bentuk yang bisa diprediksi, dua hasil dengan h berbeda bisa digabung agar suku galat utama hilang. Untuk galat pangkat 1, 2, 3 dan seterusnya, kurangkan persamaan dengan h dan dua kali persamaan dengan h/2, sehingga K₁ hilang; hasilnya N₂ = 2N₁(h/2) − N₁(h). Untuk galat hanya pangkat genap, kalikan 4 lalu bagi 3 untuk menghilangkan h². Kunci: periksa dulu bentuk galat awalnya, baru pilih rumus.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1142,11 +1059,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 197–198</div>
             <div class="slide-indicator">Slide 13 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 13):</strong></p>
-            <p>Ambil dua hasil dari Slide 7. Karena galat awalnya berorde h, pakai N₂ = 2N₁(h/2) − N₁(h). Hitung: dua kali 0,5479795 adalah 1,0959590, dikurangi 0,5406722 menghasilkan 0,5552868. Hasil ini jauh lebih dekat ke 0,5555556 daripada kedua pendekatan awal. Galat Richardson yang tercatat di buku adalah 0,000258, sedangkan hitung ulang dari angka buku sendiri memberi 0,0002688.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1233,11 +1145,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 190–191</div>
             <div class="slide-indicator">Slide 14 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 14):</strong></p>
-            <p>Data hanya tabel lima titik. Tiga titik ujung: 5 × (−3(14,778112) + 4(17,148957) − 19,855030) = 22,032310. Tiga titik tengah: 5 × (17,148957 − 12,703199) = 22,228790. Lima titik tengah: (10,889365 − 8(12,703199) + 8(17,148957) − 19,855030)/1,2 = 22,166999. Di buku, teks galat nomor 5 tertulis "lima titik akhir", padahal yang dihitung adalah lima titik tengah.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1319,11 +1226,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 191–195</div>
             <div class="slide-indicator">Slide 15 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 15):</strong></p>
-            <p>Berbeda dari Contoh 6.1.2, di sini yang diminta adalah melengkapi kolom turunan dari data tabel dengan h = 0,1. Langkahnya: lihat posisi titik. Di ujung (1,1 dan 1,5) tidak ada data di salah satu sisi, jadi pakai rumus ujung (6.4 atau 6.6; di ujung kanan h dibuat negatif). Di titik dalam, rumus tengah 6.5 bisa dipakai, dan lima titik tengah 6.7 hanya untuk 1,3 karena butuh dua titik di tiap sisi.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1404,11 +1306,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 200–201</div>
             <div class="slide-indicator">Slide 16 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 16):</strong></p>
-            <p>Rumus tengah punya galat berpangkat genap, jadi dipakai pembagi 3 (tingkat dua) lalu pembagi 15 (tingkat tiga; rumus umumnya 4^(j−1) − 1). Urutan: hitung N₁ untuk h = 0,2; 0,1; 0,05. Gabungkan N₁(0,1) dan N₁(0,2) menjadi N₂(0,2); gabungkan N₁(0,05) dan N₁(0,1) menjadi N₂(0,1); gabungkan kedua N₂ menjadi N₃(0,2). Di buku, rumus N₃ tertulis memakai N₂(0,1) − N₁(0,2); yang sesuai rumus umum adalah N₂(0,1) − N₂(0,2), dan angka buku cocok dengan itu.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1469,11 +1366,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), hlm. 201–202</div>
             <div class="slide-indicator">Slide 17 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 17):</strong></p>
-            <p>Titik yang dihitung f′(1,3) dengan h = 0,2 dan 0,1; data hanya 1,1 sampai 1,5, jadi level ketiga tidak mungkin. Buku mencetak N₁(0,1) = (1/0,2)(f(1,4) − f(1,1)) = 27,10735 dan N₂(0,2) = 26,920273. Dua hal ini tidak cocok dengan substitusi yang tercetak: (16,44465 − 11,02318)/0,2 memakai f(1,2) dan menghasilkan 27,10735; dan 27,10735 + (27,10735 − 27,651318)/3 = 26,926027. Nilai 26,926027 juga sama persis dengan hasil lima titik tengah pada Contoh 6.1.3.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1560,19 +1452,14 @@
             </div>
 
             <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
-              *<em>Catatan:</em> Richardson bukan rumus diferensiasi langsung; ia adalah algoritma percepatan yang memperbaiki hasil aproksimasi rumus lain.
+              *<em>Keterangan:</em> Richardson bukan rumus diferensiasi langsung; ia adalah algoritma percepatan yang memperbaiki hasil aproksimasi rumus lain.
             </p>
           </div>
 
           <footer class="slide-footer">
-            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), Bab 6 (Ringkasan Komprehensif)</div>
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), Ringkasan Komprehensif</div>
             <div class="slide-indicator">Slide 18 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 18):</strong></p>
-            <p>Gunakan tabel ini untuk merangkum. Maju dan mundur: sederhana tetapi O(h). Selisih tengah dan tiga titik ujung: O(h²). Lima titik tengah dan lima titik ujung: O(h⁴). Richardson berbeda jenis; ia tidak menurunkan rumus baru dari data, tetapi menggabungkan hasil rumus lain, sehingga ordenya bergantung pada orde awal dan skema ekstrapolasi.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1659,11 +1546,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Rumus dan orde: Imron dkk. (2022); kondisi: tambahan [1]</div>
             <div class="slide-indicator">Slide 19 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 19):</strong></p>
-            <p>Slide ini melengkapi slide 'Perbandingan Metode' sebelumnya: di sana fokus pada kelebihan dan keterbatasan, di sini pada rumus dasar dan kapan dipakai. Pesan penutup: jangan menyimpulkan satu metode selalu paling baik. Lima titik memiliki orde lebih tinggi, tetapi koefisiennya lebih besar sehingga lebih sensitif terhadap noise pada data.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1680,7 +1562,7 @@
 
           <div class="slide-title-group">
             <h2 class="slide-title">Kesimpulan</h2>
-            <p class="slide-subtitle">Rangkuman poin-poin utama materi Bab 6 Diferensiasi Numerik</p>
+            <p class="slide-subtitle">Rangkuman poin-poin utama materi Diferensiasi Numerik</p>
           </div>
 
           <div class="slide-body">
@@ -1718,14 +1600,9 @@
           </div>
 
           <footer class="slide-footer">
-            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), Bab 6 (Ringkasan)</div>
+            <div class="slide-source"><strong>Sumber:</strong> Imron dkk. (2022), Ringkasan</div>
             <div class="slide-indicator">Slide 20 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 20):</strong></p>
-            <p>Rangkum perjalanan: dari definisi, dasar deret, rumus maju/mundur/tengah, rumus tiga dan lima titik, galat, lalu Richardson. Tekankan tiga hal: orde galat menentukan kecepatan perbaikan saat h mengecil, rumus harus cocok dengan posisi titik dan data yang ada, dan h tidak boleh terlalu kecil. Tutup dengan kalimat di bawah slide, lalu buka sesi tanya jawab.</p>
-          </div>
         </article>
 
         <!-- ====================================================================
@@ -1749,7 +1626,7 @@
             <div class="content-card" style="margin-bottom: 16px; border-left: 4px solid var(--primary);">
               <div class="content-card-title">
                 <span class="card-badge">Buku Teks Utama</span>
-                Referensi Bab 6
+                Referensi Utama
               </div>
               <p style="font-size: 14.5px; line-height: 1.6; color: var(--text-main);">
                 <strong>Imron, C., Mardlijah, & Asfihani, T. (2022).</strong> <em>Metode Numerik</em>. Departemen Matematika, Institut Teknologi Sepuluh Nopember (ITS). ISBN: 978-623-318-126-6.
@@ -1772,7 +1649,7 @@
             </div>
 
             <div class="callout" style="margin-top: 16px;">
-              <strong>Keterangan Metadata:</strong> Seluruh rumus, tabel latihan, dan data numerik diambil langsung dari Bab 6 buku <em>Metode Numerik</em> (ITS). Materi analisis galat komputer dan kondisi praktis diperkaya dari literatur standar Burden & Faires.
+              <strong>Keterangan Metadata:</strong> Seluruh rumus, tabel latihan, dan data numerik diambil langsung dari buku <em>Metode Numerik</em> (ITS). Materi analisis galat komputer dan kondisi praktis diperkaya dari literatur standar Burden & Faires.
             </div>
           </div>
 
@@ -1780,11 +1657,6 @@
             <div class="slide-source"><strong>Sumber:</strong> Halaman Identitas Buku ITS & Literatur Terkait</div>
             <div class="slide-indicator">Slide 21 dari 21</div>
           </footer>
-
-          <div class="speaker-notes-data" style="display:none">
-            <p><strong>Catatan Penyaji (Slide 21):</strong></p>
-            <p>Sebutkan sumber utama presentasi: buku Metode Numerik karya Chairul Imron, Mardlijah, dan Tahiyatul Asfihani (2022), Bab 6. Semua rumus, contoh, dan angka diambil dari bab ini. Penerbit di halaman identitas adalah Departemen Matematika ITS.</p>
-          </div>
         </article>
 
       </div>
@@ -1810,27 +1682,10 @@
 
       <div class="keyboard-hint">
         <span class="kbd">←</span> <span class="kbd">→</span> Navigasi · 
-        <span class="kbd">S</span> Catatan · 
         <span class="kbd">O</span> Overview · 
         <span class="kbd">F</span> Layar Penuh
       </div>
     </footer>
-
-    <!-- Speaker Notes Drawer Modal -->
-    <aside id="notesDrawer" class="notes-drawer">
-      <div class="notes-header">
-        <div class="notes-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Catatan Pembicara
-        </div>
-        <button id="btnCloseNotes" class="btn-icon" style="width: 26px; height: 26px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div id="notesContent" class="notes-content">
-        <!-- Content dynamically injected from current slide's speaker-notes-data -->
-      </div>
-    </aside>
 
     <!-- Overview Grid Modal -->
     <div id="overviewModal" class="overview-modal">

@@ -70,11 +70,7 @@ def create_presentation():
         fp.font.size = Pt(10)
         fp.font.color.rgb = COLOR_MUTED
 
-        # Speaker notes
-        if notes_text:
-            notes_slide = slide.notes_slide
-            notes_tf = notes_slide.notes_text_frame
-            notes_tf.text = notes_text
+        # Speaker notes removed as requested
 
         return slide
 
@@ -195,7 +191,7 @@ def create_presentation():
     tf1 = tb1.text_frame
     tf1.word_wrap = True
     p = tf1.paragraphs[0]
-    p.text = "METODE NUMERIK — BAB 6"
+    p.text = "METODE NUMERIK"
     p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = COLOR_BLUE
@@ -214,31 +210,44 @@ def create_presentation():
     p3.font.color.rgb = COLOR_MUTED
 
     # Meta box
-    meta_box = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.5), Inches(4.3), Inches(8.5), Inches(1.8))
+    meta_box = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.5), Inches(4.1), Inches(9.2), Inches(2.5))
     meta_box.fill.solid()
     meta_box.fill.fore_color.rgb = COLOR_CARD
     meta_box.line.color.rgb = COLOR_BORDER
     mtf = meta_box.text_frame
     mtf.word_wrap = True
-    mp1 = mtf.paragraphs[0]
-    mp1.text = "Penyusun: [Nama Anggota Kelompok]    |    Dosen: [Nama Dosen]"
-    mp1.font.size = Pt(13)
-    mp1.font.bold = True
+    
+    mp0 = mtf.paragraphs[0]
+    mp0.text = "ANGGOTA KELOMPOK:"
+    mp0.font.size = Pt(11)
+    mp0.font.bold = True
+    mp0.font.color.rgb = COLOR_PRIMARY
+    mp0.space_after = Pt(3)
+    
+    mp1 = mtf.add_paragraph()
+    mp1.text = "1. Farel Luther Siagian (4253250041)       2. Fatih Taqiyyuddin (4253250057)\n3. Siti Zulayka Maulida Amali (4253250001)   4. Keegan Gibran Jehian (4253250029)"
+    mp1.font.size = Pt(12)
     mp1.font.color.rgb = COLOR_TEXT
-    mp1.space_after = Pt(6)
-
+    mp1.space_after = Pt(8)
+    
     mp2 = mtf.add_paragraph()
-    mp2.text = "Program Studi / Universitas: [Program Studi, Universitas]\nTahun Akademik: 2026"
-    mp2.font.size = Pt(12)
-    mp2.font.color.rgb = COLOR_MUTED
-
-    s1.notes_slide.notes_text_frame.text = "Sapa audiens, sebut judul dan bab. Jelaskan bahwa hari ini kita membahas cara memperkirakan turunan fungsi hanya dari nilai-nilai fungsi. Gambar kurva dengan garis singgung mewakili ide utama: turunan adalah kemiringan garis singgung. Isi placeholder nama, dosen, dan program studi sebelum presentasi."
+    mp2.text = "DOSEN PENGAMPU:"
+    mp2.font.size = Pt(11)
+    mp2.font.bold = True
+    mp2.font.color.rgb = COLOR_PRIMARY
+    mp2.space_after = Pt(2)
+    
+    mp3 = mtf.add_paragraph()
+    mp3.text = "Debi Yandra Niska, S.Kom., M.Kom.    |    Tahun: 2026"
+    mp3.font.size = Pt(12)
+    mp3.font.bold = True
+    mp3.font.color.rgb = COLOR_TEXT
 
     # =========================================================================
     # SLIDE 2: PENGERTIAN
     # =========================================================================
-    s2 = add_base_slide("6 · Pengantar", "Pengertian Diferensiasi Numerik", 2,
-        "Turunan menyatakan laju perubahan. Kadang fungsi sulit diturunkan, atau kita hanya punya tabel data. Contoh di awal Bab 6 adalah fungsi jarak bola jatuh dengan ln cosh; kecepatannya sulit diturunkan secara analitik. Karena itu kita pakai pendekatan numerik.")
+    s2 = add_base_slide("Pengantar", "Pengertian Diferensiasi Numerik", 2,
+        "Turunan menyatakan laju perubahan. Kadang fungsi sulit diturunkan, atau kita hanya punya tabel data. Contoh di awal pembahasan adalah fungsi jarak bola jatuh dengan ln cosh; kecepatannya sulit diturunkan secara analitik. Karena itu kita pakai pendekatan numerik.")
     add_card(s2, Inches(0.8), Inches(1.8), Inches(3.6), Inches(3.2), "Pengertian", [
         "Memperkirakan nilai turunan fungsi f'(x) dari titik-titik diskret.",
         "Dipakai saat turunan analitis sulit diperoleh secara eksak.",
@@ -255,7 +264,7 @@ def create_presentation():
         "Memerlukan pemahaman atas galat hampiran."
     ], "C")
     add_math_box(s2, Inches(0.8), Inches(5.2), Inches(11.733), Inches(1.4),
-        "Contoh Motivasi Fisika (Buku hlm. 185)",
+        "Contoh Motivasi Fisika (hlm. 185)",
         "Jarak jatuh:  z(t) = (m / cd) · ln cosh( √(g·cd / m) · t )",
         "Kecepatan v(t) = z'(t) sulit diturunkan analitis pada model aerodinamika non-linier kompleks.")
 
@@ -263,13 +272,13 @@ def create_presentation():
     # SLIDE 3: PENERAPAN DI DUNIA NYATA
     # =========================================================================
     s3 = add_base_slide("Pengantar Tambahan", "Penerapan di Dunia Nyata", 3,
-        "Slide ini penjelasan tambahan agar audiens tahu untuk apa rumus Bab 6 dipakai. Datanya sengaja dibuat sederhana dari s(t) = t^3 supaya kita tahu jawaban benarnya (12 m/s).")
+        "Slide ini penjelasan tambahan agar audiens tahu untuk apa rumus diferensiasi numerik dipakai. Datanya sengaja dibuat sederhana dari s(t) = t^3 supaya kita tahu jawaban benarnya (12 m/s).")
     add_card(s3, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Contoh Aplikasi Rekayasa", [
         "Kecepatan: v(t) = ds/dt dari sensor posisi GPS / telemetri.",
         "Percepatan: a(t) = dv/dt dari data kecepatan kendaraan.",
         "Perpindahan Panas: Laju perubahan suhu dT/dx (Hukum Fourier).",
         "Data Eksperimen: Menghitung laju reaksi kimia dari sampel waktu.",
-        "Catatan: Data nyata tidak memiliki rumus fungsi kontinu eksak!"
+        "Data nyata tidak memiliki rumus fungsi kontinu eksak!"
     ], "Praktis")
     add_card(s3, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Studi Kasus: Posisi s(t) -> v(2)", [
         "Data t = 1, 2, 3 s -> s = 1, 8, 27 m (h = 1 s). Dicari v(2):",
@@ -283,7 +292,7 @@ def create_presentation():
     # =========================================================================
     # SLIDE 4: DASAR RUMUS: PENDEKATAN DERET
     # =========================================================================
-    s4 = add_base_slide("6.1 · Pendekatan Deret", "Dasar Rumus: Pendekatan Deret", 4,
+    s4 = add_base_slide("Pendekatan Deret", "Dasar Rumus: Pendekatan Deret", 4,
         "Buku menurunkan rumus lewat polinomial Lagrange dan suku galatnya, bukan langsung lewat Taylor. Intinya: fungsi didekati dengan polinomial yang melalui titik data, lalu diturunkan.")
     add_card(s4, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Penurunan via Polinomial Lagrange", [
         "Interpolasi pada x₀ dan x₁ = x₀ + h:",
@@ -305,7 +314,7 @@ def create_presentation():
     # =========================================================================
     # SLIDE 5: SELISIH MAJU DAN MUNDUR
     # =========================================================================
-    s5 = add_base_slide("6.1 · Pendekatan Deret", "Metode Selisih Maju dan Mundur", 5,
+    s5 = add_base_slide("Pendekatan Deret", "Metode Selisih Maju dan Mundur", 5,
         "Dua rumus ini adalah yang paling sederhana. Maju memakai titik di depan, mundur memakai titik di belakang. Keduanya hanya butuh dua nilai fungsi dan galatnya berorde h.")
     add_math_box(s5, Inches(0.8), Inches(1.8), Inches(5.6), Inches(2.6),
         "Selisih Maju (Forward Difference)",
@@ -324,7 +333,7 @@ def create_presentation():
     # =========================================================================
     # SLIDE 6: SELISIH TENGAH
     # =========================================================================
-    s6 = add_base_slide("6.1 · Pendekatan Deret", "Metode Selisih Tengah (Central Difference)", 6,
+    s6 = add_base_slide("Pendekatan Deret", "Metode Selisih Tengah (Central Difference)", 6,
         "Selisih tengah adalah rumus tiga titik tengah di buku (6.5), tanpa memakai f(x₀) itu sendiri. Karena simetris, suku galat orde pertama saling meniadakan, sehingga galatnya berorde h².")
     add_math_box(s6, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.5),
         "Rumus Tiga Titik Tengah (Persamaan 6.5)",
@@ -344,7 +353,7 @@ def create_presentation():
     # =========================================================================
     # SLIDE 7: RUMUS TIGA TITIK DAN LIMA TITIK
     # =========================================================================
-    s7 = add_base_slide("6.1 · Pendekatan Deret", "Rumus Tiga Titik dan Lima Titik", 7,
+    s7 = add_base_slide("Pendekatan Deret", "Rumus Tiga Titik dan Lima Titik", 7,
         "Rumus tiga titik ujung dipakai saat titik ada di ujung data. Rumus lima titik tengah memakai koefisien 1, -8, 8, -1 dan penyebut 12h; galatnya berorde h⁴.")
     add_math_box(s7, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.3),
         "3 Titik Ujung (6.4)",
@@ -383,7 +392,7 @@ def create_presentation():
             ["0,05", "0,5479795", "0,0075761", "0,0077160"],
             ["0,01", "0,5540180", "0,0015376 ⭐", "0,0015432"]
         ])
-    add_card(s8, Inches(0.8), Inches(6.1), Inches(11.733), Inches(0.65), "Catatan", [
+    add_card(s8, Inches(0.8), Inches(6.1), Inches(11.733), Inches(0.65), "Keterangan", [
         "Makin kecil h, pendekatan makin dekat ke eksak. Batas atas teoritis terbukti selalu lebih besar dari galat aktual."
     ])
 
@@ -406,7 +415,7 @@ def create_presentation():
         "3 Titik Ujung : O(h²)   [Kuadratik, h/2 -> galat / 4]",
         "5 Titik Tengah: O(h⁴)   [Kuartik, h/2 -> galat / 16! ⭐]",
         "5 Titik Ujung : O(h⁴)   [Kuartik, h/2 -> galat / 16! ⭐]",
-        "Catatan: Notasi Big-O adalah perilaku asimtotik saat h cukup kecil."
+        "Notasi Big-O adalah perilaku asimtotik saat h cukup kecil."
     ], "Orde")
 
     # =========================================================================
@@ -461,7 +470,7 @@ def create_presentation():
     # =========================================================================
     # SLIDE 12: EKSTRAPOLASI RICHARDSON
     # =========================================================================
-    s12 = add_base_slide("6.2 · Ekstrapolasi Richardson", "Metode Ekstrapolasi Richardson", 12,
+    s12 = add_base_slide("Ekstrapolasi Richardson", "Metode Ekstrapolasi Richardson", 12,
         "Ide Richardson: dua hasil dengan h berbeda digabung agar suku galat utama hilang. Kunci: periksa dulu bentuk galat awalnya, baru pilih rumus.")
     add_card(s12, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Prinsip Kerja Richardson", [
         "Menggabungkan hasil langkah awal N₁(h) dan langkah separuhnya N₁(h/2).",
@@ -622,7 +631,7 @@ def create_presentation():
             ["5 Titik Ujung", "[-25f₀ + 48f₁ - 36f₂ + 16f₃ - 3f₄]/12h", "O(h⁴)", "Ujung interval yang membutuhkan akurasi orde 4"],
             ["Richardson", "Eliminasi galat N₁(h) & N₁(h/2)", "Tinggi", "Tersedia multi-langkah & bentuk galat sesuai"]
         ])
-    add_card(s19, Inches(0.8), Inches(6.2), Inches(11.733), Inches(0.55), "Catatan", [
+    add_card(s19, Inches(0.8), Inches(6.2), Inches(11.733), Inches(0.55), "Keterangan", [
         "Tidak ada metode yang selalu terbaik di segala situasi: perhatikan noise data dan kestabilan pembulatan!"
     ])
 
@@ -653,7 +662,7 @@ def create_presentation():
     # SLIDE 21: DAFTAR PUSTAKA
     # =========================================================================
     s21 = add_base_slide("Referensi", "Daftar Pustaka", 21,
-        "Sebutkan sumber utama presentasi: buku Metode Numerik karya Imron, Mardlijah, dan Asfihani (2022), Bab 6 Departemen Matematika ITS.")
+        "Sebutkan sumber utama presentasi: buku Metode Numerik karya Imron, Mardlijah, dan Asfihani (2022), Departemen Matematika ITS.")
     add_card(s21, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.2), "Buku Teks Utama", [
         "Imron, C., Mardlijah, & Asfihani, T. (2022).",
         "Metode Numerik.",
