@@ -1,9 +1,10 @@
 import os
-from pptx import Presentation
-from pptx.util import Inches, Pt
-from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.enum.shapes import MSO_SHAPE
+# Presentation generator script for Diferensiasi Numerik (Metode Numerik)
+from pptx import Presentation  # type: ignore
+from pptx.util import Inches, Pt  # type: ignore
+from pptx.dml.color import RGBColor  # type: ignore
+from pptx.enum.text import PP_ALIGN, MSO_ANCHOR  # type: ignore
+from pptx.enum.shapes import MSO_SHAPE  # type: ignore
 
 def create_presentation():
     prs = Presentation()

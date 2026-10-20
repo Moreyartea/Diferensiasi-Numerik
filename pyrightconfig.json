@@ -1,0 +1,12 @@
+{
+  "include": [
+    "."
+  ],
+  "pythonPlatform": "Windows",
+  "pythonVersion": "3.14",
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": "none",
+  "extraPaths": [
+    "C:\\Users\\Fatih Taqiyyuddin\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages"
+  ]
+}
