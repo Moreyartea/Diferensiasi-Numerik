@@ -1418,36 +1418,66 @@ html, body {
   box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 
-/* Print Mode for PDF export */
+/* ==========================================================================
+   PRINT MODE FOR 16:9 PRESENTATION PDF EXPORT
+   ========================================================================== */
 @media print {
   @page {
-    size: landscape;
+    size: 13.333in 7.5in; /* Standard 16:9 widescreen slide page */
     margin: 0;
   }
+
   *, *::before, *::after {
     box-sizing: border-box !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    text-rendering: geometricPrecision !important;
   }
-  body, html, #app {
-    overflow: visible !important;
+
+  html, body {
+    width: 13.333in !important;
     height: auto !important;
-    width: 100% !important;
-    min-height: 100% !important;
     background: #ffffff !important;
     margin: 0 !important;
     padding: 0 !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
   }
-  .top-nav, .bottom-bar, .notes-drawer, .overview-modal, .download-modal, .download-dropdown-menu, .btn-icon, .btn-pill, .keyboard-hint {
+
+  #app {
+    width: 13.333in !important;
+    height: auto !important;
+    display: block !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .top-nav, 
+  .bottom-bar, 
+  .notes-drawer, 
+  .overview-modal, 
+  .download-modal, 
+  .download-dropdown-menu, 
+  .download-dropdown-wrapper, 
+  .btn-icon, 
+  .btn-pill, 
+  .keyboard-hint, 
+  .download-toast {
     display: none !important;
   }
+
   .stage-viewport {
     padding: 0 !important;
     margin: 0 !important;
     display: block !important;
     perspective: none !important;
     overflow: visible !important;
-    width: 100% !important;
+    width: 13.333in !important;
     height: auto !important;
   }
+
   .slide-frame {
     box-shadow: none !important;
     border: none !important;
@@ -1456,10 +1486,11 @@ html, body {
     border-radius: 0 !important;
     transform-style: flat !important;
     display: block !important;
-    width: 100% !important;
+    width: 13.333in !important;
     height: auto !important;
     background: #ffffff !important;
   }
+
   .slide {
     position: relative !important;
     top: auto !important;
@@ -1473,21 +1504,86 @@ html, body {
     break-after: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
+    width: 13.333in !important;
+    height: 7.5in !important;
+    max-width: 13.333in !important;
+    max-height: 7.5in !important;
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     margin: 0 !important;
-    padding: 36px 48px !important;
+    padding: 40px 52px !important;
     background: #ffffff !important;
     transform: none !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
+
   .slide:last-of-type {
     page-break-after: auto !important;
     break-after: auto !important;
+  }
+
+  /* Typography consistency */
+  .title-main-heading {
+    font-size: 52px !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .slide-title {
+    font-size: 26px !important;
+  }
+
+  .slide-subtitle {
+    font-size: 14.5px !important;
+  }
+
+  .content-card-title {
+    font-size: 15px !important;
+  }
+
+  .bullet-item {
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Crisp KaTeX Vector equations in print */
+  .katex {
+    font-size: 1.08em !important;
+    text-rendering: geometricPrecision !important;
+  }
+
+  .katex-display {
+    margin: 12px 0 !important;
+    padding: 4px 0 !important;
+  }
+
+  .katex-display > .katex {
+    font-size: 1.22em !important;
+  }
+
+  .math-hero {
+    background: #f8fafc !important;
+    border: 1.5px solid #bfdbfe !important;
+    border-radius: 12px !important;
+    padding: 18px 24px !important;
+    box-shadow: none !important;
+  }
+
+  .math-card {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+  }
+
+  .data-table {
+    font-family: 'JetBrains Mono', 'Inter', monospace !important;
+    font-size: 12px !important;
+  }
+
+  .data-table th {
+    background: #f1f5f9 !important;
+    color: #1e3a8a !important;
   }
 }

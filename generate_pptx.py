@@ -23,6 +23,11 @@ def create_presentation():
     COLOR_CARD = RGBColor(248, 250, 252)   # Slate 50
     COLOR_BORDER = RGBColor(226, 232, 240) # Slate 200
 
+    # Typography: Matching Web Inter & Mathematical Fonts
+    FONT_MAIN = "Inter"
+    FONT_MATH = "Cambria Math"
+    FONT_MONO = "JetBrains Mono"
+
     def add_base_slide(cat_text, title_text, slide_num, notes_text=""):
         slide = prs.slides.add_slide(blank_layout)
 
@@ -44,6 +49,7 @@ def create_presentation():
         # Category / Chapter indicator
         p_cat = tf.paragraphs[0]
         p_cat.text = cat_text.upper()
+        p_cat.font.name = FONT_MAIN
         p_cat.font.size = Pt(11)
         p_cat.font.bold = True
         p_cat.font.color.rgb = COLOR_PRIMARY
@@ -52,6 +58,7 @@ def create_presentation():
         # Slide Title
         p_title = tf.add_paragraph()
         p_title.text = title_text
+        p_title.font.name = FONT_MAIN
         p_title.font.size = Pt(24)
         p_title.font.bold = True
         p_title.font.color.rgb = COLOR_TEXT
@@ -68,10 +75,9 @@ def create_presentation():
         ftf.margin_left = Inches(0)
         fp = ftf.paragraphs[0]
         fp.text = f"Metode Numerik — Imron dkk. (2022) | Slide {slide_num} dari 21"
+        fp.font.name = FONT_MAIN
         fp.font.size = Pt(10)
         fp.font.color.rgb = COLOR_MUTED
-
-        # Speaker notes removed as requested
 
         return slide
 
@@ -95,6 +101,7 @@ def create_presentation():
         # Card Title
         p_title = tf.paragraphs[0]
         p_title.text = (f"[{badge}] " if badge else "") + title
+        p_title.font.name = FONT_MAIN
         p_title.font.size = Pt(14)
         p_title.font.bold = True
         p_title.font.color.rgb = COLOR_PRIMARY
@@ -104,6 +111,7 @@ def create_presentation():
         for item in items:
             p = tf.add_paragraph()
             p.text = f"•  {item}"
+            p.font.name = FONT_MAIN
             p.font.size = Pt(12)
             p.font.color.rgb = COLOR_TEXT
             p.space_after = Pt(6)
@@ -123,6 +131,7 @@ def create_presentation():
 
         p1 = tf.paragraphs[0]
         p1.text = label.upper()
+        p1.font.name = FONT_MAIN
         p1.font.size = Pt(10)
         p1.font.bold = True
         p1.font.color.rgb = COLOR_BLUE
@@ -130,6 +139,7 @@ def create_presentation():
 
         p2 = tf.add_paragraph()
         p2.text = math_text
+        p2.font.name = FONT_MATH
         p2.font.size = Pt(16)
         p2.font.bold = True
         p2.font.color.rgb = COLOR_TEXT
@@ -139,6 +149,7 @@ def create_presentation():
         if subtext:
             p3 = tf.add_paragraph()
             p3.text = subtext
+            p3.font.name = FONT_MAIN
             p3.font.size = Pt(11)
             p3.font.color.rgb = COLOR_MUTED
             p3.alignment = PP_ALIGN.CENTER
@@ -156,6 +167,7 @@ def create_presentation():
             cell.fill.fore_color.rgb = COLOR_CARD
             p = cell.text_frame.paragraphs[0]
             p.text = str(h)
+            p.font.name = FONT_MAIN
             p.font.bold = True
             p.font.size = Pt(11)
             p.font.color.rgb = COLOR_PRIMARY
@@ -169,6 +181,7 @@ def create_presentation():
                 cell.fill.fore_color.rgb = COLOR_BG if r_idx % 2 == 0 else COLOR_CARD
                 p = cell.text_frame.paragraphs[0]
                 p.text = str(val)
+                p.font.name = FONT_MONO if any(ch.isdigit() for ch in str(val)) else FONT_MAIN
                 p.font.size = Pt(11)
                 p.font.color.rgb = COLOR_TEXT
                 p.alignment = PP_ALIGN.CENTER
@@ -193,6 +206,7 @@ def create_presentation():
     tf1.word_wrap = True
     p = tf1.paragraphs[0]
     p.text = "METODE NUMERIK"
+    p.font.name = FONT_MAIN
     p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = COLOR_BLUE
@@ -200,6 +214,7 @@ def create_presentation():
 
     p2 = tf1.add_paragraph()
     p2.text = "DIFERENSIASI NUMERIK"
+    p2.font.name = FONT_MAIN
     p2.font.size = Pt(44)
     p2.font.bold = True
     p2.font.color.rgb = COLOR_TEXT
@@ -207,6 +222,7 @@ def create_presentation():
 
     p3 = tf1.add_paragraph()
     p3.text = "Pendekatan Nilai Turunan Fungsi melalui Polinomial Deret & Ekstrapolasi Richardson"
+    p3.font.name = FONT_MAIN
     p3.font.size = Pt(16)
     p3.font.color.rgb = COLOR_MUTED
 
@@ -220,6 +236,7 @@ def create_presentation():
     
     mp0 = mtf.paragraphs[0]
     mp0.text = "ANGGOTA KELOMPOK:"
+    mp0.font.name = FONT_MAIN
     mp0.font.size = Pt(11)
     mp0.font.bold = True
     mp0.font.color.rgb = COLOR_PRIMARY
@@ -227,12 +244,14 @@ def create_presentation():
     
     mp1 = mtf.add_paragraph()
     mp1.text = "1. Farel Luther Siagian (4253250041)       2. Fatih Taqiyyuddin (4253250057)\n3. Siti Zulayka Maulida Amali (4253250001)   4. Keegan Gibran Jehian (4253250029)"
+    mp1.font.name = FONT_MAIN
     mp1.font.size = Pt(12)
     mp1.font.color.rgb = COLOR_TEXT
     mp1.space_after = Pt(8)
     
     mp2 = mtf.add_paragraph()
     mp2.text = "DOSEN PENGAMPU:"
+    mp2.font.name = FONT_MAIN
     mp2.font.size = Pt(11)
     mp2.font.bold = True
     mp2.font.color.rgb = COLOR_PRIMARY
@@ -240,6 +259,7 @@ def create_presentation():
     
     mp3 = mtf.add_paragraph()
     mp3.text = "Debi Yandra Niska, S.Kom., M.Kom.    |    Tahun: 2026"
+    mp3.font.name = FONT_MAIN
     mp3.font.size = Pt(12)
     mp3.font.bold = True
     mp3.font.color.rgb = COLOR_TEXT
