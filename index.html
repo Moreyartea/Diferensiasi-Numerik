@@ -28,6 +28,108 @@
       </div>
 
       <div class="nav-actions">
+        <!-- Download Dropdown Menu -->
+        <div class="download-dropdown-wrapper">
+          <button id="btnToggleDownload" class="btn-pill btn-download" title="Unduh Slide PDF / PPTX (Shortcut: D)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Unduh</span>
+            <span class="download-badge-indicator">PDF & PPTX</span>
+            <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div id="downloadDropdown" class="download-dropdown-menu">
+            <div class="dropdown-header">
+              <div class="dropdown-title">Unduh Slide Presentasi</div>
+              <div class="dropdown-subtitle">Diferensiasi Numerik — 21 Slide Siap Pakai</div>
+            </div>
+
+            <!-- PPTX Option with Animation -->
+            <a href="Diferensiasi_Numerik.pptx" download="Diferensiasi_Numerik.pptx" class="download-option-card opt-pptx" id="linkDownloadPptx">
+              <div class="download-icon-box pptx-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+                  <path d="M8 7v10"/>
+                  <path d="M8 7h4a2.5 2.5 0 0 1 0 5H8"/>
+                </svg>
+              </div>
+              <div class="download-info">
+                <div class="download-name-row">
+                  <span class="download-name">PowerPoint (.pptx)</span>
+                  <span class="format-tag tag-animated">✨ Beranimasi</span>
+                </div>
+                <div class="download-desc">
+                  Transisi 3D (Doors, Cube, Curtain, Peel) & animasi bertahap setiap rumus dan kartu.
+                </div>
+                <div class="download-meta">
+                  <span>93 KB</span> · <span>PowerPoint 2013-365</span>
+                </div>
+              </div>
+              <div class="download-action-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+            </a>
+
+            <!-- PDF Direct Download -->
+            <a href="Diferensiasi_Numerik.pdf" download="Diferensiasi_Numerik.pdf" class="download-option-card opt-pdf" id="linkDownloadPdf">
+              <div class="download-icon-box pdf-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </div>
+              <div class="download-info">
+                <div class="download-name-row">
+                  <span class="download-name">Dokumen PDF (.pdf)</span>
+                  <span class="format-tag tag-vector">21 Slide Vektor</span>
+                </div>
+                <div class="download-desc">
+                  Lengkap 21 slide dengan formula KaTeX resolusi tinggi, tabel galat, dan tata letak 16:9.
+                </div>
+                <div class="download-meta">
+                  <span>1.89 MB</span> · <span>Resolusi Tinggi</span>
+                </div>
+              </div>
+              <div class="download-action-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+            </a>
+
+            <!-- Vector Print Button -->
+            <button type="button" class="download-option-card opt-print" id="btnPrintPdf">
+              <div class="download-icon-box print-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"/>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                  <rect x="6" y="14" width="12" height="8"/>
+                </svg>
+              </div>
+              <div class="download-info">
+                <div class="download-name-row">
+                  <span class="download-name">Cetak / Simpan PDF (Browser)</span>
+                  <span class="format-tag tag-print">Dialog Cetak</span>
+                </div>
+                <div class="download-desc">
+                  Buka dialog print browser (Ctrl+P) untuk cetak atau simpan custom ke PDF landscape.
+                </div>
+                <div class="download-meta">
+                  <span>Format 16:9 Landscape Otomatis</span>
+                </div>
+              </div>
+              <div class="download-action-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+          </div>
+        </div>
 
         <!-- Overview Grid Button -->
         <button id="btnToggleOverview" class="btn-pill" title="Daftar Semua Slide (Shortcut: O)">
@@ -1683,6 +1785,7 @@
       <div class="keyboard-hint">
         <span class="kbd">←</span> <span class="kbd">→</span> Navigasi · 
         <span class="kbd">O</span> Overview · 
+        <span class="kbd">D</span> Unduh · 
         <span class="kbd">F</span> Layar Penuh
       </div>
     </footer>

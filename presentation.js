@@ -53,6 +53,14 @@ class PresentationController {
     this.btnFullscreen = document.getElementById('btnFullscreen');
     this.btnReplayTransition = document.getElementById('btnReplayTransition');
 
+    // Download controls
+    this.btnToggleDownload = document.getElementById('btnToggleDownload');
+    this.downloadDropdown = document.getElementById('downloadDropdown');
+    this.downloadWrapper = document.querySelector('.download-dropdown-wrapper');
+    this.btnPrintPdf = document.getElementById('btnPrintPdf');
+    this.linkDownloadPptx = document.getElementById('linkDownloadPptx');
+    this.linkDownloadPdf = document.getElementById('linkDownloadPdf');
+
     this.init();
   }
 
@@ -108,6 +116,42 @@ class PresentationController {
       this.btnFullscreen.addEventListener('click', () => this.toggleFullscreen());
     }
 
+    // Download dropdown handlers
+    if (this.btnToggleDownload) {
+      this.btnToggleDownload.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleDownloadMenu();
+      });
+    }
+
+    if (this.btnPrintPdf) {
+      this.btnPrintPdf.addEventListener('click', () => {
+        this.closeDownloadMenu();
+        setTimeout(() => window.print(), 150);
+      });
+    }
+
+    if (this.linkDownloadPptx) {
+      this.linkDownloadPptx.addEventListener('click', () => {
+        this.showToast('Mengunduh Diferensiasi_Numerik.pptx (dengan animasi 3D)...', '✨');
+        setTimeout(() => this.closeDownloadMenu(), 500);
+      });
+    }
+
+    if (this.linkDownloadPdf) {
+      this.linkDownloadPdf.addEventListener('click', () => {
+        this.showToast('Mengunduh Diferensiasi_Numerik.pdf (21 slide lengkap)...', '📄');
+        setTimeout(() => this.closeDownloadMenu(), 500);
+      });
+    }
+
+    // Close download dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (this.downloadWrapper && !this.downloadWrapper.contains(e.target)) {
+        this.closeDownloadMenu();
+      }
+    });
+
     // Keyboard navigation
     window.addEventListener('keydown', (e) => {
       // Ignore if focus is in a select or input
@@ -143,6 +187,10 @@ class PresentationController {
         case 'O':
           this.toggleOverview();
           break;
+        case 'd':
+        case 'D':
+          this.toggleDownloadMenu();
+          break;
         case 'f':
         case 'F':
           this.toggleFullscreen();
@@ -150,9 +198,50 @@ class PresentationController {
         case 'Escape':
           this.closeNotes();
           this.closeOverview();
+          this.closeDownloadMenu();
           break;
       }
     });
+  }
+
+  toggleDownloadMenu() {
+    if (!this.downloadDropdown) return;
+    const isOpen = this.downloadDropdown.classList.contains('open');
+    if (isOpen) {
+      this.closeDownloadMenu();
+    } else {
+      this.openDownloadMenu();
+    }
+  }
+
+  openDownloadMenu() {
+    if (!this.downloadDropdown) return;
+    this.closeOverview();
+    this.downloadDropdown.classList.add('open');
+    if (this.downloadWrapper) this.downloadWrapper.classList.add('open');
+    if (this.btnToggleDownload) this.btnToggleDownload.classList.add('active');
+  }
+
+  closeDownloadMenu() {
+    if (!this.downloadDropdown) return;
+    this.downloadDropdown.classList.remove('open');
+    if (this.downloadWrapper) this.downloadWrapper.classList.remove('open');
+    if (this.btnToggleDownload) this.btnToggleDownload.classList.remove('active');
+  }
+
+  showToast(message, icon = '✓') {
+    let toast = document.querySelector('.download-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.className = 'download-toast';
+      document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<span style="font-size: 15px;">${icon}</span> <span>${message}</span>`;
+    toast.classList.add('show');
+    clearTimeout(this._toastTimeout);
+    this._toastTimeout = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3400);
   }
 
   getActiveTransition(targetIndex) {

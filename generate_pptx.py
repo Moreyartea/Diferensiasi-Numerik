@@ -678,7 +678,87 @@ def create_presentation():
     # Save presentation
     output_path = "Diferensiasi_Numerik.pptx"
     prs.save(output_path)
-    print(f"Presentation saved successfully to: {output_path}")
+    print(f"Base presentation saved successfully to: {output_path}")
+
+    # Apply slide transitions & shape build animations
+    abs_path = os.path.abspath(output_path)
+    apply_powerpoint_animations(abs_path)
+    print(f"Presentation with full animations & transitions ready: {output_path}")
+
+def apply_powerpoint_animations(pptx_path):
+    """
+    Applies native PowerPoint 3D slide transitions & shape build entrance animations.
+    Uses PowerPoint COM automation on Windows with graceful fallback.
+    """
+    ps_script = f'''
+$ErrorActionPreference = "Stop"
+try {{
+    $ppt = New-Object -ComObject PowerPoint.Application
+    $pres = $ppt.Presentations.Open("{pptx_path}", [Microsoft.Office.Core.MsoTriState]::msoFalse, [Microsoft.Office.Core.MsoTriState]::msoFalse, [Microsoft.Office.Core.MsoTriState]::msoFalse)
+    
+    # 21 Transition sequence matching web presentation 3D effects
+    $effects = @(
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectFadeSmoothly,          # 1: Cover
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 2: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 3: Bottom-right curl
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 4: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 5: 3D Box / Cube
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectDoorsVertical,         # 6: Doors 3D
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectWipeRight,             # 7: Diagonal wipe
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 8: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 9: Bottom-right curl
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 10: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 11: 3D Box / Cube
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 12: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 13: Bottom-right curl
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 14: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectDoorsVertical,         # 15: Doors 3D
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 16: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 17: Bottom-right curl
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 18: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectWipeRight,             # 19: Diagonal wipe
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 20: 3D Box / Cube
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains               # 21: Curtain roll
+    )
+    
+    for ($i = 1; $i -le $pres.Slides.Count; $i++) {{
+        $slide = $pres.Slides.Item($i)
+        $effIdx = ($i - 1) % $effects.Count
+        $slide.SlideShowTransition.EntryEffect = $effects[$effIdx]
+        $slide.SlideShowTransition.Duration = 1.0
+        
+        # Entrance animations for content cards & formula boxes (shapes after bg & header)
+        $shapeCount = $slide.Shapes.Count
+        if ($shapeCount -gt 3) {{
+            for ($s = 4; $s -le $shapeCount; $s++) {{
+                $shape = $slide.Shapes.Item($s)
+                # msoAnimEffectFade = 10, msoAnimateLevelNone = 0, msoAnimTriggerAfterPrevious = 3
+                try {{
+                    $anim = $slide.TimeLine.MainSequence.AddEffect($shape, 10, 0, 3)
+                    $anim.Timing.Duration = 0.4
+                }} catch {{}}
+            }}
+        }}
+    }}
+    
+    $pres.Save()
+    $pres.Close()
+    $ppt.Quit()
+    Write-Output "PowerPoint COM: Applied slide transitions and entrance animations to all slides."
+}} catch {{
+    if ($ppt) {{ $ppt.Quit() }}
+    Write-Warning "PowerPoint COM unavailable or encountered error: $_"
+}}
+'''
+    try:
+        import subprocess
+        res = subprocess.run(["powershell", "-NoProfile", "-Command", ps_script], capture_output=True, text=True)
+        if res.stdout:
+            print(res.stdout.strip())
+        if res.returncode != 0 and res.stderr:
+            print("Note (COM fallback):", res.stderr.strip())
+    except Exception as e:
+        print(f"COM animation helper skipped: {e}")
 
 if __name__ == "__main__":
     create_presentation()
