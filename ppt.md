@@ -584,20 +584,19 @@ Sumber: Imron dkk. (2022), Bab 6 (ringkasan)Slide 20 dari 21
 
 Rangkum perjalanan: dari definisi, dasar deret, rumus maju/mundur/tengah, rumus tiga dan lima titik, galat, lalu Richardson. Tekankan tiga hal: orde galat menentukan kecepatan perbaikan saat h mengecil, rumus harus cocok dengan posisi titik dan data yang ada, dan h tidak boleh terlalu kecil. Tutup dengan kalimat di bawah slide, lalu buka sesi tanya jawab.
 
-Referensi
+Penutup
 
-## Daftar Pustaka
+# TERIMA KASIH
 
-Imron, C., Mardlijah, & Asfihani, T. (2022). *Metode Numerik*. Departemen Matematika ITS. ISBN 978-623-318-126-6.
+**Sesi Tanya Jawab & Diskusi**  
+*Diferensiasi Numerik & Ekstrapolasi Richardson*
 
-**Referensi tambahan (di luar buku)**\
-\[1\] Burden, R. L., & Faires, J. D. *Numerical Analysis*, 9th ed. Cengage Learning (hak cipta 2010) — §1.2 (galat), §4.1 (Numerical Differentiation), §4.2 (Richardson’s Extrapolation).\
-\[2\] Catatan kuliah AMSC 466 (University of Maryland), “Numerical differentiation”: math.umd.edu/\~mariakc/AMSC466/LectureNotes/differentiation.pdf — pertukaran galat pemotongan dan pembulatan.
+Silakan ajukan pertanyaan atau tanggapan terkait materi yang telah dipaparkan.
 
-Data bibliografi diambil dari halaman identitas buku: “© 2022 Departemen Matematika ITS” dan ISBN 978-623-318-126-6. Kota terbit, edisi, DOI, dan URL buku utama tidak tercantum di halaman identitas, sehingga tidak ditulis. Materi bertanda “Tambahan di luar buku” dan angka hitungan sendiri dibedakan dari isi buku.
+**Tim Penyaji:**  
+Farel Luther Siagian · Fatih Taqiyyuddin · Siti Zulayka Maulida Amali · Keegan Gibran Jehian  
+**Dosen Pengampu:** Debi Yandra Niska, S.Kom., M.Kom. (2026)
 
-Sumber: halaman identitas bukuSlide 21 dari 21
+Slide 21 dari 21
 
-Sebutkan sumber utama presentasi: buku Metode Numerik karya Chairul Imron, Mardlijah, dan Tahiyatul Asfihani (2022), Bab 6. Semua rumus, contoh, dan angka diambil dari bab ini. Penerbit di halaman identitas adalah Departemen Matematika ITS. Kota terbit dan edisi tidak tercantum di halaman identitas, jadi sengaja tidak ditulis.
-
-1 / 21
+Ucapkan terima kasih kepada dosen pengampu dan rekan-rekan mahasiswa atas perhatian selama presentasi berlangsung. Buka kesempatan bagi audiens untuk sesi tanya jawab dan diskusi mengenai materi diferensiasi numerik.

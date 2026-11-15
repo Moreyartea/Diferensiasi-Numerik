@@ -18,6 +18,7 @@ def create_presentation():
     COLOR_TEXT = RGBColor(15, 23, 42)      # Slate 900
     COLOR_MUTED = RGBColor(71, 85, 105)    # Slate 600
     COLOR_PRIMARY = RGBColor(30, 58, 138)  # Deep Navy Blue
+    COLOR_PRIMARY_SOFT = RGBColor(239, 246, 255) # Blue 50
     COLOR_BLUE = RGBColor(37, 99, 235)     # Primary Blue
     COLOR_EMERALD = RGBColor(5, 150, 105)  # Emerald Green
     COLOR_AMBER = RGBColor(217, 119, 6)    # Amber 600
@@ -952,20 +953,104 @@ def create_presentation():
     ], "Intisari")
 
     # =========================================================================
-    # SLIDE 21: DAFTAR PUSTAKA
+    # SLIDE 21: PENUTUP / TERIMA KASIH (HERO CENTERED & MINIMALIST)
     # =========================================================================
-    s21 = add_base_slide("Referensi", "Daftar Pustaka", 21,
-        "Sebutkan sumber utama presentasi: buku Metode Numerik karya Imron, Mardlijah, dan Asfihani (2022), Departemen Matematika ITS.")
-    add_card(s21, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.2), "Buku Teks Utama", [
-        "Imron, C., Mardlijah, & Asfihani, T. (2022).",
-        "Metode Numerik.",
-        "Departemen Matematika, Institut Teknologi Sepuluh Nopember (ITS).",
-        "ISBN: 978-623-318-126-6."
-    ], "Utama")
-    add_card(s21, Inches(0.8), Inches(4.3), Inches(11.733), Inches(2.2), "Referensi Tambahan", [
-        "[1] Burden, R. L., & Faires, J. D. (2010). Numerical Analysis, 9th ed. Cengage Learning. §1.2 (Galat), §4.1 (Diferensiasi Numerik), §4.2 (Ekstrapolasi Richardson).",
-        "[2] University of Maryland (AMSC 466). Lecture Notes: Numerical Differentiation. Pertukaran galat pemotongan dan pembulatan komputer."
-    ], "Pendukung")
+    s21 = prs.slides.add_slide(blank_layout)
+    bg21 = s21.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
+    bg21.fill.solid()
+    bg21.fill.fore_color.rgb = COLOR_BG
+    bg21.line.fill.background()
+
+    # Notes slide
+    notes_slide21 = s21.notes_slide
+    tf_notes21 = notes_slide21.notes_text_frame
+    tf_notes21.text = "Ucapkan terima kasih kepada dosen pengampu dan rekan-rekan mahasiswa atas perhatian selama presentasi berlangsung. Buka kesempatan bagi audiens untuk sesi tanya jawab dan diskusi mengenai materi diferensiasi numerik."
+
+    # Top pill
+    pill21 = s21.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(4.3), Inches(1.1), Inches(4.733), Inches(0.42))
+    pill21.fill.solid()
+    pill21.fill.fore_color.rgb = COLOR_PRIMARY_SOFT
+    pill21.line.color.rgb = COLOR_BORDER
+    p_pill = pill21.text_frame.paragraphs[0]
+    p_pill.text = "DIFERENSIASI NUMERIK & EKSTRAPOLASI RICHARDSON"
+    p_pill.font.name = FONT_MAIN
+    p_pill.font.size = Pt(10)
+    p_pill.font.bold = True
+    p_pill.font.color.rgb = COLOR_PRIMARY
+    p_pill.alignment = PP_ALIGN.CENTER
+
+    # Hero Center Box (TERIMA KASIH dominates)
+    hero_box = s21.shapes.add_textbox(Inches(1.0), Inches(1.85), Inches(11.333), Inches(3.2))
+    htf = hero_box.text_frame
+    htf.word_wrap = True
+    htf.margin_top = Inches(0)
+    htf.margin_bottom = Inches(0)
+
+    hp1 = htf.paragraphs[0]
+    hp1.text = "TERIMA KASIH"
+    hp1.font.name = FONT_MAIN
+    hp1.font.size = Pt(56)
+    hp1.font.bold = True
+    hp1.font.color.rgb = COLOR_PRIMARY
+    hp1.alignment = PP_ALIGN.CENTER
+    hp1.space_after = Pt(14)
+
+    hp2 = htf.add_paragraph()
+    hp2.text = "Sesi Tanya Jawab & Diskusi"
+    hp2.font.name = FONT_MAIN
+    hp2.font.size = Pt(22)
+    hp2.font.bold = True
+    hp2.font.color.rgb = COLOR_TEXT
+    hp2.alignment = PP_ALIGN.CENTER
+    hp2.space_after = Pt(10)
+
+    hp3 = htf.add_paragraph()
+    hp3.text = "Silakan ajukan pertanyaan atau tanggapan terkait materi yang telah dipaparkan."
+    hp3.font.name = FONT_MAIN
+    hp3.font.size = Pt(13.5)
+    hp3.font.color.rgb = COLOR_MUTED
+    hp3.alignment = PP_ALIGN.CENTER
+
+    # Compact Bottom Credit Card
+    credit_box = s21.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.2), Inches(5.35), Inches(8.933), Inches(0.95))
+    credit_box.fill.solid()
+    credit_box.fill.fore_color.rgb = COLOR_CARD
+    credit_box.line.color.rgb = COLOR_BORDER
+    ctf = credit_box.text_frame
+    ctf.word_wrap = True
+    ctf.margin_top = Inches(0.12)
+
+    cp1 = ctf.paragraphs[0]
+    cp1.text = "Kelompok: Farel Luther S.   •   Fatih Taqiyyuddin   •   Siti Zulayka M. A.   •   Keegan Gibran J."
+    cp1.font.name = FONT_MAIN
+    cp1.font.size = Pt(11.5)
+    cp1.font.bold = True
+    cp1.font.color.rgb = COLOR_TEXT
+    cp1.alignment = PP_ALIGN.CENTER
+    cp1.space_after = Pt(3)
+
+    cp2 = ctf.add_paragraph()
+    cp2.text = "Dosen Pengampu: Debi Yandra Niska, S.Kom., M.Kom.    |    Tahun Akademik: 2026"
+    cp2.font.name = FONT_MAIN
+    cp2.font.size = Pt(10.5)
+    cp2.font.color.rgb = COLOR_MUTED
+    cp2.alignment = PP_ALIGN.CENTER
+
+    # Footer line & indicator
+    line21 = s21.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.8), Inches(11.733), Inches(0.015))
+    line21.fill.solid()
+    line21.fill.fore_color.rgb = COLOR_BORDER
+    line21.line.fill.background()
+
+    footer21 = s21.shapes.add_textbox(Inches(0.8), Inches(6.85), Inches(11.733), Inches(0.4))
+    ftf21 = footer21.text_frame
+    ftf21.margin_top = Inches(0)
+    fp21 = ftf21.paragraphs[0]
+    fp21.text = "Metode Numerik — Imron dkk. (2022) | Slide 21 dari 21"
+    fp21.font.name = FONT_MAIN
+    fp21.font.size = Pt(10)
+    fp21.font.color.rgb = COLOR_MUTED
+    fp21.alignment = PP_ALIGN.CENTER
 
     # Save presentation
     output_path = "Diferensiasi_Numerik.pptx"
