@@ -20,8 +20,11 @@ def create_presentation():
     COLOR_PRIMARY = RGBColor(30, 58, 138)  # Deep Navy Blue
     COLOR_BLUE = RGBColor(37, 99, 235)     # Primary Blue
     COLOR_EMERALD = RGBColor(5, 150, 105)  # Emerald Green
+    COLOR_AMBER = RGBColor(217, 119, 6)    # Amber 600
     COLOR_CARD = RGBColor(248, 250, 252)   # Slate 50
     COLOR_BORDER = RGBColor(226, 232, 240) # Slate 200
+    COLOR_EMERALD_SOFT = RGBColor(236, 253, 245) # Emerald 50
+    COLOR_AMBER_SOFT = RGBColor(254, 243, 199)   # Amber 100
 
     # Typography: Matching Web Inter & Mathematical Fonts
     FONT_MAIN = "Inter"
@@ -79,7 +82,62 @@ def create_presentation():
         fp.font.size = Pt(10)
         fp.font.color.rgb = COLOR_MUTED
 
+        if notes_text:
+            notes_slide = slide.notes_slide
+            tf_notes = notes_slide.notes_text_frame
+            tf_notes.text = notes_text
+
         return slide
+
+    def add_callout_banner(slide, left, top, width, height, text, is_amber=False):
+        banner = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
+        banner.fill.solid()
+        banner.fill.fore_color.rgb = COLOR_AMBER_SOFT if is_amber else COLOR_EMERALD_SOFT
+        banner.line.color.rgb = COLOR_AMBER if is_amber else COLOR_EMERALD
+        banner.line.width = Pt(1.5)
+
+        tb = slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.08), width - Inches(0.4), height - Inches(0.16))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.margin_top = Inches(0)
+        tf.margin_bottom = Inches(0)
+        p = tf.paragraphs[0]
+        p.text = text
+        p.font.name = FONT_MAIN
+        p.font.size = Pt(11)
+        p.font.color.rgb = RGBColor(120, 53, 15) if is_amber else RGBColor(6, 78, 59)
+
+    def add_custom_card(slide, left, top, width, height, title, items, border_color=None, bg_color=None, title_color=None):
+        card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
+        card.fill.solid()
+        card.fill.fore_color.rgb = bg_color if bg_color else COLOR_CARD
+        card.line.color.rgb = border_color if border_color else COLOR_BORDER
+        card.line.width = Pt(1.5 if border_color else 1)
+
+        tb = slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.12), width - Inches(0.4), height - Inches(0.24))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.margin_top = Inches(0)
+        tf.margin_bottom = Inches(0)
+        tf.margin_left = Inches(0)
+        tf.margin_right = Inches(0)
+
+        if title:
+            p_title = tf.paragraphs[0]
+            p_title.text = title
+            p_title.font.name = FONT_MAIN
+            p_title.font.size = Pt(13)
+            p_title.font.bold = True
+            p_title.font.color.rgb = title_color if title_color else COLOR_PRIMARY
+            p_title.space_after = Pt(4)
+
+        for i, item in enumerate(items):
+            p = tf.paragraphs[0] if (not title and i == 0) else tf.add_paragraph()
+            p.text = item
+            p.font.name = FONT_MAIN
+            p.font.size = Pt(11)
+            p.font.color.rgb = COLOR_TEXT
+            p.space_after = Pt(4)
 
     def add_card(slide, left, top, width, height, title, items, badge=""):
         # Card background
@@ -489,135 +547,349 @@ def create_presentation():
     ], "Aplikasi")
 
     # =========================================================================
-    # SLIDE 12: EKSTRAPOLASI RICHARDSON
+    # SLIDE 12: METODE EKSTRAPOLASI RICHARDSON
     # =========================================================================
     s12 = add_base_slide("Ekstrapolasi Richardson", "Metode Ekstrapolasi Richardson", 12,
-        "Ide Richardson: dua hasil dengan h berbeda digabung agar suku galat utama hilang. Kunci: periksa dulu bentuk galat awalnya, baru pilih rumus.")
-    add_card(s12, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Prinsip Kerja Richardson", [
-        "Menggabungkan hasil langkah awal N₁(h) dan langkah separuhnya N₁(h/2).",
-        "Menghilangkan suku galat dominan pertama.",
-        "Mendongkrak ketelitian secara drastis tanpa perlu rumus baru.",
-        "Rumus Rekursif Umum (Galat Genap):",
-        "Nj(h) = N_{j-1}(h/2) + [1/(4^{j-1} - 1)] [N_{j-1}(h/2) - N_{j-1}(h)]",
-        "Penting: Pilih rumus sesuai bentuk ekspansi galat!"
-    ], "Konsep")
-    add_math_box(s12, Inches(6.8), Inches(1.8), Inches(5.733), Inches(2.2),
-        "Galat Berpangkat Genap (Selisih Tengah)",
-        "N₂(h) = [4 N₁(h/2) - N₁(h)] / 3",
-        "Menghilangkan suku h² => Menjadi berorde O(h⁴) ⭐")
-    add_math_box(s12, Inches(6.8), Inches(4.3), Inches(5.733), Inches(2.2),
-        "Galat Berpangkat Linear (Selisih Maju/Mundur)",
-        "N₂(h) = 2 N₁(h/2) - N₁(h)",
-        "Menghilangkan suku h => Menjadi berorde O(h²)")
+        "Richardson tidak membuat rumus turunan baru dari data; ia menggabungkan dua hasil yang sudah ada. Hitung D(h) dan D(2h), lalu tambahkan koreksi [D(h) − D(2h)]/(2ⁿ − 1). Untuk selisih tengah galatnya O(h²), jadi n = 2 dan rumusnya (4D(h) − D(2h))/3 dengan orde O(h⁴). Untuk selisih maju n = 1. Di buku, langkah besar ditulis h dan langkah kecil h/2, jadi D(h) di slide ini sama dengan N₁(h/2) di buku. Pilih n sesuai bentuk galat pendekatan awal.")
+
+    # Left Top: Pengertian
+    add_custom_card(s12, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.8), "Pengertian", [
+        "Menggabungkan dua pendekatan dengan ukuran langkah berbeda untuk membuang suku galat utama, sehingga hasilnya lebih teliti."
+    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    # Left Bottom: Prinsip kerja
+    add_custom_card(s12, Inches(0.8), Inches(3.8), Inches(5.6), Inches(2.6), "Prinsip kerja", [
+        "1. Hitung pendekatan turunan dengan langkah h → D(h)",
+        "2. Hitung pendekatan dengan langkah 2h → D(2h)",
+        "3. Gabungkan keduanya untuk mengurangi galat utama"
+    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    # Right Top: Rumus umum
+    add_custom_card(s12, Inches(6.8), Inches(1.8), Inches(5.733), Inches(3.1), "Rumus umum", [
+        "f'_0 = D(h) + [ D(h) - D(2h) ] / (2ⁿ - 1)",
+        "",
+        "• f′₀ : nilai turunan di x₀ setelah ekstrapolasi",
+        "• D(h) : hasil pendekatan turunan langkah h (lebih kecil)",
+        "• D(2h) : hasil pendekatan turunan langkah 2h (dua kali lebih besar)",
+        "• n : orde galat awal, yaitu O(hⁿ)",
+        "",
+        "Kedua hasil digabung untuk menghilangkan suku galat utama."
+    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    # Right Bottom: Contoh: selisih tengah (n = 2)
+    add_custom_card(s12, Inches(6.8), Inches(5.05), Inches(5.733), Inches(1.35), "Contoh: selisih tengah (n = 2)", [
+        "f'_0 = [ 4 D(h) - D(2h) ] / 3",
+        "Orde galat naik: O(h²) → O(h⁴) ⭐"
+    ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
+
+    # Footnote
+    fn_box = s12.shapes.add_textbox(Inches(0.8), Inches(6.5), Inches(11.733), Inches(0.25))
+    fn_tf = fn_box.text_frame
+    fn_p = fn_tf.paragraphs[0]
+    fn_p.text = "Kaitan notasi slide berikut: D(h) = N₁(h/2), D(2h) = N₁(h). Untuk n = 1 (selisih maju): 2D(h) − D(2h)."
+    fn_p.font.name = FONT_MAIN
+    fn_p.font.size = Pt(9.5)
+    fn_p.font.color.rgb = COLOR_MUTED
 
     # =========================================================================
     # SLIDE 13: CONTOH 6.2.1 RICHARDSON f(x) = ln x
     # =========================================================================
-    s13 = add_base_slide("Contoh 6.2.1", "Contoh Richardson untuk f(x) = ln x", 13,
-        "Ambil dua hasil dari Slide 8: N₁(0,1) dan N₁(0,05). Karena selisih maju berorde h, pakai N₂ = 2N₁(h/2) - N₁(h). Hasilnya jauh lebih dekat ke nilai eksak.")
-    add_math_box(s13, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.8),
-        "Substitusi Nilai Langkah h = 0,1 dan h = 0,05",
-        "N₂(0,1) = 2 N₁(0,05) - N₁(0,1) = 2(0,5479795) - 0,5406722 ≈ 0,5552868",
-        "Nilai Eksak: 1/1,8 ≈ 0,5555556")
-    add_table_data(s13, Inches(0.8), Inches(3.8), Inches(11.733), Inches(2.7),
-        ["Metode", "Hasil Perhitungan", "Galat terhadap Nilai Eksak"],
+    s13 = add_base_slide("Contoh 6.2.1", "Contoh Richardson pada f(x) = ln x", 13,
+        "Galat awal selisih maju berorde h, jadi pakai rumus n = 1: dua kali hasil yang lebih teliti dikurangi hasil yang kurang teliti. Hitung: 2 × 0,5479795 = 1,0959590; dikurangi 0,5406722 menghasilkan 0,5552868. Galat tiap hasil dihitung dari nilai eksak 0,5555556. Buku menulis hasil 0,555287 dan galat 0,000258; hitung ulang dari angka buku memberi 0,0002688, dan kami memakai angka yang konsisten dengan digit di slide.")
+
+    # Left Top: Diketahui
+    add_custom_card(s13, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.6), "Diketahui:", [
+        "f(x) = ln x,  x₀ = 1,8",
+        "N₁(0,1) = 0,5406722  ·  N₁(0,05) = 0,5479795",
+        "Selisih maju: galat O(h), jadi n = 1"
+    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    # Left Bottom: Perhitungan
+    add_custom_card(s13, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.1), "Perhitungan", [
+        "N₂(0,1) = 2 N₁(0,05) - N₁(0,1)",
+        "= 2(0,5479795) - 0,5406722",
+        "= 0,5552868 ⭐"
+    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    # Right: Table
+    add_table_data(s13, Inches(6.8), Inches(1.8), Inches(5.733), Inches(1.9),
+        ["Metode", "Hasil", "Galat absolut"],
         [
-            ["Selisih Maju (h = 0,1)", "0,5406722", "0,0148834"],
-            ["Selisih Maju (h = 0,05)", "0,5479795", "0,0075761"],
-            ["Ekstrapolasi Richardson", "0,5552868", "0,0002688 (28× Lebih Teliti!) ⭐"],
-            ["Nilai Eksak", "0,5555556", "— (Referensi)"]
+            ["Selisih maju, h = 0,1", "0,5406722", "0,0148834"],
+            ["Selisih maju, h = 0,05", "0,5479795", "0,0075761"],
+            ["Richardson", "0,5552868", "0,0002688 ⭐"],
+            ["Nilai eksak", "0,5555556", "—"]
         ])
+
+    # Right Bottom: Visual Bars
+    bars_card = s13.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(3.9), Inches(5.733), Inches(1.8))
+    bars_card.fill.solid()
+    bars_card.fill.fore_color.rgb = COLOR_CARD
+    bars_card.line.color.rgb = COLOR_BORDER
+    bars_card.line.width = Pt(1)
+
+    tb_bars = s13.shapes.add_textbox(Inches(7.0), Inches(3.98), Inches(5.333), Inches(1.6))
+    tf_bars = tb_bars.text_frame
+    p_bl = tf_bars.paragraphs[0]
+    p_bl.text = "Galat (makin pendek makin baik)"
+    p_bl.font.name = FONT_MAIN
+    p_bl.font.size = Pt(10)
+    p_bl.font.bold = True
+    p_bl.font.color.rgb = COLOR_MUTED
+    p_bl.space_after = Pt(2)
+
+    b1_label = tf_bars.add_paragraph()
+    b1_label.text = "h = 0,1  ·  0,0148834"
+    b1_label.font.name = FONT_MAIN
+    b1_label.font.size = Pt(9.5)
+    b1_label.font.color.rgb = COLOR_TEXT
+
+    bar1 = s13.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(7.0), Inches(4.45), Inches(4.8), Inches(0.14))
+    bar1.fill.solid()
+    bar1.fill.fore_color.rgb = COLOR_BLUE
+    bar1.line.fill.background()
+
+    b2_label = tf_bars.add_paragraph()
+    b2_label.text = "\nh = 0,05  ·  0,0075761"
+    b2_label.font.name = FONT_MAIN
+    b2_label.font.size = Pt(9.5)
+    b2_label.font.color.rgb = COLOR_TEXT
+
+    bar2 = s13.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(7.0), Inches(4.95), Inches(2.44), Inches(0.14))
+    bar2.fill.solid()
+    bar2.fill.fore_color.rgb = COLOR_BLUE
+    bar2.line.fill.background()
+
+    b3_label = tf_bars.add_paragraph()
+    b3_label.text = "\nRichardson  ·  0,0002688"
+    b3_label.font.name = FONT_MAIN
+    b3_label.font.size = Pt(9.5)
+    b3_label.font.bold = True
+    b3_label.font.color.rgb = COLOR_AMBER
+
+    bar3 = s13.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(7.0), Inches(5.45), Inches(0.15), Inches(0.14))
+    bar3.fill.solid()
+    bar3.fill.fore_color.rgb = COLOR_AMBER
+    bar3.line.fill.background()
+
+    # Bottom Banner
+    add_callout_banner(s13, Inches(0.8), Inches(5.9), Inches(11.733), Inches(0.68),
+        "Kesimpulan: Richardson mengurangi galat sekitar 28 kali dibanding selisih maju dengan h = 0,05 (0,0075761 ÷ 0,0002688 ≈ 28).")
 
     # =========================================================================
     # SLIDE 14: CONTOH 6.1.2 DATA TABEL f(x) = x e^x
     # =========================================================================
-    s14 = add_base_slide("Contoh 6.1.2", "Penerapan pada Data Tabel: f(x) = x e^x", 14,
-        "Data hanya tabel lima titik. Tiga titik ujung: 22,032310. Tiga titik tengah: 22,228790. Lima titik tengah: 22,166999. Nilai eksak 3e² = 22,167168.")
-    add_table_data(s14, Inches(0.8), Inches(1.8), Inches(4.5), Inches(4.7),
-        ["x", "f(x) Data Tabel"],
+    s14 = add_base_slide("Contoh 6.1.2", "Perbandingan Metode Diferensiasi pada Data Tabel", 14,
+        "Semua hasil dihitung dari lima nilai tabel, bukan dari rumus fungsi. Nilai eksak 3e² ≈ 22,167168 hanya dipakai sebagai pembanding. Galat absolut dihitung |eksak − pendekatan|: 0,134858; 0,061622; 0,000169. Lima titik tengah paling dekat karena galatnya O(h⁴), sedangkan dua rumus lain O(h²). Tiga titik tengah dengan h berbeda nantinya menjadi bahan Richardson pada slide 16.")
+
+    # Left Box with Header text
+    left_box = s14.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.8), Inches(4.6), Inches(4.7))
+    left_box.fill.solid()
+    left_box.fill.fore_color.rgb = COLOR_CARD
+    left_box.line.color.rgb = COLOR_BORDER
+
+    tb_fn = s14.shapes.add_textbox(Inches(1.0), Inches(1.95), Inches(4.2), Inches(0.4))
+    tf_fn = tb_fn.text_frame
+    p_fn = tf_fn.paragraphs[0]
+    p_fn.text = "f(x) = xeˣ,  x₀ = 2,0,  h = 0,1"
+    p_fn.font.name = FONT_MAIN
+    p_fn.font.size = Pt(13)
+    p_fn.font.bold = True
+    p_fn.font.color.rgb = COLOR_PRIMARY
+
+    add_table_data(s14, Inches(1.0), Inches(2.45), Inches(4.2), Inches(3.8),
+        ["x", "f(x)"],
         [
             ["1,8", "10,889365"],
             ["1,9", "12,703199"],
-            ["2,0 (Titik Evaluasi)", "14,778112"],
+            ["2,0", "14,778112"],
             ["2,1", "17,148957"],
             ["2,2", "19,855030"]
         ])
-    add_table_data(s14, Inches(5.6), Inches(1.8), Inches(6.933), Inches(3.0),
-        ["Rumus (h = 0,1)", "Pendekatan f'(2)", "Galat Absolut"],
+
+    # Right Results Table
+    add_table_data(s14, Inches(5.8), Inches(1.8), Inches(6.733), Inches(2.1),
+        ["Metode", "f′(2)", "Galat absolut"],
         [
-            ["Tiga Titik Ujung", "22,032310", "1,35 × 10⁻¹"],
-            ["Tiga Titik Tengah", "22,228790", "6,16 × 10⁻²"],
-            ["Lima Titik Tengah", "22,166999", "1,69 × 10⁻⁴ ⭐"]
+            ["Tiga titik ujung", "22,032310", "0,134858"],
+            ["Tiga titik tengah", "22,228790", "0,061622"],
+            ["Lima titik tengah", "22,166999", "0,000169 ⭐"],
+            ["Nilai eksak 3e²", "22,167168", "—"]
         ])
-    add_card(s14, Inches(5.6), Inches(5.0), Inches(6.933), Inches(1.5), "Analisis Hasil", [
-        "Eksak: f'(x) = (1+x)e^x => f'(2) = 3e² ≈ 22,167168.",
-        "Lima titik tengah O(h⁴) memberikan ketelitian luar biasa pada data tabel!"
-    ], "Evaluasi")
+
+    # Conclusion Banner
+    add_callout_banner(s14, Inches(5.8), Inches(4.15), Inches(6.733), Inches(0.65),
+        "Kesimpulan: di antara ketiga metode, lima titik tengah paling akurat.")
+
+    # Amber card: Kaitan dengan Richardson
+    add_custom_card(s14, Inches(5.8), Inches(5.0), Inches(6.733), Inches(1.5),
+        "Kaitan dengan Richardson:", [
+            "Hasil pendekatan turunan dapat dipakai sebagai dasar (N₁) untuk meningkatkan ketelitian lewat ekstrapolasi (slide 16)."
+        ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
 
     # =========================================================================
-    # SLIDE 15: CONTOH 6.1.3 DATA TABEL f'(1,1) & f'(1,3)
+    # SLIDE 15: CONTOH 6.1.3 STRATEGI PEMILIHAN RUMUS
     # =========================================================================
-    s15 = add_base_slide("Contoh 6.1.3", "Contoh 6.1.3 — Menghitung Turunan dari Data Tabel", 15,
-        "Di sini diminta melengkapi kolom turunan dari tabel. Di ujung pakai rumus ujung, di tengah pakai rumus tengah. Lima titik tengah hanya bisa untuk x=1,3.")
-    add_table_data(s15, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7),
-        ["Titik x", "Rumus yang Cocok Digunakan (h = 0,1)"],
+    s15 = add_base_slide("Contoh 6.1.3", "Strategi Pemilihan Rumus Diferensiasi", 15,
+        "Lihat posisi titik dulu. Di ujung tidak ada data di salah satu sisi, jadi pakai rumus ujung. Di titik dalam bisa pakai rumus tengah, dan lima titik tengah hanya pada x = 1,3 karena butuh dua titik di tiap sisi. Hitungan memakai nilai tabel penuh; buku menampilkannya dibulatkan. Hubungan dengan Richardson: untuk membentuk N₁ dengan h dan h/2, data pada kedua ukuran langkah itu harus ada; ini akan terlihat jelas di slide 17.")
+
+    # Top Left Table
+    add_table_data(s15, Inches(0.8), Inches(1.8), Inches(5.3), Inches(2.1),
+        ["x", "f(x)", "Posisi titik"],
         [
-            ["1,1 (Ujung)", "6.4 Tiga Titik Ujung ; 6.6 Lima Titik Ujung"],
-            ["1,2 (Interior)", "6.4 Ujung ; 6.5 Tiga Titik Tengah"],
-            ["1,3 (Tengah Penuh)", "6.4 Ujung ; 6.5 Tengah ; 6.7 Lima Titik Tengah ⭐"],
-            ["1,4 (Interior)", "6.4 Ujung (h=-0,1) ; 6.5 Tengah"],
-            ["1,5 (Ujung)", "6.4 Ujung (h=-0,1) ; 6.6 Lima Titik Ujung"]
+            ["1,1", "9,025013", "ujung kiri"],
+            ["1,2", "11,02318", "interior"],
+            ["1,3", "13,46374", "tengah penuh"],
+            ["1,4", "16,44465", "interior"],
+            ["1,5", "20,08554", "ujung kanan"]
         ])
-    add_card(s15, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Contoh Hitungan Tabel", [
-        "f'(1,1) [Ujung 6.4, h=0,1]:",
-        "[-3(9,025013) + 4(11,02318) - 13,46374] / 0,2 = 17,76971",
-        "",
-        "f'(1,3) [Tengah 6.5, h=0,1]:",
-        "[16,44465 - 11,02318] / 0,2 = 27,10735",
-        "",
-        "f'(1,3) [Lima Titik Tengah 6.7]:",
-        "[9,025013 - 8(11,02318) + 8(16,44465) - 20,08554] / 1,2 = 26,92603 ⭐"
-    ], "Hitungan")
+
+    # Note under left table
+    tb_h = s15.shapes.add_textbox(Inches(0.8), Inches(3.95), Inches(5.3), Inches(0.3))
+    tf_h = tb_h.text_frame
+    p_h = tf_h.paragraphs[0]
+    p_h.text = "h = 0,1; di ujung kanan h dibuat negatif"
+    p_h.font.name = FONT_MAIN
+    p_h.font.size = Pt(10)
+    p_h.font.color.rgb = COLOR_MUTED
+
+    # Top Right Table
+    add_table_data(s15, Inches(6.4), Inches(1.8), Inches(6.133), Inches(2.2),
+        ["Titik", "Rumus yang tersedia"],
+        [
+            ["1,1 (ujung kiri)", "Tiga titik ujung (6.4) · lima titik ujung (6.6)"],
+            ["1,2 (interior)", "Tiga titik ujung · tiga titik tengah (6.5)"],
+            ["1,3 (tengah penuh)", "6.4 · 6.5 · lima titik tengah (6.7) ⭐"],
+            ["1,4 (interior)", "6.4 (h negatif) · 6.5"],
+            ["1,5 (ujung kanan)", "6.4 · 6.6 (h negatif)"]
+        ])
+
+    # Formula Cards
+    add_custom_card(s15, Inches(0.8), Inches(4.35), Inches(5.6), Inches(1.35),
+        "Tiga titik ujung, x = 1,1:", [
+            "[-3(9,025013) + 4(11,02318) - 13,46374] / 0,2",
+            "= 17,76971"
+        ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    add_custom_card(s15, Inches(6.8), Inches(4.35), Inches(5.733), Inches(1.35),
+        "Lima titik tengah, x = 1,3:", [
+            "[9,025013 - 8(11,02318) + 8(16,44465) - 20,08554] / 1,2",
+            "= 26,92603 ⭐"
+        ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    # Bottom Banner
+    add_callout_banner(s15, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
+        "Kesimpulan: pilih rumus menurut posisi titik dan ketersediaan data. Kaitan dengan Richardson: ekstrapolasi membutuhkan data yang sesuai dengan ukuran langkah yang dipakai (h dan setengahnya).")
 
     # =========================================================================
-    # SLIDE 16: CONTOH 6.2.2 RICHARDSON f(x) = x e^x
+    # SLIDE 16: CONTOH 6.2.2 RICHARDSON BERTINGKAT PADA f(x) = xeˣ
     # =========================================================================
-    s16 = add_base_slide("Contoh 6.2.2", "Contoh 6.2.2 — Richardson pada f(x) = x e^x", 16,
-        "Rumus tengah punya galat berpangkat genap, jadi dipakai pembagi 3 lalu 15. N₃(0,2) sama dengan nilai eksak sampai 6 angka desimal.")
-    add_table_data(s16, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.0),
-        ["Langkah / Tingkat", "Perhitungan", "Hasil", "Keterangan"],
+    s16 = add_base_slide("Contoh 6.2.2", "Richardson Bertingkat pada f(x) = xeˣ", 16,
+        "Tiga tahap: (1) hitung N₁ dengan selisih tengah untuk h = 0,2; 0,1; 0,05; (2) gabungkan pasangan yang bertetangga dengan pembagi 3 → N₂(0,2) dan N₂(0,1); (3) gabungkan kedua N₂ dengan pembagi 15 → N₃(0,2). Angka dalam kurung adalah ukuran langkah. Ini angka buku; hitung ulang dari tabel Contoh 6.1.2 memberi N₁(0,2) = 22,414163 dan N₁(0,1) = 22,228790 (selisih kecil di digit ke-6). Rumus N₃ di buku tertulis memakai N₁(0,2), tetapi angkanya cocok dengan N₂(0,2). Galat N₃ nol hanya pada enam desimal yang ditampilkan, bukan bukti kesamaan matematis.")
+
+    # Subtitle Text
+    tb_sub = s16.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(11.733), Inches(0.35))
+    tf_sub = tb_sub.text_frame
+    p_sub = tf_sub.paragraphs[0]
+    p_sub.text = "x = 2, nilai eksak f′(2) = 22,167168  ·  N₁: selisih tengah, galat pangkat genap"
+    p_sub.font.name = FONT_MAIN
+    p_sub.font.size = Pt(11)
+    p_sub.font.color.rgb = COLOR_MUTED
+
+    # 3 Step Boxes side-by-side
+    add_custom_card(s16, Inches(0.8), Inches(1.8), Inches(3.4), Inches(2.4),
+        "Tahap 1 — N₁", [
+            "N₁(0,2) = 22,414160",
+            "N₁(0,1) = 22,228786",
+            "N₁(0,05) = 22,182564",
+            "Nilai N₁(0,05) dihitung menggunakan f(x) = xeˣ karena titik x = 1,95 dan 2,05 tidak ada pada tabel."
+        ], border_color=COLOR_BLUE, title_color=COLOR_BLUE)
+
+    arr1 = s16.shapes.add_textbox(Inches(4.25), Inches(2.7), Inches(0.5), Inches(0.5))
+    arr1.text_frame.paragraphs[0].text = "→"
+    arr1.text_frame.paragraphs[0].font.size = Pt(22)
+    arr1.text_frame.paragraphs[0].font.bold = True
+    arr1.text_frame.paragraphs[0].font.color.rgb = COLOR_MUTED
+
+    add_custom_card(s16, Inches(4.75), Inches(1.8), Inches(3.7), Inches(2.4),
+        "Tahap 2 — N₂ (÷3)", [
+            "N₂(0,2) = 22,228786 + (22,228786 − 22,414160)/3 = 22,166995",
+            "",
+            "N₂(0,1) = 22,182564 + (22,182564 − 22,228786)/3 = 22,167157"
+        ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    arr2 = s16.shapes.add_textbox(Inches(8.5), Inches(2.7), Inches(0.5), Inches(0.5))
+    arr2.text_frame.paragraphs[0].text = "→"
+    arr2.text_frame.paragraphs[0].font.size = Pt(22)
+    arr2.text_frame.paragraphs[0].font.bold = True
+    arr2.text_frame.paragraphs[0].font.color.rgb = COLOR_MUTED
+
+    add_custom_card(s16, Inches(9.0), Inches(1.8), Inches(3.533), Inches(2.4),
+        "Tahap 3 — N₃ (÷15)", [
+            "N₃(0,2) = 22,167157 + (22,167157 − 22,166995)/15",
+            "",
+            "= 22,167168 ⭐ (Identik Eksak)"
+        ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
+
+    # Wide Table
+    add_table_data(s16, Inches(0.8), Inches(4.35), Inches(11.733), Inches(1.35),
+        ["Tingkat", "N₁(0,2)", "N₁(0,1)", "N₁(0,05)", "N₂(0,2)", "N₂(0,1)", "N₃(0,2)", "Eksak"],
         [
-            ["N₁(0,2)", "2,5(19,855030 - 10,889365)", "22,414160", "Selisih Tengah h=0,2"],
-            ["N₁(0,1)", "5(17,148957 - 12,703199)", "22,228786", "Selisih Tengah h=0,1"],
-            ["N₂(0,2)", "22,228786 + (22,228786 - 22,414160)/3", "22,166995", "Tingkat 2 (O(h⁴))"],
-            ["N₁(0,05)", "10(15,924197 - 13,705941)", "22,182564", "Selisih Tengah h=0,05"],
-            ["N₂(0,1)", "22,182564 + (22,182564 - 22,228786)/3", "22,167157", "Tingkat 2 h=0,1"],
-            ["N₃(0,2)", "22,167157 + (22,167157 - 22,166995)/15", "22,167168 ⭐", "Identik Eksak!"]
+            ["Hasil", "22,414160", "22,228786", "22,182564", "22,166995", "22,167157", "22,167168 ⭐", "22,167168"],
+            ["Galat absolut", "0,246992", "0,061618", "0,015396", "0,000173", "0,000011", "0,000000", "—"]
         ])
-    add_card(s16, Inches(0.8), Inches(6.0), Inches(11.733), Inches(0.75), "Hasil Akhir", [
-        "Eksak: 3e² ≈ 22,167168. N₃(0,2) identik sempurna dengan nilai eksak hingga 6 angka desimal!"
-    ])
+
+    # Bottom Banner
+    add_callout_banner(s16, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
+        "Kesimpulan: Richardson bertingkat meningkatkan ketelitian secara bertahap: N₁ → N₂ → N₃ (N₃ sama dengan eksak pada enam desimal yang ditampilkan).")
 
     # =========================================================================
-    # SLIDE 17: CONTOH 6.2.3 RICHARDSON DARI TABEL
+    # SLIDE 17: CONTOH 6.2.3 RICHARDSON DENGAN KETERBATASAN DATA
     # =========================================================================
-    s17 = add_base_slide("Contoh 6.2.3", "Contoh 6.2.3 — Richardson dari Data Tabel", 17,
-        "Titik yang dihitung f'(1,3) dengan h=0,2 dan 0,1. Level ketiga tidak mungkin dihitung karena data di 1,25 dan 1,35 tidak tersedia.")
-    add_card(s17, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Perhitungan Richardson x₀ = 1,3", [
-        "N₁(0,2) = (20,08554 - 9,025013) / 0,4 = 27,651318",
-        "N₁(0,1) = (16,44465 - 11,02318) / 0,2 = 27,10735",
-        "",
-        "Kombinasi Galat Genap N₂(0,2):",
-        "N₂(0,2) = 27,10735 + (27,10735 - 27,651318) / 3",
-        "N₂(0,2) ≈ 26,926027 ⭐",
-        "Hasil ini berorde O(h⁴) dan sama dengan lima titik tengah!"
-    ], "Hitungan")
-    add_card(s17, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Keterbatasan Batas Data", [
-        "Mengapa N₃ tidak bisa dihitung?",
-        "Untuk N₃ dibutuhkan N₁(0,05) yang memerlukan f(1,35) dan f(1,25).",
-        "Karena tabel eksperimen hanya memiliki kelipatan 0,1, data tersebut tidak ada.",
-        "Rekursi Richardson harus berhenti pada ketersediaan data tabel nyata!"
-    ], "Batasan")
+    s17 = add_base_slide("Contoh 6.2.3", "Richardson dengan Keterbatasan Data", 17,
+        "Titik x₀ = 1,3 dengan h = 0,2 dan 0,1; N₁(0,2) memakai f(1,5) dan f(1,1), N₁(0,1) memakai f(1,4) dan f(1,2). Gabungkan dengan pembagi 3 untuk N₂(0,2). Tingkat ketiga butuh N₁(0,05) dengan f(1,35) dan f(1,25), yang tidak ada di tabel, sehingga berhenti di N₂. Catatan untuk penyaji (dicek pada halaman buku 201–202): buku mencetak N₁(0,1) = (1/0,2)(f(1,4) − f(1,1)) = 27,10735 dan N₂(0,2) = 26,920273. Dua hal ini tidak cocok dengan substitusi yang tercetak: (16,44465 − 11,02318)/0,2 memakai f(1,2) dan menghasilkan 27,10735, sedangkan dengan f(1,1) hasilnya lain; dan 27,10735 + (27,10735 − 27,651318)/3 = 26,926027, bukan 26,920273. Nilai 26,926027 juga sama dengan hasil lima titik tengah 26,92603 pada Contoh 6.1.3. Penyebab selisih tidak dapat dipastikan dari buku. Slide menampilkan hasil hitung ulang 26,926027 (dari data tabel yang tersedia); angka 26,920273 adalah yang tercetak di buku.")
+
+    # Left Data Table
+    add_table_data(s17, Inches(0.8), Inches(1.8), Inches(4.5), Inches(2.4),
+        ["x", "f(x)"],
+        [
+            ["1,1", "9,025013"],
+            ["1,2", "11,02318"],
+            ["1,3", "13,46374"],
+            ["1,4", "16,44465"],
+            ["1,5", "20,08554"]
+        ])
+
+    tb_x0 = s17.shapes.add_textbox(Inches(0.8), Inches(4.25), Inches(4.5), Inches(0.35))
+    tb_x0.text_frame.paragraphs[0].text = "x₀ = 1,3;  h = 0,2"
+    tb_x0.text_frame.paragraphs[0].font.name = FONT_MAIN
+    tb_x0.text_frame.paragraphs[0].font.size = Pt(11)
+    tb_x0.text_frame.paragraphs[0].font.bold = True
+    tb_x0.text_frame.paragraphs[0].font.color.rgb = COLOR_PRIMARY
+
+    # Right: Box 1 (Tahap 1)
+    add_custom_card(s17, Inches(5.6), Inches(1.8), Inches(6.933), Inches(1.2),
+        "Tahap 1 — N₁", [
+            "N₁(0,2) = (20,08554 − 9,025013) / 0,4 = 27,651318",
+            "N₁(0,1) = (16,44465 − 11,02318) / 0,2 = 27,107350"
+        ], border_color=COLOR_BLUE, title_color=COLOR_BLUE)
+
+    # Right: Box 2 (Tahap 2)
+    add_custom_card(s17, Inches(5.6), Inches(3.1), Inches(6.933), Inches(1.2),
+        "Tahap 2 — N₂", [
+            "N₂(0,2) = 27,107350 + (27,107350 − 27,651318) / 3",
+            "= 26,926027 ⭐ (Orde O(h⁴))"
+        ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+
+    # Middle / Warning Card: Mengapa N3 tidak dapat dihitung
+    add_custom_card(s17, Inches(0.8), Inches(4.65), Inches(11.733), Inches(0.95),
+        "Mengapa N₃ tidak dapat dihitung?", [
+            "N₃ membutuhkan N₁(0,05) = [f(1,35) − f(1,25)] / 0,1, sedangkan f(1,25) dan f(1,35) tidak tersedia pada tabel."
+        ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
+
+    # Bottom Banner
+    add_callout_banner(s17, Inches(0.8), Inches(5.8), Inches(11.733), Inches(0.8),
+        "Kesimpulan: Richardson tidak dapat dilanjutkan ke tingkat berikutnya bila data yang diperlukan tidak tersedia.\nCatatan: Hasil perhitungan menggunakan data tabel yang tersedia.")
 
     # =========================================================================
     # SLIDE 18: RINGKASAN METODE: PERBANDINGAN
@@ -762,6 +1034,13 @@ try {{
     }}
     
     $pres.Save()
+    $pdfPath = "{pptx_path}".Replace(".pptx", ".pdf")
+    try {{
+        $pres.SaveAs($pdfPath, 32)
+        Write-Output "PowerPoint COM: Exported updated PDF to $pdfPath"
+    }} catch {{
+        Write-Output "PDF export note: $_"
+    }}
     $pres.Close()
     $ppt.Quit()
     Write-Output "PowerPoint COM: Applied slide transitions and entrance animations to all slides."
