@@ -140,7 +140,7 @@ class PresentationController {
 
     if (this.linkDownloadPdf) {
       this.linkDownloadPdf.addEventListener('click', () => {
-        this.showToast('Mengunduh Diferensiasi_Numerik.pdf (21 slide lengkap)...', '📄');
+        this.showToast('Mengunduh Diferensiasi_Numerik.pdf (28 slide lengkap)...', '📄');
         setTimeout(() => this.closeDownloadMenu(), 500);
       });
     }

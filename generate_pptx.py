@@ -1,10 +1,119 @@
 import os
+import io
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from PIL import Image
+
 # Presentation generator script for Diferensiasi Numerik (Metode Numerik)
 from pptx import Presentation  # type: ignore
 from pptx.util import Inches, Pt  # type: ignore
 from pptx.dml.color import RGBColor  # type: ignore
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR  # type: ignore
 from pptx.enum.shapes import MSO_SHAPE  # type: ignore
+
+def render_latex_image(latex_str, font_size=18, color='#1e3a8a'):
+    """Renders LaTeX formula to a high-DPI transparent PNG buffer using matplotlib mathtext."""
+    fig = plt.figure(figsize=(10, 2), dpi=300)
+    fig.patch.set_alpha(0.0)
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.axis('off')
+    ax.patch.set_alpha(0.0)
+    if not (latex_str.startswith('$') and latex_str.endswith('$')):
+        latex_str = f"${latex_str}$"
+    ax.text(0.5, 0.5, latex_str, fontsize=font_size, ha='center', va='center', color=color)
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', transparent=True, bbox_inches='tight', pad_inches=0.04, dpi=300)
+    plt.close(fig)
+    buf.seek(0)
+    im = Image.open(buf)
+    w_px, h_px = im.size
+    buf.seek(0)
+    return buf, w_px, h_px
+
+def generate_cover_illustration():
+    """Generates a publication-quality curve and tangent line illustration for the cover slide."""
+    fig, ax = plt.subplots(figsize=(5.2, 4.0), dpi=300)
+    fig.patch.set_alpha(0.0)
+    ax.patch.set_alpha(0.0)
+
+    x = np.linspace(0.4, 3.6, 200)
+    y = np.sin(x - 0.4) * 1.5 + 2.0
+    ax.plot(x, y, color='#1e3a8a', linewidth=3, label=r'$f(x)$')
+
+    x0 = 1.6
+    y0 = np.sin(x0 - 0.4) * 1.5 + 2.0
+    slope = 1.5 * np.cos(x0 - 0.4)
+    x_tangent = np.linspace(0.8, 2.6, 100)
+    y_tangent = y0 + slope * (x_tangent - x0)
+    ax.plot(x_tangent, y_tangent, color='#059669', linewidth=2.5, linestyle='--', label=r"Garis Singgung $f'(x_0)$")
+
+    h = 0.9
+    x1 = x0 + h
+    y1 = np.sin(x1 - 0.4) * 1.5 + 2.0
+    secant_slope = (y1 - y0) / h
+    x_secant = np.linspace(1.1, 3.1, 100)
+    y_secant = y0 + secant_slope * (x_secant - x0)
+    ax.plot(x_secant, y_secant, color='#d97706', linewidth=2, linestyle=':', label=r'Beda Maju (Sekan)')
+
+    ax.scatter([x0, x1], [y0, y1], color=['#059669', '#d97706'], s=75, zorder=5)
+    ax.text(x0 - 0.1, y0 + 0.28, r'$(x_0, f(x_0))$', fontsize=10, fontweight='bold', color='#059669')
+    ax.text(x1 - 0.15, y1 - 0.38, r'$(x_0+h, f(x_0+h))$', fontsize=10, fontweight='bold', color='#d97706')
+
+    ax.axis('off')
+    ax.legend(loc='upper left', frameon=True, facecolor='#ffffff', edgecolor='#cbd5e1', framealpha=0.95, fontsize=9.5)
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', transparent=True, bbox_inches='tight', pad_inches=0.05, dpi=300)
+    plt.close(fig)
+    buf.seek(0)
+    im = Image.open(buf)
+    w_px, h_px = im.size
+    buf.seek(0)
+    return buf, w_px, h_px
+
+def generate_error_bar_chart():
+    """Generates an accurate horizontal bar chart for error reduction on Slide 20."""
+    fig, ax = plt.subplots(figsize=(6.2, 2.1), dpi=300)
+    fig.patch.set_alpha(0.0)
+    ax.patch.set_alpha(0.0)
+
+    categories = ['Selisih Maju (h=0.10)', 'Selisih Maju (h=0.05)', 'Richardson N₂(0.10)']
+    errors = [0.0148834, 0.0075761, 0.0002688]
+    colors = ['#3b82f6', '#2563eb', '#059669']
+
+    y_pos = np.arange(len(categories))
+    bars = ax.barh(y_pos, errors, color=colors, height=0.52, edgecolor='#cbd5e1', linewidth=0.8)
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(categories, fontsize=9, fontweight='bold', color='#1e293b')
+    ax.invert_yaxis()
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#cbd5e1')
+    ax.spines['bottom'].set_color('#cbd5e1')
+    ax.xaxis.grid(True, linestyle='--', alpha=0.5, color='#cbd5e1')
+    ax.tick_params(axis='x', labelsize=8, colors='#64748b')
+
+    for bar, err in zip(bars, errors):
+        width = bar.get_width()
+        text = f"{err:.7f}"
+        if err < 0.001:
+            text += " (28x lebih teliti! ★)"
+        ax.text(width + 0.0003, bar.get_y() + bar.get_height()/2, text,
+                va='center', ha='left', fontsize=8.5, fontweight='bold',
+                color='#059669' if err < 0.001 else '#1e293b')
+
+    ax.set_xlim(0, 0.0215)
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', transparent=True, bbox_inches='tight', pad_inches=0.05, dpi=300)
+    plt.close(fig)
+    buf.seek(0)
+    im = Image.open(buf)
+    w_px, h_px = im.size
+    buf.seek(0)
+    return buf, w_px, h_px
 
 def create_presentation():
     prs = Presentation()
@@ -78,7 +187,7 @@ def create_presentation():
         ftf.margin_top = Inches(0)
         ftf.margin_left = Inches(0)
         fp = ftf.paragraphs[0]
-        fp.text = f"Metode Numerik — Imron dkk. (2022) | Slide {slide_num} dari 21"
+        fp.text = f"Metode Numerik — Imron dkk. (2022) | Slide {slide_num} dari 28"
         fp.font.name = FONT_MAIN
         fp.font.size = Pt(10)
         fp.font.color.rgb = COLOR_MUTED
@@ -97,7 +206,13 @@ def create_presentation():
         banner.line.color.rgb = COLOR_AMBER if is_amber else COLOR_EMERALD
         banner.line.width = Pt(1.5)
 
-        tb = slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.08), width - Inches(0.4), height - Inches(0.16))
+        # Left accent stripe
+        accent = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top + Inches(0.08), Inches(0.06), height - Inches(0.16))
+        accent.fill.solid()
+        accent.fill.fore_color.rgb = COLOR_AMBER if is_amber else COLOR_EMERALD
+        accent.line.fill.background()
+
+        tb = slide.shapes.add_textbox(left + Inches(0.22), top + Inches(0.08), width - Inches(0.44), height - Inches(0.16))
         tf = tb.text_frame
         tf.word_wrap = True
         tf.margin_top = Inches(0)
@@ -108,48 +223,83 @@ def create_presentation():
         p.font.size = Pt(11)
         p.font.color.rgb = RGBColor(120, 53, 15) if is_amber else RGBColor(6, 78, 59)
 
-    def add_custom_card(slide, left, top, width, height, title, items, border_color=None, bg_color=None, title_color=None):
+    def add_custom_card(slide, left, top, width, height, title, items, border_color=None, bg_color=None, title_color=None, latex=None):
         card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
         card.fill.solid()
         card.fill.fore_color.rgb = bg_color if bg_color else COLOR_CARD
         card.line.color.rgb = border_color if border_color else COLOR_BORDER
         card.line.width = Pt(1.5 if border_color else 1)
 
-        tb = slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.12), width - Inches(0.4), height - Inches(0.24))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        tf.margin_top = Inches(0)
-        tf.margin_bottom = Inches(0)
-        tf.margin_left = Inches(0)
-        tf.margin_right = Inches(0)
+        # Accent bar on left
+        acc_col = border_color if border_color else (title_color if title_color else COLOR_PRIMARY)
+        accent_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top + Inches(0.10), Inches(0.06), height - Inches(0.20))
+        accent_bar.fill.solid()
+        accent_bar.fill.fore_color.rgb = acc_col
+        accent_bar.line.fill.background()
 
+        items_top_offset = 0.12
         if title:
-            p_title = tf.paragraphs[0]
+            tb_title = slide.shapes.add_textbox(left + Inches(0.22), top + Inches(0.10), width - Inches(0.44), Inches(0.35))
+            tf_t = tb_title.text_frame
+            tf_t.margin_top = Inches(0)
+            tf_t.margin_bottom = Inches(0)
+            tf_t.margin_left = Inches(0)
+            p_title = tf_t.paragraphs[0]
             p_title.text = title
             p_title.font.name = FONT_MAIN
             p_title.font.size = Pt(13)
             p_title.font.bold = True
             p_title.font.color.rgb = title_color if title_color else COLOR_PRIMARY
-            p_title.space_after = Pt(4)
+            items_top_offset = 0.42
 
-        for i, item in enumerate(items):
-            p = tf.paragraphs[0] if (not title and i == 0) else tf.add_paragraph()
-            p.text = item
-            p.font.name = FONT_MAIN
-            p.font.size = Pt(11)
-            p.font.color.rgb = COLOR_TEXT
-            p.space_after = Pt(4)
+        if latex:
+            buf, img_w, img_h = render_latex_image(latex, font_size=16, color='#1e3a8a')
+            avail_w_in = (width / 914400.0) - 0.5
+            avail_h_in = 0.65
+            w_in = img_w / 300.0
+            h_in = img_h / 300.0
+            scale = min(avail_w_in / w_in, avail_h_in / h_in, 0.95)
+            target_w_in = w_in * scale
+            target_h_in = h_in * scale
 
-    def add_card(slide, left, top, width, height, title, items, badge=""):
-        # Card background
+            img_left = left + Inches(((width / 914400.0) - target_w_in) / 2)
+            img_top = top + Inches(items_top_offset + 0.02)
+            slide.shapes.add_picture(buf, img_left, img_top, Inches(target_w_in), Inches(target_h_in))
+            items_top_offset += (target_h_in + 0.08)
+
+        if items:
+            rem_h = (height / 914400.0) - items_top_offset - 0.06
+            tb_items = slide.shapes.add_textbox(left + Inches(0.22), top + Inches(items_top_offset), width - Inches(0.44), Inches(max(rem_h, 0.4)))
+            tf_i = tb_items.text_frame
+            tf_i.word_wrap = True
+            tf_i.margin_top = Inches(0)
+            tf_i.margin_bottom = Inches(0)
+            tf_i.margin_left = Inches(0)
+            tf_i.margin_right = Inches(0)
+
+            for i, item in enumerate(items):
+                p = tf_i.paragraphs[0] if i == 0 else tf_i.add_paragraph()
+                p.text = item
+                p.font.name = FONT_MAIN
+                p.font.size = Pt(10)
+                p.font.color.rgb = COLOR_TEXT
+                p.space_after = Pt(2.5)
+
+    def add_card(slide, left, top, width, height, title, items, badge="", accent_color=None):
         card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
         card.fill.solid()
         card.fill.fore_color.rgb = COLOR_CARD
         card.line.color.rgb = COLOR_BORDER
         card.line.width = Pt(1)
 
-        # Content box
-        tb = slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.18), width - Inches(0.4), height - Inches(0.36))
+        # Left accent stripe
+        chosen_accent = accent_color if accent_color else COLOR_PRIMARY
+        accent_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top + Inches(0.12), Inches(0.06), height - Inches(0.24))
+        accent_bar.fill.solid()
+        accent_bar.fill.fore_color.rgb = chosen_accent
+        accent_bar.line.fill.background()
+
+        tb = slide.shapes.add_textbox(left + Inches(0.24), top + Inches(0.16), width - Inches(0.44), height - Inches(0.32))
         tf = tb.text_frame
         tf.word_wrap = True
         tf.margin_top = Inches(0)
@@ -157,93 +307,125 @@ def create_presentation():
         tf.margin_left = Inches(0)
         tf.margin_right = Inches(0)
 
-        # Card Title
         p_title = tf.paragraphs[0]
         p_title.text = (f"[{badge}] " if badge else "") + title
         p_title.font.name = FONT_MAIN
-        p_title.font.size = Pt(14)
+        p_title.font.size = Pt(13.5)
         p_title.font.bold = True
-        p_title.font.color.rgb = COLOR_PRIMARY
-        p_title.space_after = Pt(8)
+        p_title.font.color.rgb = chosen_accent if accent_color else COLOR_PRIMARY
+        p_title.space_after = Pt(6)
 
-        # Items
         for item in items:
             p = tf.add_paragraph()
             p.text = f"•  {item}"
             p.font.name = FONT_MAIN
-            p.font.size = Pt(12)
+            p.font.size = Pt(11)
             p.font.color.rgb = COLOR_TEXT
-            p.space_after = Pt(6)
+            p.space_after = Pt(4)
 
-    def add_math_box(slide, left, top, width, height, label, math_text, subtext=""):
+    def add_math_box(slide, left, top, width, height, label, math_text="", subtext="", latex=None, math_color='#1e3a8a'):
         box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
         box.fill.solid()
         box.fill.fore_color.rgb = COLOR_CARD
         box.line.color.rgb = COLOR_BLUE
-        box.line.width = Pt(2)
+        box.line.width = Pt(1.5)
 
-        tb = slide.shapes.add_textbox(left + Inches(0.25), top + Inches(0.15), width - Inches(0.5), height - Inches(0.3))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        tf.margin_top = Inches(0)
-        tf.margin_bottom = Inches(0)
+        accent_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top + Inches(0.08), Inches(0.06), height - Inches(0.16))
+        accent_bar.fill.solid()
+        accent_bar.fill.fore_color.rgb = COLOR_BLUE
+        accent_bar.line.fill.background()
 
-        p1 = tf.paragraphs[0]
+        tb_label = slide.shapes.add_textbox(left + Inches(0.25), top + Inches(0.10), width - Inches(0.5), Inches(0.35))
+        tf_lbl = tb_label.text_frame
+        tf_lbl.margin_top = Inches(0)
+        tf_lbl.margin_bottom = Inches(0)
+        p1 = tf_lbl.paragraphs[0]
         p1.text = label.upper()
         p1.font.name = FONT_MAIN
         p1.font.size = Pt(10)
         p1.font.bold = True
         p1.font.color.rgb = COLOR_BLUE
-        p1.space_after = Pt(4)
 
-        p2 = tf.add_paragraph()
-        p2.text = math_text
-        p2.font.name = FONT_MATH
-        p2.font.size = Pt(16)
-        p2.font.bold = True
-        p2.font.color.rgb = COLOR_TEXT
-        p2.alignment = PP_ALIGN.CENTER
-        p2.space_after = Pt(4)
+        if latex:
+            buf, img_w, img_h = render_latex_image(latex, font_size=18, color=math_color)
+            avail_w_in = (width / 914400.0) - 0.5
+            avail_h_in = (height / 914400.0) - (0.75 if subtext else 0.45)
+
+            w_in = img_w / 300.0
+            h_in = img_h / 300.0
+            scale = min(avail_w_in / w_in, avail_h_in / h_in, 1.0)
+            target_w_in = w_in * scale
+            target_h_in = h_in * scale
+
+            img_left = left + Inches(((width / 914400.0) - target_w_in) / 2)
+            img_top = top + Inches(0.38 + (avail_h_in - target_h_in) / 2)
+            slide.shapes.add_picture(buf, img_left, img_top, Inches(target_w_in), Inches(target_h_in))
+        elif math_text:
+            tb_m = slide.shapes.add_textbox(left + Inches(0.25), top + Inches(0.38), width - Inches(0.5), height - Inches(0.75 if subtext else 0.45))
+            tf_m = tb_m.text_frame
+            tf_m.word_wrap = True
+            tf_m.margin_top = Inches(0)
+            p2 = tf_m.paragraphs[0]
+            p2.text = math_text
+            p2.font.name = FONT_MATH
+            p2.font.size = Pt(14)
+            p2.font.bold = True
+            p2.font.color.rgb = COLOR_TEXT
+            p2.alignment = PP_ALIGN.CENTER
 
         if subtext:
-            p3 = tf.add_paragraph()
+            tb_sub = slide.shapes.add_textbox(left + Inches(0.25), top + height - Inches(0.38), width - Inches(0.5), Inches(0.3))
+            tf_sub = tb_sub.text_frame
+            tf_sub.margin_top = Inches(0)
+            p3 = tf_sub.paragraphs[0]
             p3.text = subtext
             p3.font.name = FONT_MAIN
-            p3.font.size = Pt(11)
+            p3.font.size = Pt(10)
             p3.font.color.rgb = COLOR_MUTED
             p3.alignment = PP_ALIGN.CENTER
 
-    def add_table_data(slide, left, top, width, height, headers, rows):
+    def add_table_data(slide, left, top, width, height, headers, rows, col_widths=None, best_row_indices=None):
         num_rows = len(rows) + 1
         num_cols = len(headers)
         table_shape = slide.shapes.add_table(num_rows, num_cols, left, top, width, height)
         table = table_shape.table
 
-        # Format Header
         for c_idx, h in enumerate(headers):
             cell = table.cell(0, c_idx)
             cell.fill.solid()
-            cell.fill.fore_color.rgb = COLOR_CARD
+            cell.fill.fore_color.rgb = COLOR_PRIMARY
             p = cell.text_frame.paragraphs[0]
             p.text = str(h)
             p.font.name = FONT_MAIN
             p.font.bold = True
             p.font.size = Pt(11)
-            p.font.color.rgb = COLOR_PRIMARY
+            p.font.color.rgb = RGBColor(255, 255, 255)
             p.alignment = PP_ALIGN.CENTER
 
-        # Format Rows
         for r_idx, row in enumerate(rows):
+            is_best = (best_row_indices and r_idx in best_row_indices) or any("⭐" in str(v) for v in row)
             for c_idx, val in enumerate(row):
                 cell = table.cell(r_idx + 1, c_idx)
                 cell.fill.solid()
-                cell.fill.fore_color.rgb = COLOR_BG if r_idx % 2 == 0 else COLOR_CARD
+                if is_best:
+                    cell.fill.fore_color.rgb = COLOR_EMERALD_SOFT
+                else:
+                    cell.fill.fore_color.rgb = COLOR_BG if r_idx % 2 == 0 else COLOR_CARD
+
                 p = cell.text_frame.paragraphs[0]
                 p.text = str(val)
                 p.font.name = FONT_MONO if any(ch.isdigit() for ch in str(val)) else FONT_MAIN
-                p.font.size = Pt(11)
-                p.font.color.rgb = COLOR_TEXT
+                p.font.size = Pt(10.5)
+                if is_best:
+                    p.font.bold = True
+                    p.font.color.rgb = RGBColor(6, 78, 59)
+                else:
+                    p.font.color.rgb = COLOR_TEXT
                 p.alignment = PP_ALIGN.CENTER
+
+        if col_widths and len(col_widths) == num_cols:
+            for c_idx, w in enumerate(col_widths):
+                table.columns[c_idx].width = w
 
     # =========================================================================
     # SLIDE 1: COVER
@@ -254,13 +436,16 @@ def create_presentation():
     bg1.fill.fore_color.rgb = COLOR_BG
     bg1.line.fill.background()
 
-    # Left Accent Bar
-    bar = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.2), Inches(1.8), Inches(0.12), Inches(3.2))
+    notes_slide1 = s1.notes_slide
+    tf_notes1 = notes_slide1.notes_text_frame
+    tf_notes1.text = "Sapa audiens, sebut judul dan bab. Jelaskan bahwa hari ini kita membahas cara memperkirakan turunan fungsi hanya dari nilai-nilai fungsi. Gambar kurva dengan garis singgung mewakili ide utama: turunan adalah kemiringan garis singgung. Isi placeholder nama, dosen, dan program studi sebelum presentasi."
+
+    bar = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.5), Inches(0.12), Inches(3.6))
     bar.fill.solid()
     bar.fill.fore_color.rgb = COLOR_PRIMARY
     bar.line.fill.background()
 
-    tb1 = s1.shapes.add_textbox(Inches(1.5), Inches(1.6), Inches(9.5), Inches(2.2))
+    tb1 = s1.shapes.add_textbox(Inches(1.1), Inches(1.3), Inches(7.2), Inches(2.5))
     tf1 = tb1.text_frame
     tf1.word_wrap = True
     p = tf1.paragraphs[0]
@@ -269,12 +454,12 @@ def create_presentation():
     p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = COLOR_BLUE
-    p.space_after = Pt(8)
+    p.space_after = Pt(6)
 
     p2 = tf1.add_paragraph()
     p2.text = "DIFERENSIASI NUMERIK"
     p2.font.name = FONT_MAIN
-    p2.font.size = Pt(44)
+    p2.font.size = Pt(40)
     p2.font.bold = True
     p2.font.color.rgb = COLOR_TEXT
     p2.space_after = Pt(6)
@@ -282,17 +467,16 @@ def create_presentation():
     p3 = tf1.add_paragraph()
     p3.text = "Pendekatan Nilai Turunan Fungsi melalui Polinomial Deret & Ekstrapolasi Richardson"
     p3.font.name = FONT_MAIN
-    p3.font.size = Pt(16)
+    p3.font.size = Pt(14)
     p3.font.color.rgb = COLOR_MUTED
 
-    # Meta box
-    meta_box = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.5), Inches(4.1), Inches(9.2), Inches(2.5))
+    meta_box = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.1), Inches(4.1), Inches(7.0), Inches(2.6))
     meta_box.fill.solid()
     meta_box.fill.fore_color.rgb = COLOR_CARD
     meta_box.line.color.rgb = COLOR_BORDER
     mtf = meta_box.text_frame
     mtf.word_wrap = True
-    
+
     mp0 = mtf.paragraphs[0]
     mp0.text = "ANGGOTA KELOMPOK:"
     mp0.font.name = FONT_MAIN
@@ -300,14 +484,14 @@ def create_presentation():
     mp0.font.bold = True
     mp0.font.color.rgb = COLOR_PRIMARY
     mp0.space_after = Pt(3)
-    
+
     mp1 = mtf.add_paragraph()
     mp1.text = "1. Farel Luther Siagian (4253250041)       2. Fatih Taqiyyuddin (4253250057)\n3. Siti Zulayka Maulida Amali (4253250001)   4. Keegan Gibran Jehian (4253250029)"
     mp1.font.name = FONT_MAIN
-    mp1.font.size = Pt(12)
+    mp1.font.size = Pt(11)
     mp1.font.color.rgb = COLOR_TEXT
     mp1.space_after = Pt(8)
-    
+
     mp2 = mtf.add_paragraph()
     mp2.text = "DOSEN PENGAMPU:"
     mp2.font.name = FONT_MAIN
@@ -315,140 +499,407 @@ def create_presentation():
     mp2.font.bold = True
     mp2.font.color.rgb = COLOR_PRIMARY
     mp2.space_after = Pt(2)
-    
+
     mp3 = mtf.add_paragraph()
     mp3.text = "Debi Yandra Niska, S.Kom., M.Kom.    |    Tahun: 2026"
     mp3.font.name = FONT_MAIN
-    mp3.font.size = Pt(12)
+    mp3.font.size = Pt(11.5)
     mp3.font.bold = True
     mp3.font.color.rgb = COLOR_TEXT
 
+    buf_cov, cov_w, cov_h = generate_cover_illustration()
+    cov_card = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(8.3), Inches(1.4), Inches(4.3), Inches(5.3))
+    cov_card.fill.solid()
+    cov_card.fill.fore_color.rgb = COLOR_CARD
+    cov_card.line.color.rgb = COLOR_BORDER
+    cov_card.line.width = Pt(1)
+
+    cov_target_w_in = 4.0
+    cov_target_h_in = cov_target_w_in * (cov_h / cov_w)
+    s1.shapes.add_picture(buf_cov, Inches(8.45), Inches(1.65), Inches(cov_target_w_in), Inches(cov_target_h_in))
+
+    tb_cov = s1.shapes.add_textbox(Inches(8.4), Inches(5.95), Inches(4.1), Inches(0.6))
+    tb_cov.text_frame.word_wrap = True
+    p_cov = tb_cov.text_frame.paragraphs[0]
+    p_cov.text = "Visualisasi: Garis singgung (turunan eksak) dihampiri oleh garis sekan (beda hingga)."
+    p_cov.font.name = FONT_MAIN
+    p_cov.font.size = Pt(9.5)
+    p_cov.font.color.rgb = COLOR_MUTED
+    p_cov.alignment = PP_ALIGN.CENTER
+
     # =========================================================================
-    # SLIDE 2: PENGERTIAN
+    # SLIDE 2: PENGERTIAN DIFERENSIASI NUMERIK
     # =========================================================================
     s2 = add_base_slide("Pengantar", "Pengertian Diferensiasi Numerik", 2,
-        "Turunan menyatakan laju perubahan. Kadang fungsi sulit diturunkan, atau kita hanya punya tabel data. Contoh di awal pembahasan adalah fungsi jarak bola jatuh dengan ln cosh; kecepatannya sulit diturunkan secara analitik. Karena itu kita pakai pendekatan numerik.")
-    add_card(s2, Inches(0.8), Inches(1.8), Inches(3.6), Inches(3.2), "Pengertian", [
+        "Turunan menyatakan laju perubahan. Kadang fungsi sulit diperoleh secara analitis eksak, atau data yang tersedia berupa tabel pengukuran diskret. Karena itu kita menggunakan pendekatan diferensiasi numerik. Bab ini memperkenalkan dua metode utama: pendekatan deret dan ekstrapolasi Richardson.")
+    add_card(s2, Inches(0.8), Inches(1.8), Inches(3.6), Inches(4.7), "Pengertian", [
         "Memperkirakan nilai turunan fungsi f'(x) dari titik-titik diskret.",
         "Dipakai saat turunan analitis sulit diperoleh secara eksak.",
-        "Metode utama saat data berupa tabel pengukuran."
-    ], "A")
-    add_card(s2, Inches(4.8), Inches(1.8), Inches(3.6), Inches(3.2), "Tujuan", [
-        "Memperkirakan laju perubahan sesaat fungsi.",
-        "Menghitung turunan dari data tabel diskret.",
-        "Membantu penyelesaian persamaan diferensial."
-    ], "B")
-    add_card(s2, Inches(8.8), Inches(1.8), Inches(3.733), Inches(3.2), "Analitis vs Numerik", [
-        "Analitis: Hasil diferensiasi matematis formal (eksak).",
-        "Numerik: Hasil hampiran (pendekatan) bernilai numerik.",
-        "Memerlukan pemahaman atas galat hampiran."
-    ], "C")
-    add_math_box(s2, Inches(0.8), Inches(5.2), Inches(11.733), Inches(1.4),
-        "Contoh Motivasi Fisika (hlm. 185)",
-        "Jarak jatuh:  z(t) = (m / cd) · ln cosh( √(g·cd / m) · t )",
-        "Kecepatan v(t) = z'(t) sulit diturunkan analitis pada model aerodinamika non-linier kompleks.")
+        "Metode utama saat data berupa tabel pengukuran eksperimen."
+    ], "A", accent_color=COLOR_PRIMARY)
+    add_card(s2, Inches(4.8), Inches(1.8), Inches(3.6), Inches(4.7), "Tujuan Utama", [
+        "Memperkirakan laju perubahan sesaat pada sistem fisik/teknik.",
+        "Menghitung turunan dari data tabel diskret tanpa rumus analitik.",
+        "Membantu penyelesaian persamaan diferensial dan optimasi numerik."
+    ], "B", accent_color=COLOR_BLUE)
+    add_card(s2, Inches(8.8), Inches(1.8), Inches(3.733), Inches(4.7), "Analitis vs Numerik", [
+        "Analitis: Hasil diferensiasi matematis formal menghasilkan fungsi kontinu eksak.",
+        "Numerik: Hasil hampiran (pendekatan) bernilai numerik di titik spesifik.",
+        "Memerlukan pemahaman atas galat hampiran (truncation & round-off error)."
+    ], "C", accent_color=COLOR_EMERALD)
 
     # =========================================================================
-    # SLIDE 3: PENERAPAN DI DUNIA NYATA
+    # SLIDE 3: APA KEGUNAAN DIFERENSIASI NUMERIK?
     # =========================================================================
-    s3 = add_base_slide("Pengantar Tambahan", "Penerapan di Dunia Nyata", 3,
-        "Slide ini penjelasan tambahan agar audiens tahu untuk apa rumus diferensiasi numerik dipakai. Datanya sengaja dibuat sederhana dari s(t) = t^3 supaya kita tahu jawaban benarnya (12 m/s).")
-    add_card(s3, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Contoh Aplikasi Rekayasa", [
-        "Kecepatan: v(t) = ds/dt dari sensor posisi GPS / telemetri.",
-        "Percepatan: a(t) = dv/dt dari data kecepatan kendaraan.",
-        "Perpindahan Panas: Laju perubahan suhu dT/dx (Hukum Fourier).",
-        "Data Eksperimen: Menghitung laju reaksi kimia dari sampel waktu.",
-        "Data nyata tidak memiliki rumus fungsi kontinu eksak!"
-    ], "Praktis")
-    add_card(s3, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Studi Kasus: Posisi s(t) -> v(2)", [
-        "Data t = 1, 2, 3 s -> s = 1, 8, 27 m (h = 1 s). Dicari v(2):",
-        "Maju: (27 - 8)/1 = 19 m/s (Galat = 7)",
-        "Mundur: (8 - 1)/1 = 7 m/s (Galat = 5)",
-        "Tengah: (27 - 1)/2 = 13 m/s (Galat = 1)",
-        "Eksak s(t)=t³ -> s'(2) = 3(2)² = 12 m/s.",
-        "Kesimpulan: Selisih tengah O(h²) jauh lebih teliti daripada O(h)!"
-    ], "Kasus")
+    s3 = add_base_slide("Pengantar Fungsional", "Apa Kegunaan Diferensiasi Numerik?", 3,
+        "Diferensiasi numerik membantu kita memperkirakan seberapa cepat suatu nilai berubah ketika data yang tersedia hanya berupa hasil pengukuran. Contohnya pada kecepatan dari posisi, percepatan dari kecepatan, atau gradien suhu. Kita tidak harus mengetahui persamaan fungsinya terlebih dahulu.")
+
+    add_card(s3, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.3), "Contoh Penerapan Nyata", [
+        "Posisi Kendaraan: Memperkirakan kecepatan (v = ds/dt) dari sensor GPS.",
+        "Kecepatan Kendaraan: Menghitung percepatan (a = dv/dt) saat melaju.",
+        "Perubahan Suhu: Melihat laju perpindahan panas (dT/dx) antar-posisi.",
+        "Laju Reaksi: Memperkirakan perubahan konsentrasi zat terhadap waktu."
+    ], "Aplikasi", accent_color=COLOR_PRIMARY)
+
+    add_card(s3, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.3), "Kapan Diperlukan?", [
+        "Data Tabel: Saat kita hanya memiliki data pengukuran eksperimen.",
+        "Tanpa Rumus: Saat fungsi analitis tidak diketahui sama sekali.",
+        "Fungsi Rumit: Saat persamaan analitis terlalu sulit diturunkan eksak.",
+        "Prinsip Utama: Cukup gunakan perubahan nilai data untuk menghitung turunan!"
+    ], "Urgensi", accent_color=COLOR_EMERALD)
+
+    add_callout_banner(s3, Inches(0.8), Inches(6.25), Inches(11.733), Inches(0.48),
+        "Intinya: Kita tidak harus mengetahui fungsi analitis terlebih dahulu. Diferensiasi numerik mengestimasi turunan langsung dari data.")
 
     # =========================================================================
-    # SLIDE 4: DASAR RUMUS: PENDEKATAN DERET
+    # SLIDE 4: MENGENAL DATA DAN TITIK YANG DIGUNAKAN
     # =========================================================================
-    s4 = add_base_slide("Pendekatan Deret", "Dasar Rumus: Pendekatan Deret", 4,
-        "Buku menurunkan rumus lewat polinomial Lagrange dan suku galatnya, bukan langsung lewat Taylor. Intinya: fungsi didekati dengan polinomial yang melalui titik data, lalu diturunkan.")
-    add_card(s4, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Penurunan via Polinomial Lagrange", [
-        "Interpolasi pada x₀ dan x₁ = x₀ + h:",
-        "f(x) = P₀,₁(x) + [(x - x₀)(x - x₁)/2!] f''(ξ(x))",
-        "P₀,₁(x) = [f(x₀)(x - x₀ - h)/(-h)] + [f(x₀+h)(x - x₀)/h]",
-        "Turunkan terhadap x, lalu evaluasi di x = x₀.",
-        "Suku koefisien D_x(f''(ξ(x))) bernilai 0 di x = x₀ sehingga galat dapat dirumuskan secara tegas."
-    ], "Penurunan")
-    add_math_box(s4, Inches(6.8), Inches(1.8), Inches(5.733), Inches(2.2),
-        "Hasil Penurunan (Persamaan 6.1 Buku)",
-        "f'(x₀) = [f(x₀ + h) - f(x₀)] / h  -  (h / 2) f''(ξ)",
-        "Suku -(h/2)f''(ξ) adalah galat pemotongan (truncation error)")
-    add_card(s4, Inches(6.8), Inches(4.3), Inches(5.733), Inches(2.2), "Sudut Pandang Deret Taylor", [
-        "f(x+h) = f(x) + h f'(x) + (h²/2) f''(x) + ...",
-        "f'(x) = [f(x+h) - f(x)] / h - O(h)",
-        "Alur: Titik Data -> Polinomial -> Rumus -> Suku Galat"
-    ], "Setara")
+    s4 = add_base_slide("Konsep Data", "Mengenal Data dan Titik yang Digunakan", 4,
+        "Bayangkan kita mengukur posisi benda setiap 1 detik. Untuk mencari kecepatan di detik ke-2, kita perlu melihat data di sekitarnya. Titik yang dianalisis disebut x, jarak pengukuran disebut h, titik sebelumnya x-h, dan sesudahnya x+h.")
+
+    add_table_data(s4, Inches(0.8), Inches(1.8), Inches(5.6), Inches(2.2),
+        ["Waktu t (detik)", "Posisi s(t) (meter)", "Peran Titik"],
+        [
+            ["1", "1", "Titik sebelum (x − h)"],
+            ["2", "8", "Titik evaluasi (x) ⭐"],
+            ["3", "27", "Titik sesudah (x + h)"]
+        ])
+
+    add_custom_card(s4, Inches(0.8), Inches(4.2), Inches(5.6), Inches(1.9), "Cara Membacanya", [
+        "Jika x = 2, maka f(x) adalah posisi pada detik ke-2, yaitu 8 meter.",
+        "Jarak antar-pengukuran h = 1 detik (langkah tetap).",
+        "Data di sekitar x = 2 menjadi dasar estimasi kecepatan."
+    ], border_color=COLOR_BLUE, title_color=COLOR_BLUE)
+
+    add_card(s4, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.3), "Memahami Notasi Titik & Langkah", [
+        "x : Titik yang ingin dianalisis (misalnya x = 2 detik).",
+        "h : Jarak antarwaktu pengukuran yang konstan (h = 1 detik).",
+        "x − h : Titik satu langkah sebelum titik analisis (1 detik).",
+        "x + h : Titik satu langkah setelah titik analisis (3 detik).",
+        "f(x) : Nilai data pada titik analisis (s(2) = 8 meter)."
+    ], "Notasi", accent_color=COLOR_PRIMARY)
+
+    add_callout_banner(s4, Inches(0.8), Inches(6.25), Inches(11.733), Inches(0.48),
+        "Kunci Perbedaan: Tiga metode diferensiasi numerik berbeda terutama pada data tetangga mana yang dipakai.")
 
     # =========================================================================
-    # SLIDE 5: SELISIH MAJU DAN MUNDUR
+    # SLIDE 5: METODE SELISIH MAJU (FORWARD DIFFERENCE)
     # =========================================================================
-    s5 = add_base_slide("Pendekatan Deret", "Metode Selisih Maju dan Mundur", 5,
-        "Dua rumus ini adalah yang paling sederhana. Maju memakai titik di depan, mundur memakai titik di belakang. Keduanya hanya butuh dua nilai fungsi dan galatnya berorde h.")
-    add_math_box(s5, Inches(0.8), Inches(1.8), Inches(5.6), Inches(2.6),
-        "Selisih Maju (Forward Difference)",
-        "f'(x) ≈ [f(x + h) - f(x)] / h",
-        "Titik di depan | Cocok untuk ujung kiri data | Galat O(h)")
-    add_math_box(s5, Inches(6.8), Inches(1.8), Inches(5.733), Inches(2.6),
-        "Selisih Mundur (Backward Difference)",
-        "f'(x) ≈ [f(x) - f(x - h)] / h",
-        "Titik di belakang | Cocok untuk ujung kanan data | Galat O(h)")
-    add_card(s5, Inches(0.8), Inches(4.7), Inches(11.733), Inches(1.8), "Karakteristik & Kesimpulan Praktis", [
-        "Sederhana: Masing-masing hanya membutuhkan 2 nilai fungsi.",
-        "Keterbatasan: Orde galat O(h) memerlukan nilai h yang sangat kecil untuk presisi tinggi.",
-        "Buku teks: Beda mundur secara matematis adalah Persamaan 6.1 dengan nilai h negatif."
-    ], "Evaluasi")
+    s5 = add_base_slide("Metode Dasar", "Selisih Maju: Menggunakan Data Setelah Titik", 5,
+        "Selisih maju memperkirakan turunan dengan membandingkan nilai titik sekarang dengan titik berikutnya. Pada contoh detik ke-2, kita pakai posisi detik ke-3 (27) dikurangi detik ke-2 (8) dibagi 1, menghasilkan 19 m/s. Sangat praktis untuk titik awal tabel.")
+
+    add_math_box(s5, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.6),
+        "Rumus Selisih Maju (Forward Difference)",
+        latex=r"f'(x) \approx \frac{f(x+h) - f(x)}{h}",
+        subtext="Membandingkan nilai pada titik evaluasi dengan nilai satu langkah di depannya")
+
+    add_card(s5, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.5), "Cara Memahami Rumus", [
+        "f'(x) : Laju perubahan yang ingin diperkirakan pada titik x.",
+        "f(x+h) : Nilai data satu langkah setelah titik observasi.",
+        "f(x) : Nilai data pada titik observasi saat ini.",
+        "Pembilang : Perubahan nilai ke depan [f(x+h) - f(x)].",
+        "Penyebut h : Mengubahnya menjadi laju per satuan waktu/jarak."
+    ], "Bedah Rumus", accent_color=COLOR_PRIMARY)
+
+    add_custom_card(s5, Inches(6.8), Inches(3.6), Inches(5.733), Inches(2.5),
+        "Contoh Hitungan (t = 2, h = 1)", [
+            "Data: s(2) = 8 meter,  s(3) = 27 meter",
+            "v(2) ≈ (27 − 8) / 1 = 19 m/s",
+            "",
+            "Kapan digunakan: Saat data sesudah titik tersedia.",
+            "Sangat praktis untuk titik paling awal (ujung kiri) tabel.",
+            "Orde Galat: O(h) (penurunan linear terhadap h)."
+        ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD,
+        latex=r"v(2) \approx \frac{27 - 8}{1} = 19\text{ m/s}")
+
+    add_callout_banner(s5, Inches(0.8), Inches(6.25), Inches(11.733), Inches(0.48),
+        "Karakteristik Maju: Memakai titik x dan x+h | Orde galat O(h) | Pilihan utama untuk ujung kiri data.")
 
     # =========================================================================
-    # SLIDE 6: SELISIH TENGAH
+    # SLIDE 6: METODE SELISIH MUNDUR (BACKWARD DIFFERENCE)
     # =========================================================================
-    s6 = add_base_slide("Pendekatan Deret", "Metode Selisih Tengah (Central Difference)", 6,
+    s6 = add_base_slide("Metode Dasar", "Selisih Mundur: Menggunakan Data Sebelum Titik", 6,
+        "Selisih mundur membandingkan nilai saat ini dengan nilai sebelumnya. Pada detik ke-2, kita kurangkan posisi detik ke-2 (8) dengan detik ke-1 (1) dibagi 1, menghasilkan 7 m/s. Cocok untuk titik paling akhir dalam tabel.")
+
+    add_math_box(s6, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.6),
+        "Rumus Selisih Mundur (Backward Difference)",
+        latex=r"f'(x) \approx \frac{f(x) - f(x-h)}{h}",
+        subtext="Membandingkan nilai pada titik evaluasi dengan nilai satu langkah di belakangnya")
+
+    add_card(s6, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.5), "Cara Memahami Rumus", [
+        "f'(x) : Laju perubahan yang ingin diperkirakan pada titik x.",
+        "f(x) : Nilai data pada titik observasi saat ini.",
+        "f(x-h) : Nilai data satu langkah sebelum titik observasi.",
+        "Pembilang : Perubahan nilai dari belakang [f(x) - f(x-h)].",
+        "Penyebut h : Jarak selang antara kedua pengukuran."
+    ], "Bedah Rumus", accent_color=COLOR_BLUE)
+
+    add_custom_card(s6, Inches(6.8), Inches(3.6), Inches(5.733), Inches(2.5),
+        "Contoh Hitungan (t = 2, h = 1)", [
+            "Data: s(2) = 8 meter,  s(1) = 1 meter",
+            "v(2) ≈ (8 − 1) / 1 = 7 m/s",
+            "",
+            "Kapan digunakan: Saat data sebelum titik tersedia.",
+            "Sangat praktis untuk titik paling akhir (ujung kanan) tabel.",
+            "Orde Galat: O(h) (penurunan linear terhadap h)."
+        ], border_color=COLOR_AMBER, title_color=COLOR_AMBER,
+        latex=r"v(2) \approx \frac{8 - 1}{1} = 7\text{ m/s}")
+
+    add_callout_banner(s6, Inches(0.8), Inches(6.25), Inches(11.733), Inches(0.48),
+        "Karakteristik Mundur: Memakai titik x-h dan x | Orde galat O(h) | Pilihan utama untuk ujung kanan data.")
+
+    # =========================================================================
+    # SLIDE 7: METODE SELISIH TENGAH (CENTRAL DIFFERENCE)
+    # =========================================================================
+    s7 = add_base_slide("Metode Dasar", "Selisih Tengah: Menggunakan Dua Sisi", 7,
+        "Selisih tengah menggunakan titik di kiri dan kanan titik yang diamati. Jarak keduanya adalah 2h, sehingga penyebutnya 2h. Pada detik ke-2, (27 - 1)/2 = 13 m/s. Lebih teliti untuk titik di bagian tengah karena simetris.")
+
+    add_math_box(s7, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.6),
+        "Rumus Selisih Tengah (Central Difference)",
+        latex=r"f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}",
+        subtext="Menggunakan data simetris mengapit titik evaluasi (rentang total 2h)")
+
+    add_card(s7, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.5), "Mengapa Penyebutnya 2h?", [
+        "Jarak dari titik kiri (x − h) ke titik tengah (x) adalah h.",
+        "Jarak dari titik tengah (x) ke titik kanan (x + h) adalah h.",
+        "Total rentang jarak titik kiri ke titik kanan adalah 2h.",
+        "Keistimewaan: Nilai f(x) sendiri tidak perlu dihitung!",
+        "Orde Galat: O(h²) — jauh lebih teliti dan simetris."
+    ], "Konsep 2h", accent_color=COLOR_EMERALD)
+
+    add_custom_card(s7, Inches(6.8), Inches(3.6), Inches(5.733), Inches(2.5),
+        "Contoh Hitungan (t = 2, h = 1)", [
+            "Data: s(3) = 27 meter,  s(1) = 1 meter",
+            "v(2) ≈ (27 − 1) / (2 × 1) = 26 / 2 = 13 m/s",
+            "",
+            "Kapan digunakan: Saat data sebelum dan sesudah tersedia.",
+            "Pilihan terbaik untuk titik interior (bagian dalam tabel).",
+            "Orde Galat: Kuadratik O(h²) ⭐."
+        ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD,
+        latex=r"v(2) \approx \frac{27 - 1}{2(1)} = 13\text{ m/s}")
+
+    add_callout_banner(s7, Inches(0.8), Inches(6.25), Inches(11.733), Inches(0.48),
+        "Karakteristik Tengah: Memakai x-h dan x+h | Orde galat O(h²) ⭐ | Pilihan terbaik untuk titik dalam tabel.")
+
+    # =========================================================================
+    # SLIDE 8: BAGAIMANA MEMILIH METODE YANG TEPAT?
+    # =========================================================================
+    s8 = add_base_slide("Panduan Praktis", "Bagaimana Memilih Metode yang Tepat?", 8,
+        "Pemilihan metode bergantung pada data yang tersedia di sekitar titik evaluasi. Jangan pilih rumus hanya karena terlihat mudah. Cek posisinya: di awal gunakan maju, di akhir gunakan mundur, di tengah gunakan selisih tengah.")
+
+    add_table_data(s8, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.1),
+        ["Situasi Data", "Metode yang Digunakan", "Alasan & Logika Penggunaan"],
+        [
+            ["Data setelah titik tersedia", "Selisih Maju", "Membandingkan titik sekarang dengan titik berikutnya"],
+            ["Data sebelum titik tersedia", "Selisih Mundur", "Membandingkan titik sekarang dengan titik sebelumnya"],
+            ["Data sebelum & sesudah tersedia", "Selisih Tengah ⭐", "Menggunakan informasi simetris dari kedua sisi titik"]
+        ])
+
+    add_card(s8, Inches(0.8), Inches(4.1), Inches(11.733), Inches(1.9), "Ilustrasi Praktis pada Data Waktu t = 1, 2, 3", [
+        "Pada t = 1 : Data sebelumnya tidak tersedia → Gunakan Selisih Maju.",
+        "Pada t = 3 : Data sesudahnya tidak tersedia → Gunakan Selisih Mundur.",
+        "Pada t = 2 : Data sebelum (t=1) dan sesudah (t=3) lengkap → Gunakan Selisih Tengah ⭐.",
+        "Aturan Emas: Periksa ketersediaan data tetangga sebelum memilih metode!"
+    ], "Panduan", accent_color=COLOR_PRIMARY)
+
+    add_callout_banner(s8, Inches(0.8), Inches(6.15), Inches(11.733), Inches(0.55),
+        "Peringatan: Jangan memilih metode hanya karena rumusnya mudah; periksa dahulu posisi data dalam tabel!", is_amber=True)
+
+    # =========================================================================
+    # SLIDE 9: APA PERBEDAAN KETELITIAN KETIGA METODE?
+    # =========================================================================
+    s9 = add_base_slide("Analisis Galat", "Apa Perbedaan Ketelitian Ketiga Metode?", 9,
+        "Ketiga metode sama-sama menghasilkan pendekatan, tetapi laju penurunan galatnya berbeda. Selisih maju dan mundur berorde O(h), jika h dibagi dua galat turun separuhnya. Selisih tengah berorde O(h^2), jika h dibagi dua galat turun empat kali lipat.")
+
+    add_table_data(s9, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.1),
+        ["Metode", "Orde Galat Pemotongan", "Makna Sederhana", "Pengaruh Jika h Dibagi 2"],
+        [
+            ["Selisih Maju", "O(h)", "Galat dominan sebanding dengan langkah h", "Galat berkurang ≈ 2×"],
+            ["Selisih Mundur", "O(h)", "Galat dominan sebanding dengan langkah h", "Galat berkurang ≈ 2×"],
+            ["Selisih Tengah", "O(h²) ⭐", "Galat dominan sebanding kuadrat langkah h²", "Galat berkurang ≈ 4×! ⭐"]
+        ])
+
+    add_card(s9, Inches(0.8), Inches(4.1), Inches(5.6), Inches(2.1), "Makna dalam Praktik", [
+        "Jika h diperkecil 1/2, galat maju/mundur turun ≈ 50%.",
+        "Pada selisih tengah, galat turun menjadi 1/4 (≈ 25%)!",
+        "Berlaku selama fungsi cukup mulus dan pembulatan aman."
+    ], "Praktik", accent_color=COLOR_PRIMARY)
+
+    add_card(s9, Inches(6.8), Inches(4.1), Inches(5.733), Inches(2.1), "Kesimpulan Praktis", [
+        "Selisih Tengah: Keunggulan akurasi tinggi, wajib 2 sisi data.",
+        "Maju & Mundur: Tetap esensial di batas batas ujung interval data.",
+        "Kombinasi keduanya biasa dipakai melengkapi tabel penuh."
+    ], "Intisari", accent_color=COLOR_EMERALD)
+
+    add_callout_banner(s9, Inches(0.8), Inches(6.35), Inches(11.733), Inches(0.42),
+        "Kesimpulan: Selisih tengah lebih unggul secara teoritis, tetapi selisih maju dan mundur tak tergantikan di batas ujung.")
+
+    # =========================================================================
+    # SLIDE 10: STUDI KASUS: MENGHITUNG KECEPATAN
+    # =========================================================================
+    s10 = add_base_slide("Studi Kasus", "Studi Kasus: Menghitung Kecepatan dari Data Posisi", 10,
+        "Kita bandingkan ketiga metode langsung pada data posisi yang sama di t=2. Selisih maju menghasilkan 19 m/s, selisih mundur menghasilkan 7 m/s, dan selisih tengah menghasilkan 13 m/s. Ketiganya berbeda karena memakai pasangan data yang berbeda.")
+
+    add_callout_banner(s10, Inches(0.8), Inches(1.8), Inches(11.733), Inches(0.48),
+        "Data Diketahui: s(1) = 1 m,  s(2) = 8 m (titik evaluasi t = 2),  s(3) = 27 m, dengan langkah waktu h = 1 detik.")
+
+    add_custom_card(s10, Inches(0.8), Inches(2.45), Inches(3.6), Inches(3.7),
+        "1. Selisih Maju", [
+            "Data: Waktu t = 2 dan t = 3",
+            "v(2) ≈ [s(3) − s(2)] / h",
+            "= (27 − 8) / 1",
+            "= 19 m/s",
+            "",
+            "Mengamati laju perubahan pada interval depan [2, 3]."
+        ], border_color=COLOR_PRIMARY, title_color=COLOR_PRIMARY,
+        latex=r"v(2) \approx \frac{27-8}{1} = 19\text{ m/s}")
+
+    add_custom_card(s10, Inches(4.8), Inches(2.45), Inches(3.6), Inches(3.7),
+        "2. Selisih Mundur", [
+            "Data: Waktu t = 1 dan t = 2",
+            "v(2) ≈ [s(2) − s(1)] / h",
+            "= (8 − 1) / 1",
+            "= 7 m/s",
+            "",
+            "Mengamati laju perubahan pada interval belakang [1, 2]."
+        ], border_color=COLOR_BLUE, title_color=COLOR_BLUE,
+        latex=r"v(2) \approx \frac{8-1}{1} = 7\text{ m/s}")
+
+    add_custom_card(s10, Inches(8.8), Inches(2.45), Inches(3.733), Inches(3.7),
+        "3. Selisih Tengah", [
+            "Data: Waktu t = 1 dan t = 3",
+            "v(2) ≈ [s(3) − s(1)] / (2h)",
+            "= (27 − 1) / 2",
+            "= 13 m/s ⭐",
+            "",
+            "Merata-ratakan interval penuh [1, 3] sebesar 2h."
+        ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD,
+        latex=r"v(2) \approx \frac{27-1}{2} = 13\text{ m/s}")
+
+    add_callout_banner(s10, Inches(0.8), Inches(6.3), Inches(11.733), Inches(0.45),
+        "Observasi: Ketiga hasil berbeda (19, 7, 13 m/s) karena setiap metode menggunakan pasangan titik observasi yang berbeda.")
+
+    # =========================================================================
+    # SLIDE 11: MEMBACA DAN MENAFSIRKAN HASIL
+    # =========================================================================
+    s11 = add_base_slide("Evaluasi Hasil", "Membaca dan Menafsirkan Hasil Perhitungan", 11,
+        "Perbedaan hasil bukan karena salah hitung. Benda ini dipercepat, sehingga wajar kecepatan interval awal (7 m/s) lebih lambat dibanding interval berikutnya (19 m/s). Selisih tengah merata-ratakannya menjadi 13 m/s.")
+
+    add_table_data(s11, Inches(0.8), Inches(1.8), Inches(5.6), Inches(2.3),
+        ["Metode", "Hasil Kecepatan", "Rentang Data yang Dipakai"],
+        [
+            ["Selisih Maju", "19 m/s", "Detik ke-2 menuju detik ke-3"],
+            ["Selisih Mundur", "7 m/s", "Detik ke-1 menuju detik ke-2"],
+            ["Selisih Tengah", "13 m/s ⭐", "Detik ke-1 menuju ke-3 (rentang 2s)"]
+        ])
+
+    add_card(s11, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.3), "Apa yang Dapat Kita Pahami?", [
+        "Bukan Salah Hitung: Perbedaan muncul murni karena rentang pengamatan berbeda.",
+        "Gerak Dipercepat: Laju benda bertambah cepat seiring berjalannya waktu.",
+        "Laju Awal vs Akhir: Wajar bila interval awal (7 m/s) lebih lambat dari interval akhir (19 m/s).",
+        "Selisih Tengah: Bertindak merata-ratakan kedua perubahan menjadi 13 m/s.",
+        "Pesan Penting: Hasil diferensiasi numerik adalah perkiraan; pahami konteks data sebelum menafsirkan!"
+    ], "Interpretasi Fisis", accent_color=COLOR_PRIMARY)
+
+    add_card(s11, Inches(0.8), Inches(4.3), Inches(5.6), Inches(1.8), "Rangkuman Rentang", [
+        "Maju: Mencerminkan tren ke masa depan [2, 3].",
+        "Mundur: Mencerminkan tren dari masa lalu [1, 2].",
+        "Tengah: Keseimbangan simetris dua arah [1, 3] ⭐."
+    ], "Karakter", accent_color=COLOR_EMERALD)
+
+    add_callout_banner(s11, Inches(0.8), Inches(6.25), Inches(11.733), Inches(0.48),
+        "Pesan Utama: Hasil diferensiasi numerik merupakan perkiraan. Selalu pahami rentang data sebelum menafsirkan!")
+
+    # =========================================================================
+    # SLIDE 12: MEMERIKSA GALAT DAN MENARIK KESIMPULAN
+    # =========================================================================
+    s12 = add_base_slide("Evaluasi Galat", "Memeriksa Galat dan Menarik Kesimpulan", 12,
+        "Karena data dibuat dari fungsi s(t) = t^3, kita tahu nilai eksaknya adalah 12 m/s. Galat selisih maju 7, mundur 5, dan tengah hanya 1. Selisih tengah terbukti paling teliti, namun tetap perhatikan ketersediaan data di lapangan.")
+
+    add_math_box(s12, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.5),
+        "Nilai Eksak & Rumus Galat",
+        latex=r"s'(2) = 3(2)^2 = 12\text{ m/s}, \quad E = |v_{num} - v_{eksak}|",
+        subtext="Fungsi posisi s(t) = t³ -> Kecepatan eksak s'(t) = 3t²")
+
+    add_table_data(s12, Inches(0.8), Inches(3.45), Inches(5.6), Inches(2.5),
+        ["Metode", "Perkiraan", "Nilai Eksak", "Galat Absolut"],
+        [
+            ["Maju", "19 m/s", "12 m/s", "7 m/s"],
+            ["Mundur", "7 m/s", "12 m/s", "5 m/s"],
+            ["Tengah", "13 m/s", "12 m/s", "1 m/s ⭐"]
+        ])
+
+    add_card(s12, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.15), "Ringkasan yang Perlu Diingat", [
+        "Maju: Gunakan data titik saat ini dan sesudahnya (x, x+h).",
+        "Mundur: Gunakan data titik sebelumnya dan saat ini (x-h, x).",
+        "Tengah: Gunakan data sebelum dan sesudah (x-h, x+h).",
+        "Pilih Metode: Sesuaikan dengan posisi titik data yang tersedia di tabel.",
+        "Evaluasi: Jika nilai eksak ada, hitung galat untuk mengukur kedekatan.",
+        "Catatan: Selisih tengah paling dekat ke eksak (E = 1 m/s), namun data harus lengkap di kedua sisi!"
+    ], "Pedoman Inti", accent_color=COLOR_EMERALD)
+
+    add_callout_banner(s12, Inches(0.8), Inches(6.15), Inches(11.733), Inches(0.55),
+        "Kesimpulan Akhir: Selisih tengah paling teliti (galat 1 m/s), tetapi pemilihan metode di lapangan harus selalu realistis terhadap ketersediaan data!")
+
+    # =========================================================================
+    # SLIDE 13: METODE SELISIH TENGAH (PERSAMAAN 6.5 BUKU)
+    # =========================================================================
+    s13 = add_base_slide("Pendekatan Deret", "Metode Selisih Tengah (Central Difference)", 13,
         "Selisih tengah adalah rumus tiga titik tengah di buku (6.5), tanpa memakai f(x₀) itu sendiri. Karena simetris, suku galat orde pertama saling meniadakan, sehingga galatnya berorde h².")
-    add_math_box(s6, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.5),
+    add_math_box(s13, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.5),
         "Rumus Tiga Titik Tengah (Persamaan 6.5)",
-        "f'(x₀) ≈ [f(x₀ + h) - f(x₀ - h)] / (2h)",
-        "Suku galat pemotongan:  -(h² / 6) f'''(ξ₁) ,  ξ₁ ∈ (x₀ - h, x₀ + h)  =>  O(h²)")
-    add_card(s6, Inches(0.8), Inches(4.6), Inches(5.6), Inches(1.9), "Kelebihan", [
+        latex=r"f'(x_0) \approx \frac{f(x_0 + h) - f(x_0 - h)}{2h}, \quad R = -\frac{h^2}{6} f'''(\xi)",
+        subtext="Suku galat pemotongan berorde O(h²): pembagian h menjadi 1/2 mengurangi galat 4x lipat!")
+    add_card(s13, Inches(0.8), Inches(4.6), Inches(5.6), Inches(1.9), "Kelebihan", [
         "Simetris: Suku ganjil Taylor saling meniadakan.",
         "Orde O(h²): Jika h dibagi 2, galat turun 4 kali lipat!",
         "Nilai f(x₀) tidak perlu dihitung dalam rumus."
-    ], "Kelebihan")
-    add_card(s6, Inches(6.8), Inches(4.6), Inches(5.733), Inches(1.9), "Keterbatasan", [
+    ], "Kelebihan", accent_color=COLOR_EMERALD)
+    add_card(s13, Inches(6.8), Inches(4.6), Inches(5.733), Inches(1.9), "Keterbatasan", [
         "Membutuhkan nilai fungsi di kedua sisi titik (kiri & kanan).",
         "Tidak dapat digunakan pada batas paling ujung data tabel.",
-        "Memerlukan rumus titik ujung (slide 7)."
-    ], "Keterbatasan")
+        "Memerlukan rumus titik ujung (slide 14)."
+    ], "Keterbatasan", accent_color=COLOR_AMBER)
 
     # =========================================================================
-    # SLIDE 7: RUMUS TIGA TITIK DAN LIMA TITIK
+    # SLIDE 14: RUMUS TIGA TITIK DAN LIMA TITIK
     # =========================================================================
-    s7 = add_base_slide("Pendekatan Deret", "Rumus Tiga Titik dan Lima Titik", 7,
+    s14 = add_base_slide("Pendekatan Deret", "Rumus Tiga Titik dan Lima Titik", 14,
         "Rumus tiga titik ujung dipakai saat titik ada di ujung data. Rumus lima titik tengah memakai koefisien 1, -8, 8, -1 dan penyebut 12h; galatnya berorde h⁴.")
-    add_math_box(s7, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.3),
+    add_math_box(s14, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.3),
         "3 Titik Ujung (6.4)",
-        "[-3f₀ + 4f₁ - f₂] / 2h",
-        "Galat: (h²/3) f''' => O(h²)")
-    add_math_box(s7, Inches(4.8), Inches(1.8), Inches(3.6), Inches(2.3),
+        latex=r"f'(x_0) \approx \frac{-3f_0 + 4f_1 - f_2}{2h}",
+        subtext="Galat: (h²/3) f''' => O(h²)")
+    add_math_box(s14, Inches(4.8), Inches(1.8), Inches(3.6), Inches(2.3),
         "5 Titik Tengah (6.7)",
-        "[f₋₂ - 8f₋₁ + 8f₁ - f₂] / 12h",
-        "Galat: (h⁴/30) f⁽⁵⁾ => O(h⁴)")
-    add_math_box(s7, Inches(8.8), Inches(1.8), Inches(3.733), Inches(2.3),
+        latex=r"f'(x_0) \approx \frac{f_{-2} - 8f_{-1} + 8f_1 - f_2}{12h}",
+        subtext="Galat: (h⁴/30) f⁽⁵⁾ => O(h⁴)")
+    add_math_box(s14, Inches(8.8), Inches(1.8), Inches(3.733), Inches(2.3),
         "5 Titik Ujung (6.6)",
-        "[-25f₀ + 48f₁ - 36f₂ + 16f₃ - 3f₄] / 12h",
-        "Galat: (h⁴/5) f⁽⁵⁾ => O(h⁴)")
+        latex=r"f'(x_0) \approx \frac{-25f_0 + 48f_1 - 36f_2 + 16f_3 - 3f_4}{12h}",
+        subtext="Galat: (h⁴/5) f⁽⁵⁾ => O(h⁴)")
 
-    add_table_data(s7, Inches(0.8), Inches(4.4), Inches(11.733), Inches(2.1),
+    add_table_data(s14, Inches(0.8), Inches(4.4), Inches(11.733), Inches(2.1),
         ["Aspek", "Tiga Titik Ujung (6.4)", "Lima Titik Tengah (6.7)", "Lima Titik Ujung (6.6)"],
         [
             ["Jumlah Titik", "3 titik", "5 titik", "5 titik"],
@@ -457,38 +908,38 @@ def create_presentation():
         ])
 
     # =========================================================================
-    # SLIDE 8: CONTOH 6.1.1 f(x) = ln x
+    # SLIDE 15: CONTOH 6.1.1 f(x) = ln x
     # =========================================================================
-    s8 = add_base_slide("Contoh 6.1.1", "Contoh: Selisih Maju untuk f(x) = ln x", 8,
+    s15 = add_base_slide("Contoh 6.1.1", "Contoh: Selisih Maju untuk f(x) = ln x", 15,
         "Substitusikan x₀ = 1,8 dan h = 0,1 ke rumus beda maju: ln 1,9 dikurangi ln 1,8, dibagi 0,1, hasilnya 0,5406722. Bandingkan dengan eksak 1/1,8 = 0,5555556.")
-    add_math_box(s8, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.8),
+    add_math_box(s15, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.8),
         "Perhitungan Kasus x₀ = 1,8 ; h = 0,1",
-        "f'(1,8) ≈ [ln(1,9) - ln(1,8)] / 0,1 = (0,64185389 - 0,58778667) / 0,1 = 0,5406722",
-        "Nilai Eksak: f'(x) = 1/x => f'(1,8) = 1/1,8 ≈ 0,5555556")
-    add_table_data(s8, Inches(0.8), Inches(3.8), Inches(11.733), Inches(2.2),
+        latex=r"f'(1.8) \approx \frac{\ln(1.9) - \ln(1.8)}{0.1} = \frac{0.64185 - 0.58779}{0.1} = 0.5406722",
+        subtext="Nilai Eksak: f'(x) = 1/x => f'(1,8) = 1/1,8 ≈ 0,5555556")
+    add_table_data(s15, Inches(0.8), Inches(3.8), Inches(11.733), Inches(2.2),
         ["Langkah h", "Nilai Pendekatan", "Galat Aktual |Eksak - Pend.|", "Batas Atas Galat |h| / [2(1,8)²]"],
         [
             ["0,10", "0,5406722", "0,0148834", "0,0154321"],
             ["0,05", "0,5479795", "0,0075761", "0,0077160"],
             ["0,01", "0,5540180", "0,0015376 ⭐", "0,0015432"]
         ])
-    add_card(s8, Inches(0.8), Inches(6.1), Inches(11.733), Inches(0.65), "Keterangan", [
+    add_card(s15, Inches(0.8), Inches(6.1), Inches(11.733), Inches(0.65), "Keterangan", [
         "Makin kecil h, pendekatan makin dekat ke eksak. Batas atas teoritis terbukti selalu lebih besar dari galat aktual."
-    ])
+    ], accent_color=COLOR_PRIMARY)
 
     # =========================================================================
-    # SLIDE 9: ANALISIS GALAT
+    # SLIDE 16: ANALISIS GALAT
     # =========================================================================
-    s9 = add_base_slide("Analisis Galat", "Galat atau Kesalahan Pendekatan", 9,
+    s16 = add_base_slide("Analisis Galat", "Galat atau Kesalahan Pendekatan", 16,
         "Setiap rumus yang kita pakai hanya pendekatan. Galat pemotongan muncul karena suku dibuang. Orde O(h), O(h²), O(h⁴) menunjukkan kecepatan galat mengecil.")
-    add_card(s9, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Konsep Dasar Galat", [
+    add_card(s16, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Konsep Dasar Galat", [
         "Turunan numerik selalu berupa hampiran / pendekatan.",
         "Galat Pemotongan (Truncation Error): Akibat memutus deret tak hingga Taylor.",
         "Galat Bertanda = Eksak - Pendekatan.",
         "Galat Absolut = |Eksak - Pendekatan|.",
         "Pengaruh h: h makin kecil -> galat pemotongan umumnya turun."
-    ], "Teori")
-    add_card(s9, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Perbandingan Orde Galat O(h^p)", [
+    ], "Teori", accent_color=COLOR_PRIMARY)
+    add_card(s16, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Perbandingan Orde Galat O(h^p)", [
         "Selisih Maju  : O(h)    [Linear, penurunan lambat]",
         "Selisih Mundur: O(h)    [Linear, penurunan lambat]",
         "Selisih Tengah: O(h²)   [Kuadratik, h/2 -> galat / 4]",
@@ -496,21 +947,21 @@ def create_presentation():
         "5 Titik Tengah: O(h⁴)   [Kuartik, h/2 -> galat / 16! ⭐]",
         "5 Titik Ujung : O(h⁴)   [Kuartik, h/2 -> galat / 16! ⭐]",
         "Notasi Big-O adalah perilaku asimtotik saat h cukup kecil."
-    ], "Orde")
+    ], "Orde", accent_color=COLOR_EMERALD)
 
     # =========================================================================
-    # SLIDE 10: PENGARUH h & DILEMA PEMBULATAN
+    # SLIDE 17: PENGARUH h & DILEMA PEMBULATAN
     # =========================================================================
-    s10 = add_base_slide("Analisis Galat Tambahan", "Pengaruh Nilai h dan Sumber Galat", 10,
+    s17 = add_base_slide("Analisis Galat Tambahan", "Pengaruh Nilai h dan Sumber Galat", 17,
         "Ada dua sumber galat berlawanan: pemotongan (mengecil saat h turun) vs pembulatan/noise (membesar saat h turun). Tabel dihitung sendiri dengan e^x di x=1.")
-    add_card(s10, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Trade-off Komputasi", [
+    add_card(s17, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Trade-off Komputasi", [
         "Galat Pemotongan ~ h^p: Turun saat h mengecil.",
         "Galat Pembulatan / Noise ~ δ/h: Naik saat h mengecil!",
         "Total Galat (Tengah): E(h) ≤ (M h² / 6) + (δ / h)",
         "Langkah Optimum: h* ≈ ³√(3δ / M)",
         "Peringatan: Nilai h yang terlalu kecil TIDAK SELALU lebih akurat!"
-    ], "Model")
-    add_table_data(s10, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7),
+    ], "Model", accent_color=COLOR_AMBER)
+    add_table_data(s17, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7),
         ["Langkah h", "Galat Maju", "Galat Tengah"],
         [
             ["10⁻¹", "1,41 × 10⁻¹", "4,53 × 10⁻³"],
@@ -522,69 +973,62 @@ def create_presentation():
         ])
 
     # =========================================================================
-    # SLIDE 11: GALAT ABSOLUT, RELATIF, PERSENTASE
+    # SLIDE 18: GALAT ABSOLUT, RELATIF, PERSENTASE
     # =========================================================================
-    s11 = add_base_slide("Analisis Galat Tambahan", "Galat Absolut, Relatif, dan Persentase", 11,
+    s18 = add_base_slide("Analisis Galat Tambahan", "Galat Absolut, Relatif, dan Persentase", 18,
         "Slide ini melengkapi slide galat: Ea memberi satuan turunan, Er membandingkan dengan besar turunan, E_% adalah Er x 100. Jika turunan nol, Er tidak terdefinisi.")
-    add_math_box(s11, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.2),
+    add_math_box(s18, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.2),
         "Galat Absolut (Ea)",
-        "Ea = |f'(x) - Dh|",
-        "Satuan sama dengan turunan f'")
-    add_math_box(s11, Inches(4.8), Inches(1.8), Inches(3.6), Inches(2.2),
+        latex=r"E_a = |f'(x) - D(h)|",
+        subtext="Satuan sama dengan turunan f'")
+    add_math_box(s18, Inches(4.8), Inches(1.8), Inches(3.6), Inches(2.2),
         "Galat Relatif (Er)",
-        "Er = |f'(x) - Dh| / |f'(x)|",
-        "Ukuran proporsional")
-    add_math_box(s11, Inches(8.8), Inches(1.8), Inches(3.733), Inches(2.2),
+        latex=r"E_r = \frac{|f'(x) - D(h)|}{|f'(x)|}",
+        subtext="Ukuran proporsional tanpa satuan")
+    add_math_box(s18, Inches(8.8), Inches(1.8), Inches(3.733), Inches(2.2),
         "Galat Persentase (E%)",
-        "E% = Er × 100%",
-        "Format persentase praktis")
+        latex=r"E_{\%} = E_r \times 100\%",
+        subtext="Format persentase praktis")
 
-    add_card(s11, Inches(0.8), Inches(4.3), Inches(11.733), Inches(2.3), "Contoh Aplikasi: Kasus ln x di x = 1,8 (h = 0,1)", [
+    add_card(s18, Inches(0.8), Inches(4.3), Inches(11.733), Inches(2.3), "Contoh Aplikasi: Kasus ln x di x = 1,8 (h = 0,1)", [
         "Dh = 0,5406722  dan  f'(1,8) = 0,5555556",
         "Ea = |0,5555556 - 0,5406722| = 0,0148834",
         "Er = 0,0148834 / 0,5555556 ≈ 0,0267901",
         "E% ≈ 2,679%",
         "Perhatian Khusus: Jika f'(x) = 0, Er tidak terdefinisi (pembagian nol). Gunakan Ea!"
-    ], "Aplikasi")
+    ], "Aplikasi", accent_color=COLOR_PRIMARY)
 
     # =========================================================================
-    # SLIDE 12: METODE EKSTRAPOLASI RICHARDSON
+    # SLIDE 19: METODE EKSTRAPOLASI RICHARDSON
     # =========================================================================
-    s12 = add_base_slide("Ekstrapolasi Richardson", "Metode Ekstrapolasi Richardson", 12,
+    s19 = add_base_slide("Ekstrapolasi Richardson", "Metode Ekstrapolasi Richardson", 19,
         "Richardson tidak membuat rumus turunan baru dari data; ia menggabungkan dua hasil yang sudah ada. Hitung D(h) dan D(2h), lalu tambahkan koreksi [D(h) − D(2h)]/(2ⁿ − 1). Untuk selisih tengah galatnya O(h²), jadi n = 2 dan rumusnya (4D(h) − D(2h))/3 dengan orde O(h⁴). Untuk selisih maju n = 1. Di buku, langkah besar ditulis h dan langkah kecil h/2, jadi D(h) di slide ini sama dengan N₁(h/2) di buku. Pilih n sesuai bentuk galat pendekatan awal.")
 
-    # Left Top: Pengertian
-    add_custom_card(s12, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.8), "Pengertian", [
+    add_custom_card(s19, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.8), "Pengertian", [
         "Menggabungkan dua pendekatan dengan ukuran langkah berbeda untuk membuang suku galat utama, sehingga hasilnya lebih teliti."
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    # Left Bottom: Prinsip kerja
-    add_custom_card(s12, Inches(0.8), Inches(3.8), Inches(5.6), Inches(2.6), "Prinsip kerja", [
+    add_custom_card(s19, Inches(0.8), Inches(3.8), Inches(5.6), Inches(2.6), "Prinsip kerja", [
         "1. Hitung pendekatan turunan dengan langkah h → D(h)",
         "2. Hitung pendekatan dengan langkah 2h → D(2h)",
         "3. Gabungkan keduanya untuk mengurangi galat utama"
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    # Right Top: Rumus umum
-    add_custom_card(s12, Inches(6.8), Inches(1.8), Inches(5.733), Inches(3.1), "Rumus umum", [
-        "f'_0 = D(h) + [ D(h) - D(2h) ] / (2ⁿ - 1)",
-        "",
+    add_custom_card(s19, Inches(6.8), Inches(1.8), Inches(5.733), Inches(3.1), "Rumus umum", [
         "• f′₀ : nilai turunan di x₀ setelah ekstrapolasi",
         "• D(h) : hasil pendekatan turunan langkah h (lebih kecil)",
         "• D(2h) : hasil pendekatan turunan langkah 2h (dua kali lebih besar)",
         "• n : orde galat awal, yaitu O(hⁿ)",
-        "",
         "Kedua hasil digabung untuk menghilangkan suku galat utama."
-    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD,
+    latex=r"f'_0 \approx D(h) + \frac{D(h) - D(2h)}{2^n - 1}")
 
-    # Right Bottom: Contoh: selisih tengah (n = 2)
-    add_custom_card(s12, Inches(6.8), Inches(5.05), Inches(5.733), Inches(1.35), "Contoh: selisih tengah (n = 2)", [
-        "f'_0 = [ 4 D(h) - D(2h) ] / 3",
-        "Orde galat naik: O(h²) → O(h⁴) ⭐"
-    ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
+    add_custom_card(s19, Inches(6.8), Inches(5.05), Inches(5.733), Inches(1.35), "Contoh: selisih tengah (n = 2)", [
+        "Orde galat naik secara signifikan: O(h²) → O(h⁴) ⭐"
+    ], border_color=COLOR_AMBER, title_color=COLOR_AMBER,
+    latex=r"f'_0 \approx \frac{4 D(h) - D(2h)}{3}")
 
-    # Footnote
-    fn_box = s12.shapes.add_textbox(Inches(0.8), Inches(6.5), Inches(11.733), Inches(0.25))
+    fn_box = s19.shapes.add_textbox(Inches(0.8), Inches(6.5), Inches(11.733), Inches(0.25))
     fn_tf = fn_box.text_frame
     fn_p = fn_tf.paragraphs[0]
     fn_p.text = "Kaitan notasi slide berikut: D(h) = N₁(h/2), D(2h) = N₁(h). Untuk n = 1 (selisih maju): 2D(h) − D(2h)."
@@ -593,27 +1037,24 @@ def create_presentation():
     fn_p.font.color.rgb = COLOR_MUTED
 
     # =========================================================================
-    # SLIDE 13: CONTOH 6.2.1 RICHARDSON f(x) = ln x
+    # SLIDE 20: CONTOH 6.2.1 RICHARDSON f(x) = ln x
     # =========================================================================
-    s13 = add_base_slide("Contoh 6.2.1", "Contoh Richardson pada f(x) = ln x", 13,
+    s20 = add_base_slide("Contoh 6.2.1", "Contoh Richardson pada f(x) = ln x", 20,
         "Galat awal selisih maju berorde h, jadi pakai rumus n = 1: dua kali hasil yang lebih teliti dikurangi hasil yang kurang teliti. Hitung: 2 × 0,5479795 = 1,0959590; dikurangi 0,5406722 menghasilkan 0,5552868. Galat tiap hasil dihitung dari nilai eksak 0,5555556. Buku menulis hasil 0,555287 dan galat 0,000258; hitung ulang dari angka buku memberi 0,0002688, dan kami memakai angka yang konsisten dengan digit di slide.")
 
-    # Left Top: Diketahui
-    add_custom_card(s13, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.6), "Diketahui:", [
+    add_custom_card(s20, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.6), "Diketahui:", [
         "f(x) = ln x,  x₀ = 1,8",
         "N₁(0,1) = 0,5406722  ·  N₁(0,05) = 0,5479795",
         "Selisih maju: galat O(h), jadi n = 1"
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    # Left Bottom: Perhitungan
-    add_custom_card(s13, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.1), "Perhitungan", [
-        "N₂(0,1) = 2 N₁(0,05) - N₁(0,1)",
+    add_custom_card(s20, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.1), "Perhitungan", [
         "= 2(0,5479795) - 0,5406722",
-        "= 0,5552868 ⭐"
-    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
+        "= 0,5552868 ⭐ (28x lebih teliti dari N₁(0,05))"
+    ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD,
+    latex=r"N_2(0.1) = 2 N_1(0.05) - N_1(0.1)")
 
-    # Right: Table
-    add_table_data(s13, Inches(6.8), Inches(1.8), Inches(5.733), Inches(1.9),
+    add_table_data(s20, Inches(6.8), Inches(1.8), Inches(5.733), Inches(1.9),
         ["Metode", "Hasil", "Galat absolut"],
         [
             ["Selisih maju, h = 0,1", "0,5406722", "0,0148834"],
@@ -622,74 +1063,32 @@ def create_presentation():
             ["Nilai eksak", "0,5555556", "—"]
         ])
 
-    # Right Bottom: Visual Bars
-    bars_card = s13.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(3.9), Inches(5.733), Inches(1.8))
-    bars_card.fill.solid()
-    bars_card.fill.fore_color.rgb = COLOR_CARD
-    bars_card.line.color.rgb = COLOR_BORDER
-    bars_card.line.width = Pt(1)
+    buf_chart, chart_w, chart_h = generate_error_bar_chart()
+    chart_card = s20.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(3.9), Inches(5.733), Inches(1.85))
+    chart_card.fill.solid()
+    chart_card.fill.fore_color.rgb = COLOR_CARD
+    chart_card.line.color.rgb = COLOR_BORDER
+    chart_card.line.width = Pt(1)
 
-    tb_bars = s13.shapes.add_textbox(Inches(7.0), Inches(3.98), Inches(5.333), Inches(1.6))
-    tf_bars = tb_bars.text_frame
-    p_bl = tf_bars.paragraphs[0]
-    p_bl.text = "Galat (makin pendek makin baik)"
-    p_bl.font.name = FONT_MAIN
-    p_bl.font.size = Pt(10)
-    p_bl.font.bold = True
-    p_bl.font.color.rgb = COLOR_MUTED
-    p_bl.space_after = Pt(2)
+    chart_target_w = 5.5
+    chart_target_h = chart_target_w * (chart_h / chart_w)
+    s20.shapes.add_picture(buf_chart, Inches(6.9), Inches(3.95), Inches(chart_target_w), Inches(chart_target_h))
 
-    b1_label = tf_bars.add_paragraph()
-    b1_label.text = "h = 0,1  ·  0,0148834"
-    b1_label.font.name = FONT_MAIN
-    b1_label.font.size = Pt(9.5)
-    b1_label.font.color.rgb = COLOR_TEXT
-
-    bar1 = s13.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(7.0), Inches(4.45), Inches(4.8), Inches(0.14))
-    bar1.fill.solid()
-    bar1.fill.fore_color.rgb = COLOR_BLUE
-    bar1.line.fill.background()
-
-    b2_label = tf_bars.add_paragraph()
-    b2_label.text = "\nh = 0,05  ·  0,0075761"
-    b2_label.font.name = FONT_MAIN
-    b2_label.font.size = Pt(9.5)
-    b2_label.font.color.rgb = COLOR_TEXT
-
-    bar2 = s13.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(7.0), Inches(4.95), Inches(2.44), Inches(0.14))
-    bar2.fill.solid()
-    bar2.fill.fore_color.rgb = COLOR_BLUE
-    bar2.line.fill.background()
-
-    b3_label = tf_bars.add_paragraph()
-    b3_label.text = "\nRichardson  ·  0,0002688"
-    b3_label.font.name = FONT_MAIN
-    b3_label.font.size = Pt(9.5)
-    b3_label.font.bold = True
-    b3_label.font.color.rgb = COLOR_AMBER
-
-    bar3 = s13.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(7.0), Inches(5.45), Inches(0.15), Inches(0.14))
-    bar3.fill.solid()
-    bar3.fill.fore_color.rgb = COLOR_AMBER
-    bar3.line.fill.background()
-
-    # Bottom Banner
-    add_callout_banner(s13, Inches(0.8), Inches(5.9), Inches(11.733), Inches(0.68),
+    add_callout_banner(s20, Inches(0.8), Inches(5.95), Inches(11.733), Inches(0.68),
         "Kesimpulan: Richardson mengurangi galat sekitar 28 kali dibanding selisih maju dengan h = 0,05 (0,0075761 ÷ 0,0002688 ≈ 28).")
 
     # =========================================================================
-    # SLIDE 14: CONTOH 6.1.2 DATA TABEL f(x) = x e^x
+    # SLIDE 21: CONTOH 6.1.2 DATA TABEL f(x) = x e^x
     # =========================================================================
-    s14 = add_base_slide("Contoh 6.1.2", "Perbandingan Metode Diferensiasi pada Data Tabel", 14,
-        "Semua hasil dihitung dari lima nilai tabel, bukan dari rumus fungsi. Nilai eksak 3e² ≈ 22,167168 hanya dipakai sebagai pembanding. Galat absolut dihitung |eksak − pendekatan|: 0,134858; 0,061622; 0,000169. Lima titik tengah paling dekat karena galatnya O(h⁴), sedangkan dua rumus lain O(h²). Tiga titik tengah dengan h berbeda nantinya menjadi bahan Richardson pada slide 16.")
+    s21 = add_base_slide("Contoh 6.1.2", "Perbandingan Metode Diferensiasi pada Data Tabel", 21,
+        "Semua hasil dihitung dari lima nilai tabel, bukan dari rumus fungsi. Nilai eksak 3e² ≈ 22,167168 hanya dipakai sebagai pembanding. Galat absolut dihitung |eksak − pendekatan|: 0,134858; 0,061622; 0,000169. Lima titik tengah paling dekat karena galatnya O(h⁴), sedangkan dua rumus lain O(h²). Tiga titik tengah dengan h berbeda nantinya menjadi bahan Richardson pada slide 23.")
 
-    # Left Box with Header text
-    left_box = s14.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.8), Inches(4.6), Inches(4.7))
+    left_box = s21.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.8), Inches(4.6), Inches(4.7))
     left_box.fill.solid()
     left_box.fill.fore_color.rgb = COLOR_CARD
     left_box.line.color.rgb = COLOR_BORDER
 
-    tb_fn = s14.shapes.add_textbox(Inches(1.0), Inches(1.95), Inches(4.2), Inches(0.4))
+    tb_fn = s21.shapes.add_textbox(Inches(1.0), Inches(1.95), Inches(4.2), Inches(0.4))
     tf_fn = tb_fn.text_frame
     p_fn = tf_fn.paragraphs[0]
     p_fn.text = "f(x) = xeˣ,  x₀ = 2,0,  h = 0,1"
@@ -698,7 +1097,7 @@ def create_presentation():
     p_fn.font.bold = True
     p_fn.font.color.rgb = COLOR_PRIMARY
 
-    add_table_data(s14, Inches(1.0), Inches(2.45), Inches(4.2), Inches(3.8),
+    add_table_data(s21, Inches(1.0), Inches(2.45), Inches(4.2), Inches(3.8),
         ["x", "f(x)"],
         [
             ["1,8", "10,889365"],
@@ -708,8 +1107,7 @@ def create_presentation():
             ["2,2", "19,855030"]
         ])
 
-    # Right Results Table
-    add_table_data(s14, Inches(5.8), Inches(1.8), Inches(6.733), Inches(2.1),
+    add_table_data(s21, Inches(5.8), Inches(1.8), Inches(6.733), Inches(2.1),
         ["Metode", "f′(2)", "Galat absolut"],
         [
             ["Tiga titik ujung", "22,032310", "0,134858"],
@@ -718,24 +1116,21 @@ def create_presentation():
             ["Nilai eksak 3e²", "22,167168", "—"]
         ])
 
-    # Conclusion Banner
-    add_callout_banner(s14, Inches(5.8), Inches(4.15), Inches(6.733), Inches(0.65),
+    add_callout_banner(s21, Inches(5.8), Inches(4.15), Inches(6.733), Inches(0.65),
         "Kesimpulan: di antara ketiga metode, lima titik tengah paling akurat.")
 
-    # Amber card: Kaitan dengan Richardson
-    add_custom_card(s14, Inches(5.8), Inches(5.0), Inches(6.733), Inches(1.5),
+    add_custom_card(s21, Inches(5.8), Inches(5.0), Inches(6.733), Inches(1.5),
         "Kaitan dengan Richardson:", [
-            "Hasil pendekatan turunan dapat dipakai sebagai dasar (N₁) untuk meningkatkan ketelitian lewat ekstrapolasi (slide 16)."
+            "Hasil pendekatan turunan dapat dipakai sebagai dasar (N₁) untuk meningkatkan ketelitian lewat ekstrapolasi (slide 23)."
         ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
 
     # =========================================================================
-    # SLIDE 15: CONTOH 6.1.3 STRATEGI PEMILIHAN RUMUS
+    # SLIDE 22: CONTOH 6.1.3 STRATEGI PEMILIHAN RUMUS
     # =========================================================================
-    s15 = add_base_slide("Contoh 6.1.3", "Strategi Pemilihan Rumus Diferensiasi", 15,
-        "Lihat posisi titik dulu. Di ujung tidak ada data di salah satu sisi, jadi pakai rumus ujung. Di titik dalam bisa pakai rumus tengah, dan lima titik tengah hanya pada x = 1,3 karena butuh dua titik di tiap sisi. Hitungan memakai nilai tabel penuh; buku menampilkannya dibulatkan. Hubungan dengan Richardson: untuk membentuk N₁ dengan h dan h/2, data pada kedua ukuran langkah itu harus ada; ini akan terlihat jelas di slide 17.")
+    s22 = add_base_slide("Contoh 6.1.3", "Strategi Pemilihan Rumus Diferensiasi", 22,
+        "Lihat posisi titik dulu. Di ujung tidak ada data di salah satu sisi, jadi pakai rumus ujung. Di titik dalam bisa pakai rumus tengah, dan lima titik tengah hanya pada x = 1,3 karena butuh dua titik di tiap sisi. Hitungan memakai nilai tabel penuh; buku menampilkannya dibulatkan. Hubungan dengan Richardson: untuk membentuk N₁ dengan h dan h/2, data pada kedua ukuran langkah itu harus ada; ini akan terlihat jelas di slide 24.")
 
-    # Top Left Table
-    add_table_data(s15, Inches(0.8), Inches(1.8), Inches(5.3), Inches(2.1),
+    add_table_data(s22, Inches(0.8), Inches(1.8), Inches(5.3), Inches(2.1),
         ["x", "f(x)", "Posisi titik"],
         [
             ["1,1", "9,025013", "ujung kiri"],
@@ -745,8 +1140,7 @@ def create_presentation():
             ["1,5", "20,08554", "ujung kanan"]
         ])
 
-    # Note under left table
-    tb_h = s15.shapes.add_textbox(Inches(0.8), Inches(3.95), Inches(5.3), Inches(0.3))
+    tb_h = s22.shapes.add_textbox(Inches(0.8), Inches(3.95), Inches(5.3), Inches(0.3))
     tf_h = tb_h.text_frame
     p_h = tf_h.paragraphs[0]
     p_h.text = "h = 0,1; di ujung kanan h dibuat negatif"
@@ -754,8 +1148,7 @@ def create_presentation():
     p_h.font.size = Pt(10)
     p_h.font.color.rgb = COLOR_MUTED
 
-    # Top Right Table
-    add_table_data(s15, Inches(6.4), Inches(1.8), Inches(6.133), Inches(2.2),
+    add_table_data(s22, Inches(6.4), Inches(1.8), Inches(6.133), Inches(2.2),
         ["Titik", "Rumus yang tersedia"],
         [
             ["1,1 (ujung kiri)", "Tiga titik ujung (6.4) · lima titik ujung (6.6)"],
@@ -765,31 +1158,28 @@ def create_presentation():
             ["1,5 (ujung kanan)", "6.4 · 6.6 (h negatif)"]
         ])
 
-    # Formula Cards
-    add_custom_card(s15, Inches(0.8), Inches(4.35), Inches(5.6), Inches(1.35),
+    add_custom_card(s22, Inches(0.8), Inches(4.35), Inches(5.6), Inches(1.35),
         "Tiga titik ujung, x = 1,1:", [
             "[-3(9,025013) + 4(11,02318) - 13,46374] / 0,2",
             "= 17,76971"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    add_custom_card(s15, Inches(6.8), Inches(4.35), Inches(5.733), Inches(1.35),
+    add_custom_card(s22, Inches(6.8), Inches(4.35), Inches(5.733), Inches(1.35),
         "Lima titik tengah, x = 1,3:", [
             "[9,025013 - 8(11,02318) + 8(16,44465) - 20,08554] / 1,2",
             "= 26,92603 ⭐"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    # Bottom Banner
-    add_callout_banner(s15, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
+    add_callout_banner(s22, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
         "Kesimpulan: pilih rumus menurut posisi titik dan ketersediaan data. Kaitan dengan Richardson: ekstrapolasi membutuhkan data yang sesuai dengan ukuran langkah yang dipakai (h dan setengahnya).")
 
     # =========================================================================
-    # SLIDE 16: CONTOH 6.2.2 RICHARDSON BERTINGKAT PADA f(x) = xeˣ
+    # SLIDE 23: CONTOH 6.2.2 RICHARDSON BERTINGKAT PADA f(x) = xeˣ
     # =========================================================================
-    s16 = add_base_slide("Contoh 6.2.2", "Richardson Bertingkat pada f(x) = xeˣ", 16,
+    s23 = add_base_slide("Contoh 6.2.2", "Richardson Bertingkat pada f(x) = xeˣ", 23,
         "Tiga tahap: (1) hitung N₁ dengan selisih tengah untuk h = 0,2; 0,1; 0,05; (2) gabungkan pasangan yang bertetangga dengan pembagi 3 → N₂(0,2) dan N₂(0,1); (3) gabungkan kedua N₂ dengan pembagi 15 → N₃(0,2). Angka dalam kurung adalah ukuran langkah. Ini angka buku; hitung ulang dari tabel Contoh 6.1.2 memberi N₁(0,2) = 22,414163 dan N₁(0,1) = 22,228790 (selisih kecil di digit ke-6). Rumus N₃ di buku tertulis memakai N₁(0,2), tetapi angkanya cocok dengan N₂(0,2). Galat N₃ nol hanya pada enam desimal yang ditampilkan, bukan bukti kesamaan matematis.")
 
-    # Subtitle Text
-    tb_sub = s16.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(11.733), Inches(0.35))
+    tb_sub = s23.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(11.733), Inches(0.35))
     tf_sub = tb_sub.text_frame
     p_sub = tf_sub.paragraphs[0]
     p_sub.text = "x = 2, nilai eksak f′(2) = 22,167168  ·  N₁: selisih tengah, galat pangkat genap"
@@ -797,8 +1187,7 @@ def create_presentation():
     p_sub.font.size = Pt(11)
     p_sub.font.color.rgb = COLOR_MUTED
 
-    # 3 Step Boxes side-by-side
-    add_custom_card(s16, Inches(0.8), Inches(1.8), Inches(3.4), Inches(2.4),
+    add_custom_card(s23, Inches(0.8), Inches(1.8), Inches(3.4), Inches(2.4),
         "Tahap 1 — N₁", [
             "N₁(0,2) = 22,414160",
             "N₁(0,1) = 22,228786",
@@ -806,52 +1195,49 @@ def create_presentation():
             "Nilai N₁(0,05) dihitung menggunakan f(x) = xeˣ karena titik x = 1,95 dan 2,05 tidak ada pada tabel."
         ], border_color=COLOR_BLUE, title_color=COLOR_BLUE)
 
-    arr1 = s16.shapes.add_textbox(Inches(4.25), Inches(2.7), Inches(0.5), Inches(0.5))
+    arr1 = s23.shapes.add_textbox(Inches(4.25), Inches(2.7), Inches(0.5), Inches(0.5))
     arr1.text_frame.paragraphs[0].text = "→"
     arr1.text_frame.paragraphs[0].font.size = Pt(22)
     arr1.text_frame.paragraphs[0].font.bold = True
     arr1.text_frame.paragraphs[0].font.color.rgb = COLOR_MUTED
 
-    add_custom_card(s16, Inches(4.75), Inches(1.8), Inches(3.7), Inches(2.4),
+    add_custom_card(s23, Inches(4.75), Inches(1.8), Inches(3.7), Inches(2.4),
         "Tahap 2 — N₂ (÷3)", [
             "N₂(0,2) = 22,228786 + (22,228786 − 22,414160)/3 = 22,166995",
             "",
             "N₂(0,1) = 22,182564 + (22,182564 − 22,228786)/3 = 22,167157"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    arr2 = s16.shapes.add_textbox(Inches(8.5), Inches(2.7), Inches(0.5), Inches(0.5))
+    arr2 = s23.shapes.add_textbox(Inches(8.5), Inches(2.7), Inches(0.5), Inches(0.5))
     arr2.text_frame.paragraphs[0].text = "→"
     arr2.text_frame.paragraphs[0].font.size = Pt(22)
     arr2.text_frame.paragraphs[0].font.bold = True
     arr2.text_frame.paragraphs[0].font.color.rgb = COLOR_MUTED
 
-    add_custom_card(s16, Inches(9.0), Inches(1.8), Inches(3.533), Inches(2.4),
+    add_custom_card(s23, Inches(9.0), Inches(1.8), Inches(3.533), Inches(2.4),
         "Tahap 3 — N₃ (÷15)", [
             "N₃(0,2) = 22,167157 + (22,167157 − 22,166995)/15",
             "",
             "= 22,167168 ⭐ (Identik Eksak)"
         ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
 
-    # Wide Table
-    add_table_data(s16, Inches(0.8), Inches(4.35), Inches(11.733), Inches(1.35),
+    add_table_data(s23, Inches(0.8), Inches(4.35), Inches(11.733), Inches(1.35),
         ["Tingkat", "N₁(0,2)", "N₁(0,1)", "N₁(0,05)", "N₂(0,2)", "N₂(0,1)", "N₃(0,2)", "Eksak"],
         [
             ["Hasil", "22,414160", "22,228786", "22,182564", "22,166995", "22,167157", "22,167168 ⭐", "22,167168"],
             ["Galat absolut", "0,246992", "0,061618", "0,015396", "0,000173", "0,000011", "0,000000", "—"]
         ])
 
-    # Bottom Banner
-    add_callout_banner(s16, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
+    add_callout_banner(s23, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
         "Kesimpulan: Richardson bertingkat meningkatkan ketelitian secara bertahap: N₁ → N₂ → N₃ (N₃ sama dengan eksak pada enam desimal yang ditampilkan).")
 
     # =========================================================================
-    # SLIDE 17: CONTOH 6.2.3 RICHARDSON DENGAN KETERBATASAN DATA
+    # SLIDE 24: CONTOH 6.2.3 RICHARDSON DENGAN KETERBATASAN DATA
     # =========================================================================
-    s17 = add_base_slide("Contoh 6.2.3", "Richardson dengan Keterbatasan Data", 17,
-        "Titik x₀ = 1,3 dengan h = 0,2 dan 0,1; N₁(0,2) memakai f(1,5) dan f(1,1), N₁(0,1) memakai f(1,4) dan f(1,2). Gabungkan dengan pembagi 3 untuk N₂(0,2). Tingkat ketiga butuh N₁(0,05) dengan f(1,35) dan f(1,25), yang tidak ada di tabel, sehingga berhenti di N₂. Catatan untuk penyaji (dicek pada halaman buku 201–202): buku mencetak N₁(0,1) = (1/0,2)(f(1,4) − f(1,1)) = 27,10735 dan N₂(0,2) = 26,920273. Dua hal ini tidak cocok dengan substitusi yang tercetak: (16,44465 − 11,02318)/0,2 memakai f(1,2) dan menghasilkan 27,10735, sedangkan dengan f(1,1) hasilnya lain; dan 27,10735 + (27,10735 − 27,651318)/3 = 26,926027, bukan 26,920273. Nilai 26,926027 juga sama dengan hasil lima titik tengah 26,92603 pada Contoh 6.1.3. Penyebab selisih tidak dapat dipastikan dari buku. Slide menampilkan hasil hitung ulang 26,926027 (dari data tabel yang tersedia); angka 26,920273 adalah yang tercetak di buku.")
+    s24 = add_base_slide("Contoh 6.2.3", "Richardson dengan Keterbatasan Data", 24,
+        "Titik x₀ = 1,3 dengan h = 0,2 dan 0,1; N₁(0,2) memakai f(1,5) dan f(1,1), N₁(0,1) memakai f(1,4) dan f(1,2). Gabungkan dengan pembagi 3 untuk N₂(0,2). Tingkat ketiga butuh N₁(0,05) dengan f(1,35) dan f(1,25), yang tidak ada di tabel, sehingga berhenti di N₂. Catatan untuk penyaji: Slide menampilkan hasil hitung ulang 26,926027 (dari data tabel yang tersedia); angka 26,920273 adalah yang tercetak di buku.")
 
-    # Left Data Table
-    add_table_data(s17, Inches(0.8), Inches(1.8), Inches(4.5), Inches(2.4),
+    add_table_data(s24, Inches(0.8), Inches(1.8), Inches(4.5), Inches(2.4),
         ["x", "f(x)"],
         [
             ["1,1", "9,025013"],
@@ -861,43 +1247,39 @@ def create_presentation():
             ["1,5", "20,08554"]
         ])
 
-    tb_x0 = s17.shapes.add_textbox(Inches(0.8), Inches(4.25), Inches(4.5), Inches(0.35))
+    tb_x0 = s24.shapes.add_textbox(Inches(0.8), Inches(4.25), Inches(4.5), Inches(0.35))
     tb_x0.text_frame.paragraphs[0].text = "x₀ = 1,3;  h = 0,2"
     tb_x0.text_frame.paragraphs[0].font.name = FONT_MAIN
     tb_x0.text_frame.paragraphs[0].font.size = Pt(11)
     tb_x0.text_frame.paragraphs[0].font.bold = True
     tb_x0.text_frame.paragraphs[0].font.color.rgb = COLOR_PRIMARY
 
-    # Right: Box 1 (Tahap 1)
-    add_custom_card(s17, Inches(5.6), Inches(1.8), Inches(6.933), Inches(1.2),
+    add_custom_card(s24, Inches(5.6), Inches(1.8), Inches(6.933), Inches(1.2),
         "Tahap 1 — N₁", [
             "N₁(0,2) = (20,08554 − 9,025013) / 0,4 = 27,651318",
             "N₁(0,1) = (16,44465 − 11,02318) / 0,2 = 27,107350"
         ], border_color=COLOR_BLUE, title_color=COLOR_BLUE)
 
-    # Right: Box 2 (Tahap 2)
-    add_custom_card(s17, Inches(5.6), Inches(3.1), Inches(6.933), Inches(1.2),
+    add_custom_card(s24, Inches(5.6), Inches(3.1), Inches(6.933), Inches(1.2),
         "Tahap 2 — N₂", [
             "N₂(0,2) = 27,107350 + (27,107350 − 27,651318) / 3",
             "= 26,926027 ⭐ (Orde O(h⁴))"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    # Middle / Warning Card: Mengapa N3 tidak dapat dihitung
-    add_custom_card(s17, Inches(0.8), Inches(4.65), Inches(11.733), Inches(0.95),
+    add_custom_card(s24, Inches(0.8), Inches(4.65), Inches(11.733), Inches(0.95),
         "Mengapa N₃ tidak dapat dihitung?", [
             "N₃ membutuhkan N₁(0,05) = [f(1,35) − f(1,25)] / 0,1, sedangkan f(1,25) dan f(1,35) tidak tersedia pada tabel."
         ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
 
-    # Bottom Banner
-    add_callout_banner(s17, Inches(0.8), Inches(5.8), Inches(11.733), Inches(0.8),
+    add_callout_banner(s24, Inches(0.8), Inches(5.8), Inches(11.733), Inches(0.8),
         "Kesimpulan: Richardson tidak dapat dilanjutkan ke tingkat berikutnya bila data yang diperlukan tidak tersedia.\nCatatan: Hasil perhitungan menggunakan data tabel yang tersedia.")
 
     # =========================================================================
-    # SLIDE 18: RINGKASAN METODE: PERBANDINGAN
+    # SLIDE 25: RINGKASAN METODE: PERBANDINGAN
     # =========================================================================
-    s18 = add_base_slide("Ringkasan Metode", "Perbandingan Metode Diferensiasi Numerik", 18,
+    s25 = add_base_slide("Ringkasan Metode", "Perbandingan Metode Diferensiasi Numerik", 25,
         "Gunakan tabel ini untuk merangkum. Maju/mundur O(h), tengah & 3 titik ujung O(h²), lima titik O(h⁴). Richardson memperbaiki hasil rumus lain.")
-    add_table_data(s18, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.8),
+    add_table_data(s25, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.8),
         ["Metode", "Titik / Data", "Galat", "Kelebihan", "Keterbatasan"],
         [
             ["Selisih Maju", "x, x+h", "O(h)", "Sederhana, 2 nilai", "Kurang teliti"],
@@ -910,11 +1292,11 @@ def create_presentation():
         ])
 
     # =========================================================================
-    # SLIDE 19: MEMILIH METODE & KONDISI
+    # SLIDE 26: MEMILIH METODE & KONDISI
     # =========================================================================
-    s19 = add_base_slide("Ringkasan Metode", "Memilih Metode: Rumus & Kondisi Penggunaan", 19,
+    s26 = add_base_slide("Ringkasan Metode", "Memilih Metode: Rumus & Kondisi Penggunaan", 26,
         "Slide ini fokus pada kapan rumus dipakai. Pesan penutup: jangan menyimpulkan satu metode selalu paling baik. Lima titik memiliki koefisien besar sehingga lebih sensitif terhadap noise.")
-    add_table_data(s19, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.3),
+    add_table_data(s26, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.3),
         ["Metode", "Rumus Dasar", "Orde", "Kondisi Penggunaan"],
         [
             ["Selisih Maju", "[f(x+h) - f(x)] / h", "O(h)", "Ujung kiri data; hanya ada data ke depan"],
@@ -925,16 +1307,16 @@ def create_presentation():
             ["5 Titik Ujung", "[-25f₀ + 48f₁ - 36f₂ + 16f₃ - 3f₄]/12h", "O(h⁴)", "Ujung interval yang membutuhkan akurasi orde 4"],
             ["Richardson", "Eliminasi galat N₁(h) & N₁(h/2)", "Tinggi", "Tersedia multi-langkah & bentuk galat sesuai"]
         ])
-    add_card(s19, Inches(0.8), Inches(6.2), Inches(11.733), Inches(0.55), "Keterangan", [
+    add_card(s26, Inches(0.8), Inches(6.2), Inches(11.733), Inches(0.55), "Keterangan", [
         "Tidak ada metode yang selalu terbaik di segala situasi: perhatikan noise data dan kestabilan pembulatan!"
-    ])
+    ], accent_color=COLOR_PRIMARY)
 
     # =========================================================================
-    # SLIDE 20: KESIMPULAN
+    # SLIDE 27: KESIMPULAN
     # =========================================================================
-    s20 = add_base_slide("Penutup", "Kesimpulan", 20,
+    s27 = add_base_slide("Penutup", "Kesimpulan", 27,
         "Rangkum perjalanan dari definisi, deret, rumus 2, 3, 5 titik, galat, lalu Richardson. Tutup dengan kutipan penting.")
-    add_card(s20, Inches(0.8), Inches(1.8), Inches(6.0), Inches(4.7), "Poin-Poin Kunci", [
+    add_card(s27, Inches(0.8), Inches(1.8), Inches(6.0), Inches(4.7), "Poin-Poin Kunci", [
         "Diferensiasi numerik memperkirakan turunan dari nilai fungsi diskret.",
         "Pendekatan deret (Lagrange & Taylor) menjadi fondasi matematis utama.",
         "Selisih maju dan mundur: galat pemotongan O(h).",
@@ -942,36 +1324,34 @@ def create_presentation():
         "Lima titik (tengah dan ujung): ketelitian tinggi O(h⁴).",
         "Ekstrapolasi Richardson meningkatkan ketelitian secara signifikan.",
         "Pilih h dengan cermat mengingat trade-off pemotongan vs pembulatan."
-    ], "Ringkasan")
-    add_card(s20, Inches(7.2), Inches(1.8), Inches(5.333), Inches(4.7), "Prinsip Utama", [
+    ], "Ringkasan", accent_color=COLOR_PRIMARY)
+    add_card(s27, Inches(7.2), Inches(1.8), Inches(5.333), Inches(4.7), "Prinsip Utama", [
         "\"Ketelitian diferensiasi numerik tidak hanya ditentukan oleh rumus yang digunakan, tetapi juga oleh ukuran langkah, data yang tersedia, dan sifat fungsi.\"",
         "",
         "Keseimbangan Komputasi:",
         "• Orde tinggi butuh lebih banyak data & sensitif terhadap noise.",
         "• Nilai h terlalu kecil memperbesar galat pembulatan komputer.",
         "• Selalu sesuaikan metode dengan posisi titik data!"
-    ], "Intisari")
+    ], "Intisari", accent_color=COLOR_EMERALD)
 
     # =========================================================================
-    # SLIDE 21: PENUTUP / TERIMA KASIH (HERO CENTERED & MINIMALIST)
+    # SLIDE 28: PENUTUP / TERIMA KASIH (HERO CENTERED & MINIMALIST)
     # =========================================================================
-    s21 = prs.slides.add_slide(blank_layout)
-    bg21 = s21.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
-    bg21.fill.solid()
-    bg21.fill.fore_color.rgb = COLOR_BG
-    bg21.line.fill.background()
+    s28 = prs.slides.add_slide(blank_layout)
+    bg28 = s28.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
+    bg28.fill.solid()
+    bg28.fill.fore_color.rgb = COLOR_BG
+    bg28.line.fill.background()
 
-    # Notes slide
-    notes_slide21 = s21.notes_slide
-    tf_notes21 = notes_slide21.notes_text_frame
-    tf_notes21.text = "Ucapkan terima kasih kepada dosen pengampu dan rekan-rekan mahasiswa atas perhatian selama presentasi berlangsung. Buka kesempatan bagi audiens untuk sesi tanya jawab dan diskusi mengenai materi diferensiasi numerik."
+    notes_slide28 = s28.notes_slide
+    tf_notes28 = notes_slide28.notes_text_frame
+    tf_notes28.text = "Ucapkan terima kasih kepada dosen pengampu dan rekan-rekan mahasiswa atas perhatian selama presentasi berlangsung. Buka kesempatan bagi audiens untuk sesi tanya jawab dan diskusi mengenai materi diferensiasi numerik."
 
-    # Top pill
-    pill21 = s21.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(4.3), Inches(1.1), Inches(4.733), Inches(0.42))
-    pill21.fill.solid()
-    pill21.fill.fore_color.rgb = COLOR_PRIMARY_SOFT
-    pill21.line.color.rgb = COLOR_BORDER
-    p_pill = pill21.text_frame.paragraphs[0]
+    pill28 = s28.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(4.3), Inches(1.1), Inches(4.733), Inches(0.42))
+    pill28.fill.solid()
+    pill28.fill.fore_color.rgb = COLOR_PRIMARY_SOFT
+    pill28.line.color.rgb = COLOR_BORDER
+    p_pill = pill28.text_frame.paragraphs[0]
     p_pill.text = "DIFERENSIASI NUMERIK & EKSTRAPOLASI RICHARDSON"
     p_pill.font.name = FONT_MAIN
     p_pill.font.size = Pt(10)
@@ -979,8 +1359,7 @@ def create_presentation():
     p_pill.font.color.rgb = COLOR_PRIMARY
     p_pill.alignment = PP_ALIGN.CENTER
 
-    # Hero Center Box (TERIMA KASIH dominates)
-    hero_box = s21.shapes.add_textbox(Inches(1.0), Inches(1.85), Inches(11.333), Inches(3.2))
+    hero_box = s28.shapes.add_textbox(Inches(1.0), Inches(1.85), Inches(11.333), Inches(3.2))
     htf = hero_box.text_frame
     htf.word_wrap = True
     htf.margin_top = Inches(0)
@@ -1011,8 +1390,7 @@ def create_presentation():
     hp3.font.color.rgb = COLOR_MUTED
     hp3.alignment = PP_ALIGN.CENTER
 
-    # Compact Bottom Credit Card
-    credit_box = s21.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.2), Inches(5.35), Inches(8.933), Inches(0.95))
+    credit_box = s28.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.2), Inches(5.35), Inches(8.933), Inches(0.95))
     credit_box.fill.solid()
     credit_box.fill.fore_color.rgb = COLOR_CARD
     credit_box.line.color.rgb = COLOR_BORDER
@@ -1036,26 +1414,25 @@ def create_presentation():
     cp2.font.color.rgb = COLOR_MUTED
     cp2.alignment = PP_ALIGN.CENTER
 
-    # Footer line & indicator
-    line21 = s21.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.8), Inches(11.733), Inches(0.015))
-    line21.fill.solid()
-    line21.fill.fore_color.rgb = COLOR_BORDER
-    line21.line.fill.background()
+    line28 = s28.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.8), Inches(11.733), Inches(0.015))
+    line28.fill.solid()
+    line28.fill.fore_color.rgb = COLOR_BORDER
+    line28.line.fill.background()
 
-    footer21 = s21.shapes.add_textbox(Inches(0.8), Inches(6.85), Inches(11.733), Inches(0.4))
-    ftf21 = footer21.text_frame
-    ftf21.margin_top = Inches(0)
-    fp21 = ftf21.paragraphs[0]
-    fp21.text = "Metode Numerik — Imron dkk. (2022) | Slide 21 dari 21"
-    fp21.font.name = FONT_MAIN
-    fp21.font.size = Pt(10)
-    fp21.font.color.rgb = COLOR_MUTED
-    fp21.alignment = PP_ALIGN.CENTER
+    footer28 = s28.shapes.add_textbox(Inches(0.8), Inches(6.85), Inches(11.733), Inches(0.4))
+    ftf28 = footer28.text_frame
+    ftf28.margin_top = Inches(0)
+    fp28 = ftf28.paragraphs[0]
+    fp28.text = "Metode Numerik — Imron dkk. (2022) | Slide 28 dari 28"
+    fp28.font.name = FONT_MAIN
+    fp28.font.size = Pt(10)
+    fp28.font.color.rgb = COLOR_MUTED
+    fp28.alignment = PP_ALIGN.CENTER
 
     # Save presentation
     output_path = "Diferensiasi_Numerik.pptx"
     prs.save(output_path)
-    print(f"Base presentation saved successfully to: {output_path}")
+    print(f"Base presentation (28 slides) saved successfully to: {output_path}")
 
     # Apply slide transitions & shape build animations
     abs_path = os.path.abspath(output_path)
@@ -1073,7 +1450,7 @@ try {{
     $ppt = New-Object -ComObject PowerPoint.Application
     $pres = $ppt.Presentations.Open("{pptx_path}", [Microsoft.Office.Core.MsoTriState]::msoFalse, [Microsoft.Office.Core.MsoTriState]::msoFalse, [Microsoft.Office.Core.MsoTriState]::msoFalse)
     
-    # 21 Transition sequence matching web presentation 3D effects
+    # 28 Transition sequence matching web presentation 3D effects
     $effects = @(
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectFadeSmoothly,          # 1: Cover
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 2: Center-fold
@@ -1086,16 +1463,23 @@ try {{
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 9: Bottom-right curl
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 10: Curtain roll
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 11: 3D Box / Cube
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 12: Center-fold
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 13: Bottom-right curl
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 14: Curtain roll
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectDoorsVertical,         # 15: Doors 3D
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 16: Center-fold
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 17: Bottom-right curl
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 18: Curtain roll
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectWipeRight,             # 19: Diagonal wipe
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 20: 3D Box / Cube
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains               # 21: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectDoorsVertical,         # 12: Doors 3D
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 13: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 14: Bottom-right curl
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 15: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 16: 3D Box / Cube
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 17: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 18: Bottom-right curl
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 19: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectDoorsVertical,         # 20: Doors 3D
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 21: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPeelOffRight,          # 22: Bottom-right curl
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains,              # 23: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectWipeRight,             # 24: Diagonal wipe
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 25: 3D Box / Cube
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 26: Center-fold
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 27: 3D Box / Cube
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains               # 28: Curtain roll
     )
     
     for ($i = 1; $i -le $pres.Slides.Count; $i++) {{
@@ -1104,12 +1488,10 @@ try {{
         $slide.SlideShowTransition.EntryEffect = $effects[$effIdx]
         $slide.SlideShowTransition.Duration = 1.0
         
-        # Entrance animations for content cards & formula boxes (shapes after bg & header)
         $shapeCount = $slide.Shapes.Count
         if ($shapeCount -gt 3) {{
             for ($s = 4; $s -le $shapeCount; $s++) {{
                 $shape = $slide.Shapes.Item($s)
-                # msoAnimEffectFade = 10, msoAnimateLevelNone = 0, msoAnimTriggerAfterPrevious = 3
                 try {{
                     $anim = $slide.TimeLine.MainSequence.AddEffect($shape, 10, 0, 3)
                     $anim.Timing.Duration = 0.4
@@ -1128,7 +1510,7 @@ try {{
     }}
     $pres.Close()
     $ppt.Quit()
-    Write-Output "PowerPoint COM: Applied slide transitions and entrance animations to all slides."
+    Write-Output "PowerPoint COM: Applied slide transitions and entrance animations to all 28 slides."
 }} catch {{
     if ($ppt) {{ $ppt.Quit() }}
     Write-Warning "PowerPoint COM unavailable or encountered error: $_"
