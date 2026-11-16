@@ -1798,13 +1798,19 @@ try {{
     }}
     
     $pres.Save()
-    $pdfPath = "{pptx_path}".Replace(".pptx", ".pdf")
-    try {{
-        $pres.SaveAs($pdfPath, 32)
-        Write-Output "PowerPoint COM: Exported updated PDF to $pdfPath"
-    }} catch {{
-        Write-Output "PDF export note: $_"
+    
+    # --- Pixel-perfect PDF: export each slide as high-res PNG ---
+    $exportDir = Join-Path (Split-Path "{pptx_path}") "_slide_exports"
+    if (Test-Path $exportDir) {{ Remove-Item $exportDir -Recurse -Force }}
+    New-Item -ItemType Directory -Path $exportDir | Out-Null
+    
+    for ($i = 1; $i -le $pres.Slides.Count; $i++) {{
+        $slide = $pres.Slides.Item($i)
+        $pngPath = Join-Path $exportDir ("slide_{{0:D2}}.png" -f $i)
+        $slide.Export($pngPath, "PNG", 1920, 1080)
     }}
+    Write-Output "PowerPoint COM: Exported $($pres.Slides.Count) slides as PNG to $exportDir"
+    
     $pres.Close()
     $ppt.Quit()
     Write-Output "PowerPoint COM: Applied slide transitions and entrance animations to all 39 slides."
@@ -1822,6 +1828,39 @@ try {{
             print("Note (COM fallback):", res.stderr.strip())
     except Exception as e:
         print(f"COM animation helper skipped: {e}")
+
+    # --- Assemble PNGs into pixel-perfect PDF ---
+    import glob
+    export_dir = os.path.join(os.path.dirname(pptx_path), "_slide_exports")
+    png_files = sorted(glob.glob(os.path.join(export_dir, "slide_*.png")))
+    
+    if png_files:
+        try:
+            import pymupdf
+            pdf_path = pptx_path.replace(".pptx", ".pdf")
+            doc = pymupdf.open()
+            
+            for png_file in png_files:
+                img = pymupdf.open(png_file)
+                img_page = img[0]
+                rect = img_page.rect
+                
+                page = doc.new_page(width=rect.width, height=rect.height)
+                page.insert_image(page.rect, filename=png_file)
+                img.close()
+            
+            doc.save(pdf_path, deflate=True, garbage=4)
+            doc.close()
+            print(f"Pixel-perfect PDF assembled: {pdf_path} ({len(png_files)} pages)")
+        except Exception as e:
+            print(f"PDF assembly error: {e}")
+        finally:
+            import shutil
+            if os.path.exists(export_dir):
+                shutil.rmtree(export_dir)
+                print("Cleaned up temporary PNG exports.")
+    else:
+        print("Warning: No PNG exports found, PDF not generated.")
 
 if __name__ == "__main__":
     create_presentation()
