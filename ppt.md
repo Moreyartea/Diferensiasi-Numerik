@@ -9,7 +9,7 @@ Metode Numerik — Bab 6
 **Program Studi / Universitas:** \[Program studi, Universitas\]\
 **Tahun:** 2026
 
-Sumber: Imron, Mardlijah & Asfihani (2022)Slide 1 dari 28
+Sumber: Imron, Mardlijah & Asfihani (2022)Slide 1 dari 39
 
 Sapa audiens, sebut judul dan bab. Jelaskan bahwa hari ini kita membahas cara memperkirakan turunan fungsi hanya dari nilai-nilai fungsi. Gambar kurva dengan garis singgung mewakili ide utama: turunan adalah kemiringan garis singgung. Isi placeholder nama, dosen, dan program studi sebelum presentasi.
 
@@ -33,7 +33,7 @@ Sapa audiens, sebut judul dan bab. Jelaskan bahwa hari ini kita membahas cara me
 - **Analitis:** hasil proses diferensiasi secara matematis
 - **Numerik:** hasil pendekatan dari nilai fungsi
 
-Sumber: Imron dkk. (2022), hlm. 185Slide 2 dari 28
+Sumber: Imron dkk. (2022), hlm. 185Slide 2 dari 39
 
 Turunan menyatakan laju perubahan. Kadang fungsi sulit diperoleh secara analitik eksak, atau data yang tersedia berupa tabel pengukuran diskret. Karena itu kita menggunakan pendekatan diferensiasi numerik. Bab ini memperkenalkan dua metode utama: pendekatan deret dan ekstrapolasi Richardson.
 
@@ -54,7 +54,7 @@ Ketika kita memiliki tabel atau kumpulan data pengukuran, tetapi tidak memiliki 
 
 **Intinya:** kita tidak harus mengetahui persamaan fungsi terlebih dahulu. Kita dapat menggunakan perubahan nilai pada data untuk memperkirakan turunannya.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 3 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 3 dari 39
 
 Diferensiasi numerik membantu kita memperkirakan seberapa cepat suatu nilai berubah ketika data yang tersedia hanya berupa hasil pengukuran. Contohnya pada kecepatan dari posisi, percepatan dari kecepatan, atau gradien suhu. Kita tidak harus mengetahui persamaan fungsinya terlebih dahulu.
 
@@ -80,7 +80,7 @@ Bayangkan kita mengukur posisi benda setiap satu detik. Untuk memperkirakan kece
 
 **Cara membacanya:** jika $x=2$, maka $f(x)$ adalah posisi pada detik kedua, yaitu 8 meter. Tiga metode berikut berbeda terutama pada **data tetangga mana yang dipakai**.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 4 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 4 dari 39
 
 Bayangkan kita mengukur posisi benda setiap 1 detik. Untuk mencari kecepatan di detik ke-2, kita perlu melihat data di sekitarnya. Titik yang dianalisis disebut x, jarak pengukuran disebut h, titik sebelumnya x-h, dan sesudahnya x+h.
 
@@ -106,7 +106,7 @@ Posisi pada detik ke-2 = 8 m, detik ke-3 = 27 m:
 
 **Kapan cocok digunakan?** Ketika data setelah titik yang ingin dianalisis tersedia. Metode ini juga praktis untuk titik paling awal dalam tabel karena belum ada data sebelumnya. Orde galat $O(h)$.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 5 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 5 dari 39
 
 Selisih maju memperkirakan turunan dengan membandingkan nilai titik sekarang dengan titik berikutnya. Pada contoh detik ke-2, kita pakai posisi detik ke-3 (27) dikurangi detik ke-2 (8) dibagi 1, menghasilkan 19 m/s. Sangat praktis untuk titik awal tabel.
 
@@ -132,7 +132,7 @@ Posisi pada detik ke-2 = 8 m, detik ke-1 = 1 m:
 
 **Kapan cocok digunakan?** Ketika data sebelum titik yang ingin dianalisis tersedia. Metode ini praktis untuk titik paling akhir dalam tabel karena belum ada data setelahnya. Orde galat $O(h)$.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 6 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 6 dari 39
 
 Selisih mundur membandingkan nilai saat ini dengan nilai sebelumnya. Pada detik ke-2, kita kurangkan posisi detik ke-2 (8) dengan detik ke-1 (1) dibagi 1, menghasilkan 7 m/s. Cocok untuk titik paling akhir dalam tabel.
 
@@ -158,7 +158,7 @@ Posisi detik ke-3 = 27 m, detik ke-1 = 1 m:
 
 **Kapan cocok digunakan?** Ketika data tersedia di kedua sisi titik yang ingin dianalisis. Metode ini memberikan perkiraan lebih baik untuk titik di bagian tengah tabel dengan orde galat kuadratik $O(h^2)$.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 7 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 7 dari 39
 
 Selisih tengah menggunakan titik di kiri dan kanan titik yang diamati. Jarak keduanya adalah 2h, sehingga penyebutnya 2h. Pada detik ke-2, (27 - 1)/2 = 13 m/s. Lebih teliti untuk titik di bagian tengah karena simetris.
 
@@ -182,7 +182,7 @@ Pemilihan metode terutama bergantung pada ketersediaan data di sekitar titik yan
 
 **Hal penting:** jangan memilih metode hanya karena rumusnya terlihat lebih mudah. Periksa dahulu data mana yang tersedia.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 8 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 8 dari 39
 
 Pemilihan metode bergantung pada data yang tersedia di sekitar titik evaluasi. Jangan pilih rumus hanya karena terlihat mudah. Cek posisinya: di awal gunakan maju, di akhir gunakan mundur, di tengah gunakan selisih tengah.
 
@@ -208,7 +208,7 @@ Ini berlaku dengan asumsi fungsi cukup mulus dan galat pembulatan belum mendomin
 
 **Kesimpulan praktis:** selisih tengah memiliki keunggulan ketelitian teoritis, tetapi membutuhkan data pada kedua sisi titik evaluasi. Selisih maju dan mundur tetap berguna ketika data hanya tersedia pada satu sisi.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 9 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 9 dari 39
 
 Ketiga metode sama-sama menghasilkan pendekatan, tetapi laju penurunan galatnya berbeda. Selisih maju dan mundur berorde O(h), jika h dibagi dua galat turun separuhnya. Selisih tengah berorde O(h^2), jika h dibagi dua galat turun empat kali lipat.
 
@@ -234,7 +234,7 @@ Gunakan kembali data posisi benda:
 
 Ketiga hasil berbeda (19, 7, 13 m/s) karena setiap metode menggunakan pasangan titik observasi yang berbeda.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 10 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 10 dari 39
 
 Kita bandingkan ketiga metode langsung pada data posisi yang sama di t=2. Selisih maju menghasilkan 19 m/s, selisih mundur menghasilkan 7 m/s, dan selisih tengah menghasilkan 13 m/s. Ketiganya berbeda karena memakai pasangan data yang berbeda.
 
@@ -260,7 +260,7 @@ Jadi, perbedaan hasil **bukan karena salah hitung**. Setiap metode menggunakan r
 
 **Pesan utama:** hasil diferensiasi numerik merupakan perkiraan. Kita perlu memahami data yang dipakai sebelum menafsirkan hasilnya.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 11 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 11 dari 39
 
 Perbedaan hasil bukan karena salah hitung. Benda ini dipercepat, sehingga wajar kecepatan interval awal (7 m/s) lebih lambat dibanding interval berikutnya (19 m/s). Selisih tengah merata-ratakannya menjadi 13 m/s.
 
@@ -288,91 +288,364 @@ Galat absolut: $E = |\text{hasil perkiraan} - \text{nilai eksak}|$
 - **Pilih metode:** sesuaikan dengan posisi titik dan data yang tersedia.
 - **Periksa hasil:** jika nilai eksak diketahui, hitung galat untuk menilai kedekatan hasil pendekatan.
 
-Sumber: Imron dkk. (2022) & Materi FungsionalSlide 12 dari 28
+Sumber: Imron dkk. (2022) & Materi FungsionalSlide 12 dari 39
 
 Karena data dibuat dari fungsi s(t) = t^3, kita tahu nilai eksaknya adalah 12 m/s. Galat selisih maju 7, mundur 5, dan tengah hanya 1. Selisih tengah terbukti paling teliti, namun tetap perhatikan ketersediaan data di lapangan.
 
-6.1 · Pendekatan Deret
+6.1 · Rumus Titik Data
 
-## Metode Selisih Tengah
+# Konsep Dasar Turunan dari Data Tabel
 
-\\(f'(x_0)\\approx\\frac{f(x_0+h)-f(x_0-h)}{2h}\\)
+Sering kali kita hanya memiliki tabel nilai $x$ dan $f(x)$ diskrit. Turunan di titik $x_0$ diperkirakan dari beberapa nilai $f$ yang berjarak sama, yaitu $h$.
 
-Pers. 6.5 (tiga titik tengah) memuat suku galat \\(-\\frac{h^2}{6}f'''(\\xi_1)\\), ξ₁ ∈ (x₀−h, x₀+h)
+| 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: |
+| $x_0 - 2h$ | $x_0 - h$ | $x_0$ | $x_0 + h$ | $x_0 + 2h$ |
 
-- Memakai titik di **kiri dan kanan** x
-- Pendekatan simetris
-- Galat pemotongan **O(h²)** untuk fungsi cukup mulus
-- Umumnya lebih teliti daripada maju/mundur pada h yang sama
+Contoh: $x_0 = 2{,}0$ dan $h = 0{,}1$.
 
-**Kelebihan:** lebih teliti untuk banyak fungsi mulus.\
-**Keterbatasan:** perlu nilai fungsi di kedua sisi titik.
+### Klasifikasi Berdasarkan Dua Aspek Utama:
 
-Sumber: Imron dkk. (2022), hlm. 189Slide 13 dari 28
+- **Berdasarkan Jumlah Titik:**
+  - **Tiga Titik:** Memakai 3 posisi data untuk memperkirakan turunan ($O(h^2)$).
+  - **Lima Titik:** Memakai 5 posisi data. Pendekatan jauh lebih teliti ($O(h^4)$), namun membutuhkan data lebih banyak.
+- **Berdasarkan Posisi Titik:**
+  - **Akhir (Endpoint):** Dipakai bila $x_0$ di ujung data tabel (hanya data satu sisi yang tersedia).
+  - **Tengah (Midpoint):** Dipakai bila ada data di kiri dan kanan $x_0$ secara simetris.
 
-Selisih tengah adalah rumus tiga titik tengah di buku (6.5), tanpa memakai f(x₀) itu sendiri. Karena simetris, suku galat orde pertama saling meniadakan, sehingga galatnya berorde h². Syaratnya, kita punya data di kiri dan kanan titik. Di ujung interval rumus ini tidak bisa dipakai, dan itulah alasan slide berikutnya.
+Sumber: Imron dkk. (2022) | Slide 13 dari 39
 
-6.1 · Pendekatan Deret
+Pengantar. Tekankan dua pembeda: jumlah titik (3 atau 5) dan posisi titik (akhir atau tengah). Lima titik butuh lebih banyak data tetapi lebih teliti. Analisis galat dibahas anggota lain.
 
-## Rumus Tiga Titik dan Lima Titik
+6.1 · Rumus Titik Data
 
-### A. Tiga titik ujung (6.4)
+## Rumus Tiga Titik: Akhir & Tengah
 
-\\(f'(x_0)\\approx\\frac{-3f(x_0)+4f(x_0+h)-f(x_0+2h)}{2h}\\)
+### A. Tiga Titik Akhir
+Digunakan bila $x_0$ berada di ujung data (satu sisi):
 
-- Tiga nilai fungsi, cocok di **ujung interval**
-- Galat \\(\\frac{h^2}{3}f'''(\\xi_0)\\) → O(h²)
+$$f'(x_0) pprox \frac{1}{2h}\left[-3f(x_0) + 4f(x_0+h) - f(x_0+2h)\right]$$
 
-### B. Lima titik tengah (6.7)
+$$\text{Galat} = \frac{h^2}{3} f^{(3)}(\xi_0), \quad \xi_0 \in (x_0, x_0+2h)$$
 
-\\(f'(x_0)\\approx\\frac{f(x_0-2h)-8f(x_0-h)+8f(x_0+h)-f(x_0+2h)}{12h}\\)
+| $-3$ | $+4$ | $-1$ |
+| :---: | :---: | :---: |
+| $x_0$ | $x_0+h$ | $x_0+2h$ |
 
-- Dua titik di kiri dan dua di kanan x₀
-- Galat \\(\\frac{h^4}{30}f^{(5)}(\\xi)\\) → O(h⁴)
+$\times \frac{1}{2h}$ · dipakai di ujung data (satu sisi) · orde galat $O(h^2)$
 
-**C. Lima titik ujung (6.6)**
+### B. Tiga Titik Tengah
+Digunakan bila ada data di kiri dan kanan $x_0$ secara simetris:
 
-\\(f'(x_0)\\approx\\frac{-25f(x_0)+48f(x_0+h)-36f(x_0+2h)+16f(x_0+3h)-3f(x_0+4h)}{12h}\\)
+$$f'(x_0) pprox \frac{1}{2h}\left[f(x_0+h) - f(x_0-h)\right]$$
 
-- Lima nilai fungsi, semua di satu sisi x₀ (x₀ … x₀+4h)
-- Galat \\(\\frac{h^4}{5}f^{(5)}(\\xi)\\) → O(h⁴)
-- Berguna bila data di sisi lain ujung tidak ada
+$$\text{Galat} = -\frac{h^2}{6} f^{(3)}(\xi_1), \quad \xi_1 \in (x_0-h, x_0+h)$$
 
-| Aspek | Tiga titik ujung | Lima titik tengah | Lima titik ujung |
-| --- | --- | --- | --- |
-| Jumlah nilai fungsi | 3 | 5 | 5 |
-| Lokasi penggunaan | Ujung interval | Titik tengah | Ujung interval |
-| Orde galat | O(h²) | O(h⁴) | O(h⁴) |
+| $-1$ | $0$ | $+1$ |
+| :---: | :---: | :---: |
+| $x_0-h$ | $x_0$ | $x_0+h$ |
 
-Sumber: Imron dkk. (2022), hlm. 189Slide 14 dari 28
+$\times \frac{1}{2h}$ · dipakai di dalam data (kiri–kanan) · orde galat $O(h^2)$
 
-Rumus tiga titik ujung dipakai saat titik yang dihitung ada di ujung data. Perhatikan koefisien −3, 4, −1 dan penyebut 2h. Rumus lima titik tengah memakai koefisien 1, −8, 8, −1 dan penyebut 12h; galatnya berorde h⁴. Rumus lima titik ujung (6.6) bekerja seperti tiga titik ujung tetapi memakai lima titik ke satu arah: koefisien −25, 48, −36, 16, −3 dan penyebut 12h. Untuk ujung kanan, pakai h negatif, seperti pada Contoh 6.1.3. Harga yang dibayar rumus lima titik adalah kebutuhan data yang lebih banyak.
+*Catatan Penting:* Tetap tiga posisi titik. Koefisien $f(x_0) = 0$, jadi nilainya tidak muncul dalam perhitungan.
 
-Contoh 6.1.1
+Sumber: Imron dkk. (2022), hlm. 189 | Slide 14 dari 39
 
-## Contoh: Selisih Maju untuk f(x) = ln x
+Rumus tiga titik tengah memakai tiga POSISI data: x₀−h, x₀, x₀+h. Koefisien f(x₀) adalah 0, sehingga hanya f(x₀+h) dan f(x₀−h) yang muncul di rumus. Itulah alasan disebut tiga titik walaupun hanya dua nilai fungsi yang dihitung. Rumus akhir dengan h negatif menjadi versi mundur dari ujung kanan data.
 
-**Diketahui:** f(x) = ln x, x₀ = 1,8
+6.1 · Rumus Titik Data
 
-\\(f'(1{,}8)\\approx\\frac{\\ln 1{,}9-\\ln 1{,}8}{0{,}1}=\\frac{0{,}64185389-0{,}58778667}{0{,}1}=0{,}5406722\\)
+## Rumus Lima Titik: Akhir & Tengah
 
-**Nilai eksak:** f′(x) = 1/x → f′(1,8) = 1/1,8 ≈ **0,5555556**
+### A. Lima Titik Akhir
+Dipakai di ujung data tabel dengan 4 data ke depan:
 
-| h | Pendekatan | Galat aktual | Batas atas \\(\|h\|/2(1{,}8)^2\\) |
-| --- | --- | --- | --- |
-| 0,1 | 0,5406722 | 0,0148834 | 0,0154321 |
-| 0,05 | 0,5479795 | 0,0075761 | 0,0077160 |
-| 0,01 | 0,5540180 | 0,0015376 | 0,0015432 |
+$$f'(x_0) pprox \frac{1}{12h}\left[-25f(x_0) + 48f(x_0+h) - 36f(x_0+2h) + 16f(x_0+3h) - 3f(x_0+4h)\right]$$
 
-Batas atas ≠ galat aktual; galat aktual = |eksak − pendekatan|.
+$$\text{Galat} = \frac{h^4}{5} f^{(5)}(\xi), \quad \xi \in (x_0, x_0+4h)$$
 
-- Nilai pendekatan berubah ketika h diubah.
-- Pada contoh ini, h makin kecil → pendekatan makin dekat ke nilai eksak.
-- Tetap bedakan nilai **pendekatan** dan nilai **eksak**.
+| $-25$ | $+48$ | $-36$ | $+16$ | $-3$ |
+| :---: | :---: | :---: | :---: | :---: |
+| $x_0$ | $x_0+h$ | $x_0+2h$ | $x_0+3h$ | $x_0+4h$ |
 
-Sumber: Imron dkk. (2022), hlm. 186Slide 15 dari 28
+$\times \frac{1}{12h}$ · dipakai di ujung data · orde galat $O(h^4)$
 
-Substitusikan x₀ = 1,8 dan h = 0,1 ke rumus beda maju: ln 1,9 dikurangi ln 1,8, dibagi 0,1, hasilnya 0,5406722. Karena f″(x) = 1/x² dan ξ berada di antara 1,8 dan 1,9, galatnya dibatasi |h|/(2·1,8²) = 0,0154321. Ulangi untuk h = 0,05 dan 0,01. Bandingkan dengan nilai eksak 1/1,8 = 0,5555556: makin kecil h, makin dekat. Kolom terakhir adalah batas galat, bukan galat sebenarnya.
+### B. Lima Titik Tengah
+Dipakai di bagian dalam data secara simetris:
+
+$$f'(x_0) pprox \frac{1}{12h}\left[f(x_0-2h) - 8f(x_0-h) + 8f(x_0+h) - f(x_0+2h)\right]$$
+
+$$\text{Galat} = \frac{h^4}{30} f^{(5)}(\xi), \quad \xi \in (x_0-2h, x_0+2h)$$
+
+| $+1$ | $-8$ | $0$ | $+8$ | $-1$ |
+| :---: | :---: | :---: | :---: | :---: |
+| $x_0-2h$ | $x_0-h$ | $x_0$ | $x_0+h$ | $x_0+2h$ |
+
+$\times \frac{1}{12h}$ · dipakai di dalam data · orde galat $O(h^4)$
+
+Sumber: Imron dkk. (2022), hlm. 189 | Slide 15 dari 39
+
+Memakai polinomial Lagrange melalui lima titik sehingga galat turun ke orde h⁴. Lima titik akhir: x₀ sampai x₀+4h. Lima titik tengah: x₀−2h sampai x₀+2h, f(x₀) berkoefisien 0.
+
+6.1 · Rumus Titik Data
+
+## Perbandingan: Tiga Titik vs Lima Titik
+
+| Aspek | Rumus Tiga Titik | Rumus Lima Titik |
+| :--- | :--- | :--- |
+| **Orde Galat** | $O(h^2)$ | $O(h^4)$ |
+| **Kebutuhan Titik Data** | 3 posisi data (hemat data) | 5 posisi data (butuh data lebih banyak) |
+| **Jumlah Evaluasi Fungsi** | 2 atau 3 nilai fungsi | 4 atau 5 nilai fungsi |
+| **Tingkat Ketelitian** | Cukup teliti | Sangat teliti untuk $h$ kecil |
+
+### 📌 Contoh Perbandingan pada $f(x) = x e^x$ (Tengah, $x_0 = 2{,}0, h = 0{,}1$):
+- **Tiga Titik Tengah:** Galat $\approx 6{,}16 \times 10^{-2}$
+- **Lima Titik Tengah:** Galat $\approx 1{,}69 \times 10^{-4}$
+- **Kesimpulan:** Lima titik jauh lebih teliti (galat mengecil ratusan kali lipat), tetapi membutuhkan ketersediaan data yang lebih banyak.
+
+Sumber: Analisis Komparasi Orde Galat | Slide 16 dari 39
+
+Gambar memakai contoh tengah x₀ = 2.0, h = 0.1. Pada tiga titik hanya 2 nilai fungsi dihitung (1.9 dan 2.1), pada lima titik 4 nilai (1.8, 1.9, 2.1, 2.2). Orde galat O(h²) dan O(h⁴) cukup disebut sekilas; analisis galat dibahas anggota lain.
+
+6.1 · Rumus Titik Data
+
+## Panduan Memilih Rumus
+
+| Rumus | Posisi Titik yang Dipakai | Ketersediaan Data | Dipakai Bila |
+| :--- | :--- | :--- | :--- |
+| **Tiga Titik Akhir** | $x_0, x_0+h, x_0+2h$ | Satu sisi | Titik di ujung batas data ($O(h^2)$) |
+| **Tiga Titik Tengah** | $x_0-h, x_0, x_0+h$ ($f(x_0)$ koef. 0) | Simetris kiri & kanan | Ada data kiri dan kanan ($O(h^2)$) |
+| **Lima Titik Akhir** | $x_0$ sampai $x_0+4h$ | Satu sisi | Ujung data & 4 data tersedia ($O(h^4)$) |
+| **Lima Titik Tengah** | $x_0-2h$ sampai $x_0+2h$ ($f(x_0)$ koef. 0) | Simetris kiri & kanan | Ada 2 data kiri & 2 kanan ($O(h^4)$) |
+
+### 💡 Catatan Pemakaian:
+- Pilih rumus berdasarkan posisi titik yang dicari: ujung data memakai rumus akhir, di dalam data memakai rumus tengah.
+- Untuk titik di ujung kanan tabel (mis. $f'(1{,}5)$), data hanya ada di sebelah kiri, maka rumus akhir dipakai dengan **$h$ bernilai negatif** (mis. memakai $1{,}5; 1{,}4; 1{,}3$ untuk tiga titik).
+
+Sumber: Imron dkk. (2022) | Slide 17 dari 39
+
+Pilih rumus berdasarkan posisi titik yang dicari: ujung data memakai rumus akhir, di dalam data memakai rumus tengah. Untuk f′(1.5) data hanya ada di kiri, maka rumus akhir dipakai dengan h negatif (memakai 1.5, 1.4, 1.3 untuk tiga titik).
+
+6.1 · Rumus Titik Data
+
+## Cara Menghitung: Prosedur 4 Langkah
+
+1. **Tentukan $x_0$ dan $h$**
+   Titik yang dicari turunannya adalah $x_0$. $h$ adalah jarak seragam antar-data ($h = x_{i+1} - x_i$).
+2. **Pilih Rumus yang Sesuai**
+   Data satu sisi: gunakan rumus **akhir**. Data mengapit simetris: gunakan rumus **tengah**. Lalu tentukan tiga atau lima titik.
+3. **Substitusi Nilai Fungsi**
+   Ambil nilai $f(x)$ dari tabel sesuai posisi titik, kalikan dengan masing-masing koefisien bobotnya.
+4. **Hitung dan Lakukan Pembagian**
+   Jumlahkan seluruh hasil kali, lalu bagi dengan $2h$ (untuk tiga titik) atau $12h$ (untuk lima titik).
+
+> [!NOTE]
+> **$h = \text{jarak antar-data}$**: Contoh: $h = 2{,}1 - 2{,}0 = 0{,}1$. Bukan nilai fungsi dan bukan hasil turunan.  
+> **$h$ boleh bernilai negatif**: Rumus akhir dengan $h = -0{,}1$ memakai titik di sebelah kiri $x_0$ (dari ujung kanan data mundur ke kiri).
+
+Sumber: Pedoman Prosedur Numerik | Slide 18 dari 39
+
+Empat langkah yang sama untuk keempat rumus. h adalah jarak antar-data, bukan nilai fungsi dan bukan hasil turunan. h negatif dipakai saat rumus akhir diterapkan dari ujung kanan data.
+
+6.1 · Rumus Titik Data
+
+## Soal 1: Tiga Titik Akhir
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+*Fungsi:* $f(x) = x e^x$ · *Nilai Eksak:* $f'(2{,}0) = 3e^2 \approx 22{,}167168$ (pembanding galat)
+
+### 📝 Soal:
+Diberikan tabel nilai $f(x) = x e^x$ di atas. Hitunglah hampiran turunan $f'(2{,}0)$ dengan **rumus tiga titik akhir** ($x_0 = 2{,}0, h = 0{,}1$), lalu tentukan galatnya terhadap nilai eksak!
+
+### 🎯 Instruksi Pengerjaan (Langkah 1 s.d. 4):
+1. Substitusikan $f(2{,}0), f(2{,}1), f(2{,}2)$ dari tabel ke rumus: $\frac{1}{2h}[-3f(x_0) + 4f(x_0+h) - f(x_0+2h)]$.
+2. Kalikan setiap nilai $f$ dengan koefisiennya: $-3, 4,$ dan $-1$.
+3. Jumlahkan ketiga hasil kali, lalu bagi dengan $2h = 0{,}2$.
+4. Hitung $\text{galat} = \text{eksak} - \text{hampiran}$. Tulis hasil dengan 6 desimal dan galat dalam notasi $a \times 10^b$.
+
+Sumber: Latihan Soal Terbimbing | Slide 19 dari 39
+
+Soal 1. Pastikan siswa membaca dulu: rumus apa (tiga titik akhir), x₀ berapa, h berapa. Empat instruksi di slide ini sama urutannya dengan empat langkah di slide penyelesaian. Beri waktu sekitar 3 menit sebelum membuka slide berikutnya.
+
+6.1 · Rumus Titik Data
+
+## Penyelesaian 1: Tiga Titik Akhir
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+$f(x) = x e^x$ · Nilai eksak $f'(2{,}0) = 3e^2 = 22{,}167168$
+
+**Tiga Titik Akhir · $x_0 = 2{,}0, h = 0{,}1$**  
+$$f'(2{,}0) \approx \frac{-3f(2{,}0) + 4f(2{,}1) - f(2{,}2)}{2(0{,}1)}$$
+
+1. **Masukkan nilai tabel:**
+   $$= \frac{-3(14{,}778112) + 4(17{,}148957) - 19{,}855030}{0{,}2}$$
+2. **Kalikan setiap nilai:**
+   $$= \frac{-44{,}334336 + 68{,}595828 - 19{,}855030}{0{,}2}$$
+3. **Jumlahkan, lalu bagi:**
+   $$= \frac{4{,}406462}{0{,}2} = \mathbf{22{,}032310}$$
+4. **Bandingkan dengan eksak:**
+   $$\text{Galat} = 22{,}167168 - 22{,}032310 = \mathbf{1{,}35 \times 10^{-1}}$$
+
+Sumber: Imron dkk. (2022), hlm. 190 | Slide 20 dari 39
+
+Dengan h = −0.1 hasilnya 22.054525, galat 1.13×10⁻¹. Langkah sama: masukkan nilai, kalikan, jumlahkan, bagi 2h.
+
+6.1 · Rumus Titik Data
+
+## Soal 2: Tiga Titik Tengah
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+$f(x) = x e^x$ · Nilai eksak $f'(2{,}0) = 3e^2 = 22{,}167168$
+
+### 📝 Soal:
+Dengan tabel yang sama, hitunglah hampiran $f'(2{,}0)$ memakai **rumus tiga titik tengah** ($x_0 = 2{,}0, h = 0{,}1$), lalu tentukan galatnya. Bandingkan dengan galat tiga titik akhir pada Soal 1!
+
+### 🎯 Instruksi Pengerjaan (Langkah 1 s.d. 4):
+1. Substitusikan $f(2{,}1)$ dan $f(1{,}9)$ dari tabel ke rumus: $\frac{1}{2h}[f(x_0+h) - f(x_0-h)]$.
+2. Kurangkan $f(2{,}1) - f(1{,}9)$. *Nilai $f(2{,}0)$ tidak dipakai karena koefisiennya 0.*
+3. Bagi hasil pengurangan dengan $2h = 0{,}2$.
+4. Hitung $\text{galat} = \text{eksak} - \text{hampiran}$. Bandingkan dengan galat Soal 1 ($1{,}35 \times 10^{-1}$): mana yang lebih kecil?
+
+Sumber: Latihan Soal Terbimbing | Slide 21 dari 39
+
+Soal 2. Pertanyaan pancingan: mengapa f(2.0) tidak muncul padahal x₀ = 2.0? Jawaban: koefisiennya 0. Minta siswa membandingkan galat dengan Soal 1 sebelum melihat penyelesaian.
+
+6.1 · Rumus Titik Data
+
+## Penyelesaian 2: Tiga Titik Tengah
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+$f(x) = x e^x$ · Nilai eksak $f'(2{,}0) = 3e^2 = 22{,}167168$
+
+**Tiga Titik Tengah · $x_0 = 2{,}0, h = 0{,}1$**  
+$$f'(2{,}0) \approx \frac{f(2{,}1) - f(1{,}9)}{2(0{,}1)}$$
+
+1. **Masukkan nilai tabel:**
+   $$= \frac{17{,}148957 - 12{,}703199}{0{,}2}$$
+2. **Kurangkan:**
+   $$= \frac{4{,}445758}{0{,}2}$$
+3. **Bagi dengan $2h$:**
+   $$= \mathbf{22{,}228790}$$
+4. **Bandingkan dengan eksak:**
+   $$\text{Galat} = 22{,}167168 - 22{,}228790 = \mathbf{-6{,}16 \times 10^{-2}}$$  
+   *(Lebih kecil dari tiga titik akhir: $1{,}35 \times 10^{-1}$)*
+
+Sumber: Imron dkk. (2022), hlm. 190 | Slide 22 dari 39
+
+Dengan h = 0.2 hasilnya 22.414163, galat −2.47×10⁻¹. Galat naik sekitar 4 kali saat h dua kali lebih besar (sesuai orde h²). f(2.0) tidak dipakai karena koefisiennya 0.
+
+6.1 · Rumus Titik Data
+
+## Soal 3: Lima Titik Akhir
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+$f(x) = x e^x$ · Nilai eksak $f'(1{,}8) = 2{,}8 e^{1{,}8} \approx 16{,}939013$ (pembanding galat)
+
+### 📝 Soal:
+Hitunglah hampiran $f'(1{,}8)$ dengan **rumus lima titik akhir** ($x_0 = 1{,}8, h = 0{,}1$), lalu tentukan galatnya!  
+*Diskusi:* Jelaskan mengapa $x_0 = 2{,}0$ tidak dapat dipakai pada rumus lima titik akhir ini.
+
+### 🎯 Instruksi Pengerjaan (Langkah 1 s.d. 4):
+1. Periksa data: rumus butuh $x_0$ sampai $x_0+4h = 1{,}8$ sampai $2{,}2$. Substitusikan kelima nilai $f$ dari tabel.
+2. Kalikan setiap nilai $f$ dengan koefisiennya: $-25, 48, -36, 16,$ dan $-3$.
+3. Jumlahkan kelima hasil kali, lalu bagi dengan $12h = 1{,}2$.
+4. Hitung $\text{galat} = \text{eksak} - \text{hampiran}$. Bandingkan dengan galat tiga titik akhir di $x_0 = 1{,}8$ ($1{,}06 \times 10^{-1}$).
+
+Sumber: Latihan Soal Terbimbing | Slide 23 dari 39
+
+Soal 3. Jawaban pertanyaan "mengapa bukan 2.0": rumus lima titik akhir membutuhkan x₀ sampai x₀+4h, yaitu 2.0 sampai 2.4, sedangkan tabel hanya sampai 2.2. Hanya x₀ = 1.8 yang punya empat data di kanannya.
+
+6.1 · Rumus Titik Data
+
+## Penyelesaian 3: Lima Titik Akhir
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+$f(x) = x e^x$ · Nilai eksak $f'(1{,}8) = 2{,}8 e^{1{,}8} = 16{,}939013$
+
+**Lima Titik Akhir · $x_0 = 1{,}8, h = 0{,}1$**  
+$$f'(1{,}8) \approx \frac{-25f(1{,}8) + 48f(1{,}9) - 36f(2{,}0) + 16f(2{,}1) - 3f(2{,}2)}{12(0{,}1)}$$
+
+1. **Masukkan nilai tabel:**
+   $$= \frac{-25(10{,}889365) + 48(12{,}703199) - 36(14{,}778112) + 16(17{,}148957) - 3(19{,}855030)}{1{,}2}$$
+2. **Kalikan setiap nilai:**
+   $$= \frac{-272{,}234125 + 609{,}753552 - 532{,}012032 + 274{,}383312 - 59{,}565090}{1{,}2}$$
+3. **Jumlahkan, lalu bagi:**
+   $$= \frac{20{,}325617}{1{,}2} = \mathbf{16{,}938014}$$
+4. **Bandingkan dengan eksak:**
+   $$\text{Galat} = 16{,}939013 - 16{,}938014 = \mathbf{9{,}99 \times 10^{-4}}$$  
+   *(Tiga titik akhir: $1{,}06 \times 10^{-1}$ — lima titik $\approx 106\times$ lebih teliti!)*
+
+Sumber: Imron dkk. (2022) | Slide 24 dari 39
+
+Contoh tambahan di x₀ = 1.8 karena x₀ = 2.0 tidak punya empat titik di kanannya. Rumus sama dengan Contoh 6.1.3 buku untuk f′(1.1).
+
+6.1 · Rumus Titik Data
+
+## Soal 4: Lima Titik Tengah
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+$f(x) = x e^x$ · Nilai eksak $f'(2{,}0) = 3e^2 = 22{,}167168$
+
+### 📝 Soal:
+Hitunglah hampiran $f'(2{,}0)$ dengan **rumus lima titik tengah** ($x_0 = 2{,}0, h = 0{,}1$), lalu tentukan galatnya! Bandingkan dengan galat tiga titik tengah pada Soal 2.
+
+### 🎯 Instruksi Pengerjaan (Langkah 1 s.d. 4):
+1. Substitusikan $f(1{,}8), f(1{,}9), f(2{,}1), f(2{,}2)$ dari tabel. *Data tersedia 2 di kiri dan 2 di kanan $x_0$.*
+2. Kalikan setiap nilai $f$ dengan koefisiennya: $1, -8, 8,$ dan $-1$. Nilai $f(2{,}0)$ tidak dipakai (koefisien 0).
+3. Jumlahkan keempat hasil kali, lalu bagi dengan $12h = 1{,}2$.
+4. Hitung $\text{galat} = \text{eksak} - \text{hampiran}$. Bandingkan dengan galat Soal 2 ($-6{,}16 \times 10^{-2}$).
+
+Sumber: Latihan Soal Terbimbing | Slide 25 dari 39
+
+Soal 4. Tekankan kesimpulan: dengan data dan h yang sama, lima titik tengah memberi galat sekitar 10⁻⁴, sedangkan tiga titik tengah sekitar 10⁻².
+
+6.1 · Rumus Titik Data
+
+## Penyelesaian 4: Lima Titik Tengah
+
+| $x$ | 1,8 | 1,9 | 2,0 | 2,1 | 2,2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $f(x)$ | 10,889365 | 12,703199 | 14,778112 | 17,148957 | 19,855030 |
+
+$f(x) = x e^x$ · Nilai eksak $f'(2{,}0) = 3e^2 = 22{,}167168$
+
+**Lima Titik Tengah · $x_0 = 2{,}0, h = 0{,}1$**  
+$$f'(2{,}0) \approx \frac{f(1{,}8) - 8f(1{,}9) + 8f(2{,}1) - f(2{,}2)}{12(0{,}1)}$$
+
+1. **Masukkan nilai tabel:**
+   $$= \frac{10{,}889365 - 8(12{,}703199) + 8(17{,}148957) - 19{,}855030}{1{,}2}$$
+2. **Kalikan setiap nilai:**
+   $$= \frac{10{,}889365 - 101{,}625592 + 137{,}191656 - 19{,}855030}{1{,}2}$$
+3. **Jumlahkan, lalu bagi:**
+   $$= \frac{26{,}600399}{1{,}2} = \mathbf{22{,}166999}$$
+4. **Bandingkan dengan eksak:**
+   $$\text{Galat} = 22{,}167168 - 22{,}166999 = \mathbf{1{,}69 \times 10^{-4}}$$  
+   *(Tiga titik tengah: $6{,}16 \times 10^{-2}$, lebih dari 360× lebih besar!)*
+
+Sumber: Imron dkk. (2022), hlm. 190–191 | Slide 26 dari 39
+
+Contoh 6.1.2 buku. Perbandingan: galat lima titik sekitar 10⁻⁴, tiga titik sekitar 10⁻².
 
 Analisis Galat
 
@@ -407,7 +680,7 @@ Lima titik ujung — O(h⁴)
 
 Notasi O(hp) menggambarkan perilaku galat saat h cukup kecil, **bukan** jaminan nilai galat sama untuk semua fungsi. Panjang batang bersifat ilustratif.
 
-Sumber: Imron dkk. (2022), hlm. 186–189Slide 16 dari 28
+Sumber: Imron dkk. (2022), hlm. 186–189Slide 27 dari 39
 
 Setiap rumus yang kita pakai hanya pendekatan. Galat pemotongan muncul karena suku-suku tertentu dibuang. Orde O(h), O(h²), O(h⁴) menunjukkan seberapa cepat galat mengecil ketika h dikecilkan: untuk orde empat, h dibagi 2 membuat galat turun sekitar 16 kali. Batang di slide hanya ilustrasi. Peringatan penting: h yang terlalu kecil memperbesar pengaruh galat pembulatan, jadi h perlu dipilih secara tepat.
 
@@ -435,7 +708,7 @@ Data pengukuran yang berisik membuat h kecil berbahaya: selisih dua nilai yang h
 
 f(x) = eˣ di x = 1 (f′(1) = e), aritmetika double. Galat turun lalu naik kembali.
 
-Tambahan: hitungan sendiri; konsep: Burden & Faires \[1\], catatan UMD \[2\]Slide 17 dari 28
+Tambahan: hitungan sendiri; konsep: Burden & Faires \[1\], catatan UMD \[2\]Slide 28 dari 39
 
 Bagian ini di luar buku. Intinya: ada dua sumber galat yang bekerja berlawanan. Galat pemotongan mengecil bila h mengecil (O(h) untuk maju, O(h²) untuk tengah). Tetapi komputer menyimpan f dengan galat pembulatan; selisih f(x+h) − f(x−h) dibagi 2h memperbesar galat itu sekitar δ/h. Karena itu total galat turun lalu naik lagi. Tabel dihitung sendiri dengan f(x) = eˣ di x = 1 (eksak e) memakai aritmetika double: selisih maju terbaik sekitar h = 10⁻⁸, selisih tengah terbaik sekitar h = 10⁻⁶ pada kisi nilai di tabel. Angka persisnya dapat sedikit berbeda antar komputer karena pembulatan. Rumus E(h) dan h\* adalah turunan sederhana dari galat pemotongan (h²/6)·M dan galat data δ; bentuk umum argumen ini ada di Burden & Faires §4.1 \[1\] dan catatan kuliah \[2\], tetapi konstantanya kami tulis sendiri. Hubungkan dengan Slide 8: kalimat 'h terlalu kecil memperbesar galat pembulatan' ditunjukkan secara numerik di sini.
 
@@ -466,7 +739,7 @@ Dh = 0,5406722; f′(1,8) = 0,5555556
 
 **Hati-hati:** jika f′(x) = 0 (mis. sin x di x = π/2) Er tidak terdefinisi; jika f′(x) sangat dekat 0, Er membesar dan kurang informatif — gunakan Ea. Buku menghitung galat bertanda (eksak − pendekatan); Ea di sini selalu ≥ 0.
 
-Tambahan: definisi umum \[1\] §1.2; contoh dari data Contoh 6.1.1 (hitungan sendiri)Slide 18 dari 28
+Tambahan: definisi umum \[1\] §1.2; contoh dari data Contoh 6.1.1 (hitungan sendiri)Slide 29 dari 39
 
 Slide ini melengkapi slide galat. E_a memberi besar kesalahan dalam satuan turunan. E_r membandingkannya dengan besar turunan, sehingga bisa dibandingkan antarfungsi. E\_% hanya E_r dikali 100. Contoh: pada Contoh 6.1.1, selisih maju dengan h = 0,1 memberi 0,5406722 sedangkan eksaknya 0,5555556, jadi E_a = 0,0148834; E_r = 0,0148834 / 0,5555556 ≈ 0,0267901; E\_% ≈ 2,679%. Bila turunan eksak nol atau mendekati nol, E_r tidak terdefinisi atau menjadi sangat besar; pakai E_a. Definisi galat absolut dan relatif adalah materi standar analisis numerik (mis. Burden & Faires §1.2). Contoh hitungan ini kami hitung sendiri dari angka buku.
 
@@ -505,7 +778,7 @@ Orde galat naik: **O(h²) → O(h⁴)**
 
 Kaitan notasi slide berikut: D(h) = N₁(h/2), D(2h) = N₁(h). Untuk n = 1 (selisih maju): 2D(h) − D(2h).
 
-Sumber: Imron dkk. (2022), hlm. 196–199Slide 19 dari 28
+Sumber: Imron dkk. (2022), hlm. 196–199Slide 30 dari 39
 
 Richardson tidak membuat rumus turunan baru dari data; ia menggabungkan dua hasil yang sudah ada. Hitung D(h) dan D(2h), lalu tambahkan koreksi [D(h) − D(2h)]/(2ⁿ − 1). Untuk selisih tengah galatnya O(h²), jadi n = 2 dan rumusnya (4D(h) − D(2h))/3 dengan orde O(h⁴). Untuk selisih maju n = 1. Di buku, langkah besar ditulis h dan langkah kecil h/2, jadi D(h) di slide ini sama dengan N₁(h/2) di buku. Pilih n sesuai bentuk galat pendekatan awal.
 
@@ -542,7 +815,7 @@ Richardson · 0,0002688
 
 **Kesimpulan:** Richardson mengurangi galat sekitar **28 kali** dibanding selisih maju dengan h = 0,05 (0,0075761 ÷ 0,0002688 ≈ 28).
 
-Sumber: Imron dkk. (2022), hlm. 197–198Slide 20 dari 28
+Sumber: Imron dkk. (2022), hlm. 197–198Slide 31 dari 39
 
 Galat awal selisih maju berorde h, jadi pakai rumus n = 1: dua kali hasil yang lebih teliti dikurangi hasil yang kurang teliti. Hitung: 2 × 0,5479795 = 1,0959590; dikurangi 0,5406722 menghasilkan 0,5552868. Galat tiap hasil dihitung dari nilai eksak 0,5555556. Buku menulis hasil 0,555287 dan galat 0,000258; hitung ulang dari angka buku memberi 0,0002688, dan kami memakai angka yang konsisten dengan digit di slide.
 
@@ -569,11 +842,11 @@ Contoh 6.1.2
 
 **Kesimpulan:** di antara ketiga metode, **lima titik tengah** paling akurat.
 
-**Kaitan dengan Richardson:** hasil pendekatan turunan dapat dipakai sebagai dasar (N₁) untuk meningkatkan ketelitian lewat ekstrapolasi (slide 16).
+**Kaitan dengan Richardson:** hasil pendekatan turunan dapat dipakai sebagai dasar (N₁) untuk meningkatkan ketelitian lewat ekstrapolasi (slide 34).
 
-Sumber: Imron dkk. (2022), hlm. 190–191Slide 21 dari 28
+Sumber: Imron dkk. (2022), hlm. 190–191Slide 32 dari 39
 
-Semua hasil dihitung dari lima nilai tabel, bukan dari rumus fungsi. Nilai eksak 3e² ≈ 22,167168 hanya dipakai sebagai pembanding. Galat absolut dihitung |eksak − pendekatan|: 0,134858; 0,061622; 0,000169. Lima titik tengah paling dekat karena galatnya O(h⁴), sedangkan dua rumus lain O(h²). Tiga titik tengah dengan h berbeda nantinya menjadi bahan Richardson pada slide 16.
+Semua hasil dihitung dari lima nilai tabel, bukan dari rumus fungsi. Nilai eksak 3e² ≈ 22,167168 hanya dipakai sebagai pembanding. Galat absolut dihitung |eksak − pendekatan|: 0,134858; 0,061622; 0,000169. Lima titik tengah paling dekat karena galatnya O(h⁴), sedangkan dua rumus lain O(h²). Tiga titik tengah dengan h berbeda nantinya menjadi bahan Richardson pada slide 34.
 
 Contoh 6.1.3
 
@@ -607,7 +880,7 @@ Lima titik tengah, x = 1,3:
 
 **Kesimpulan:** pilih rumus menurut posisi titik dan ketersediaan data. **Kaitan dengan Richardson:** ekstrapolasi membutuhkan data yang sesuai dengan ukuran langkah yang dipakai (h dan setengahnya).
 
-Sumber: Imron dkk. (2022), hlm. 191–195Slide 22 dari 28
+Sumber: Imron dkk. (2022), hlm. 191–195Slide 33 dari 39
 
 Lihat posisi titik dulu. Di ujung tidak ada data di salah satu sisi, jadi pakai rumus ujung. Di titik dalam bisa pakai rumus tengah, dan lima titik tengah hanya pada x = 1,3 karena butuh dua titik di tiap sisi. Hitungan memakai nilai tabel penuh; buku menampilkannya dibulatkan. Hubungan dengan Richardson: untuk membentuk N₁ dengan h dan h/2, data pada kedua ukuran langkah itu harus ada; ini akan terlihat jelas di slide 17.
 
@@ -646,7 +919,7 @@ N₃(0,2) = 22,167157 + (22,167157 − 22,166995)/15\
 
 **Kesimpulan:** Richardson bertingkat meningkatkan ketelitian secara bertahap: N₁ → N₂ → N₃ (N₃ sama dengan eksak pada enam desimal yang ditampilkan).
 
-Sumber: Imron dkk. (2022), hlm. 200–201Slide 23 dari 28
+Sumber: Imron dkk. (2022), hlm. 200–201Slide 34 dari 39
 
 Tiga tahap: (1) hitung N₁ dengan selisih tengah untuk h = 0,2; 0,1; 0,05; (2) gabungkan pasangan yang bertetangga dengan pembagi 3 → N₂(0,2) dan N₂(0,1); (3) gabungkan kedua N₂ dengan pembagi 15 → N₃(0,2). Angka dalam kurung adalah ukuran langkah. Ini angka buku; hitung ulang dari tabel Contoh 6.1.2 memberi N₁(0,2) = 22,414163 dan N₁(0,1) = 22,228790 (selisih kecil di digit ke-6). Rumus N₃ di buku tertulis memakai N₁(0,2), tetapi angkanya cocok dengan N₂(0,2). Galat N₃ nol hanya pada enam desimal yang ditampilkan, bukan bukti kesamaan matematis.
 
@@ -683,7 +956,7 @@ N₃ membutuhkan N₁(0,05) = [f(1,35) − f(1,25)]/0,1, sedangkan f(1,25) dan f
 
 Catatan: Hasil perhitungan menggunakan data tabel yang tersedia.
 
-Sumber: Imron dkk. (2022), hlm. 201–202Slide 24 dari 28
+Sumber: Imron dkk. (2022), hlm. 201–202Slide 35 dari 39
 
 Titik x₀ = 1,3 dengan h = 0,2 dan 0,1; N₁(0,2) memakai f(1,5) dan f(1,1), N₁(0,1) memakai f(1,4) dan f(1,2). Gabungkan dengan pembagi 3 untuk N₂(0,2). Tingkat ketiga butuh N₁(0,05) dengan f(1,35) dan f(1,25), yang tidak ada di tabel, sehingga berhenti di N₂. Catatan untuk penyaji (dicek pada halaman buku 201–202): buku mencetak N₁(0,1) = (1/0,2)(f(1,4) − f(1,1)) = 27,10735 dan N₂(0,2) = 26,920273. Dua hal ini tidak cocok dengan substitusi yang tercetak: (16,44465 − 11,02318)/0,2 memakai f(1,2) dan menghasilkan 27,10735, sedangkan dengan f(1,1) hasilnya lain; dan 27,10735 + (27,10735 − 27,651318)/3 = 26,926027, bukan 26,920273. Nilai 26,926027 juga sama dengan hasil lima titik tengah 26,92603 pada Contoh 6.1.3 butir 3(e). Penyebab pasti selisihnya tidak dapat dibuktikan dari buku; mungkin salah cetak, tetapi itu hanya dugaan. Slide menampilkan hasil hitung ulang 26,926027 (dari data tabel yang tersedia); angka 26,920273 adalah yang tercetak di buku.
 
@@ -705,7 +978,7 @@ Ringkasan Metode
 
 **Kesimpulan:** pemilihan metode bergantung pada posisi titik yang dihitung, ketersediaan data, bentuk galat, dan tingkat ketelitian yang dibutuhkan.
 
-Sumber: Imron dkk. (2022), Bab 6 (ringkasan)Slide 25 dari 28
+Sumber: Imron dkk. (2022), Bab 6 (ringkasan)Slide 36 dari 39
 
 Gunakan tabel ini untuk merangkum. Maju dan mundur: sederhana tetapi O(h). Selisih tengah dan tiga titik ujung: O(h²). Lima titik tengah dan lima titik ujung: O(h⁴). Richardson berbeda jenis; ia tidak menurunkan rumus baru dari data, tetapi menggabungkan hasil rumus lain, sehingga ordenya bergantung pada orde awal dan skema ekstrapolasi (mis. O(h²) lalu O(h⁴) pada galat pangkat genap).
 
@@ -725,7 +998,7 @@ Ringkasan Metode Kolom kondisi: tambahan di luar buku
 
 Tidak ada metode yang selalu terbaik: ketelitian aktual bergantung pada fungsi, nilai h, dan kualitas data (noise membuat h kecil dan rumus berkoefisien besar kurang menguntungkan).
 
-Rumus dan orde: Imron dkk. (2022), hlm. 186–189; kolom kondisi: tambahan \[1\]Slide 26 dari 28
+Rumus dan orde: Imron dkk. (2022), hlm. 186–189; kolom kondisi: tambahan \[1\]Slide 37 dari 39
 
 Slide ini melengkapi slide 'Perbandingan Metode' sebelumnya: di sana fokus pada kelebihan dan keterbatasan, di sini pada rumus dasar dan kapan dipakai. Rumus dan orde galat berasal dari buku. Kolom 'kondisi penggunaan' adalah pengembangan penjelasan kami, mengikuti prinsip standar di buku analisis numerik (mis. Burden & Faires §4.1–4.2). Pesan penutup: jangan menyimpulkan satu metode selalu paling baik. Lima titik memiliki orde lebih tinggi, tetapi koefisiennya lebih besar (−25, 48, −36, …) sehingga lebih sensitif terhadap noise pada data, dan membutuhkan lebih banyak data; ini kesimpulan kualitatif, bukan klaim dari buku.
 
@@ -743,7 +1016,7 @@ Penutup
 
 “Ketelitian diferensiasi numerik tidak hanya ditentukan oleh rumus yang digunakan, tetapi juga oleh ukuran langkah, data yang tersedia, dan sifat fungsi.”
 
-Sumber: Imron dkk. (2022), Bab 6 (ringkasan)Slide 27 dari 28
+Sumber: Imron dkk. (2022), Bab 6 (ringkasan)Slide 38 dari 39
 
 Rangkum perjalanan: dari definisi, dasar deret, rumus maju/mundur/tengah, rumus tiga dan lima titik, galat, lalu Richardson. Tekankan tiga hal: orde galat menentukan kecepatan perbaikan saat h mengecil, rumus harus cocok dengan posisi titik dan data yang ada, dan h tidak boleh terlalu kecil. Tutup dengan kalimat di bawah slide, lalu buka sesi tanya jawab.
 
@@ -760,6 +1033,6 @@ Silakan ajukan pertanyaan atau tanggapan terkait materi yang telah dipaparkan.
 Farel Luther Siagian · Fatih Taqiyyuddin · Siti Zulayka Maulida Amali · Keegan Gibran Jehian  
 **Dosen Pengampu:** Debi Yandra Niska, S.Kom., M.Kom. (2026)
 
-Slide 28 dari 28
+Slide 39 dari 39
 
 Ucapkan terima kasih kepada dosen pengampu dan rekan-rekan mahasiswa atas perhatian selama presentasi berlangsung. Buka kesempatan bagi audiens untuk sesi tanya jawab dan diskusi mengenai materi diferensiasi numerik.

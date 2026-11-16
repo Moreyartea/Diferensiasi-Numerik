@@ -187,7 +187,7 @@ def create_presentation():
         ftf.margin_top = Inches(0)
         ftf.margin_left = Inches(0)
         fp = ftf.paragraphs[0]
-        fp.text = f"Metode Numerik — Imron dkk. (2022) | Slide {slide_num} dari 28"
+        fp.text = f"Metode Numerik — Imron dkk. (2022) | Slide {slide_num} dari 39"
         fp.font.name = FONT_MAIN
         fp.font.size = Pt(10)
         fp.font.color.rgb = COLOR_MUTED
@@ -861,85 +861,382 @@ def create_presentation():
     add_callout_banner(s12, Inches(0.8), Inches(6.15), Inches(11.733), Inches(0.55),
         "Kesimpulan Akhir: Selisih tengah paling teliti (galat 1 m/s), tetapi pemilihan metode di lapangan harus selalu realistis terhadap ketersediaan data!")
 
+        # =========================================================================
+    # SLIDE 13: KONSEP DASAR TURUNAN DARI DATA TABEL
     # =========================================================================
-    # SLIDE 13: METODE SELISIH TENGAH (PERSAMAAN 6.5 BUKU)
-    # =========================================================================
-    s13 = add_base_slide("Pendekatan Deret", "Metode Selisih Tengah (Central Difference)", 13,
-        "Selisih tengah adalah rumus tiga titik tengah di buku (6.5), tanpa memakai f(x₀) itu sendiri. Karena simetris, suku galat orde pertama saling meniadakan, sehingga galatnya berorde h².")
-    add_math_box(s13, Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.5),
-        "Rumus Tiga Titik Tengah (Persamaan 6.5)",
-        latex=r"f'(x_0) \approx \frac{f(x_0 + h) - f(x_0 - h)}{2h}, \quad R = -\frac{h^2}{6} f'''(\xi)",
-        subtext="Suku galat pemotongan berorde O(h²): pembagian h menjadi 1/2 mengurangi galat 4x lipat!")
-    add_card(s13, Inches(0.8), Inches(4.6), Inches(5.6), Inches(1.9), "Kelebihan", [
-        "Simetris: Suku ganjil Taylor saling meniadakan.",
-        "Orde O(h²): Jika h dibagi 2, galat turun 4 kali lipat!",
-        "Nilai f(x₀) tidak perlu dihitung dalam rumus."
-    ], "Kelebihan", accent_color=COLOR_EMERALD)
-    add_card(s13, Inches(6.8), Inches(4.6), Inches(5.733), Inches(1.9), "Keterbatasan", [
-        "Membutuhkan nilai fungsi di kedua sisi titik (kiri & kanan).",
-        "Tidak dapat digunakan pada batas paling ujung data tabel.",
-        "Memerlukan rumus titik ujung (slide 14)."
-    ], "Keterbatasan", accent_color=COLOR_AMBER)
+    s13 = add_base_slide("Rumus Titik Data", "Konsep Dasar Turunan dari Data Tabel", 13,
+        "Pengantar konsep diferensiasi dari data tabel diskrit. Tekankan dua pembeda utama: jumlah titik (3 atau 5) dan posisi titik (akhir atau tengah). Lima titik memerlukan lebih banyak data tabel tetapi menghasilkan ketelitian jauh lebih tinggi.")
+    add_card(s13, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.8), "Representasi Kisi Data Seragam", [
+        "Sering kali kita tidak memiliki rumus fungsi kontinu, hanya data diskrit (x, f(x)) berjarak seragam h.",
+        "Contoh Titik Utama: x₀ = 2,0 dengan langkah h = 0,1.",
+        "Data Mengapit: x₀ - 2h (1,8), x₀ - h (1,9), x₀ (2,0), x₀ + h (2,1), x₀ + 2h (2,2).",
+        "Tujuan: Mengestimasi nilai turunan f'(x₀) menggunakan kombinasi linear nilai fungsi di titik-titik sekitar."
+    ], "Data Diskrit", accent_color=COLOR_PRIMARY)
+    add_table_data(s13, Inches(1.1), Inches(4.3), Inches(5.0), Inches(1.4),
+        ["x₀-2h", "x₀-h", "x₀", "x₀+h", "x₀+2h"],
+        [
+            ["1,8", "1,9", "2,0", "2,1", "2,2"]
+        ])
+
+    add_card(s13, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.8), "Dua Aspek Pembeda Metode", [
+        "1. Berdasarkan Jumlah Posisi Titik Data:",
+        "   • Tiga Titik: Menggunakan 3 data, galat O(h²), hemat titik data.",
+        "   • Lima Titik: Menggunakan 5 data, galat O(h⁴), akurasi sangat tinggi.",
+        "",
+        "2. Berdasarkan Posisi Titik Evaluasi (x₀):",
+        "   • Akhir (Endpoint): Dipakai bila x₀ di ujung batas tabel (hanya data satu sisi yang tersedia).",
+        "   • Tengah (Midpoint): Dipakai bila data tersedia mengapit simetris di kiri dan kanan x₀."
+    ], "Klasifikasi", accent_color=COLOR_EMERALD)
 
     # =========================================================================
-    # SLIDE 14: RUMUS TIGA TITIK DAN LIMA TITIK
+    # SLIDE 14: RUMUS TIGA TITIK: AKHIR & TENGAH
     # =========================================================================
-    s14 = add_base_slide("Pendekatan Deret", "Rumus Tiga Titik dan Lima Titik", 14,
-        "Rumus tiga titik ujung dipakai saat titik ada di ujung data. Rumus lima titik tengah memakai koefisien 1, -8, 8, -1 dan penyebut 12h; galatnya berorde h⁴.")
-    add_math_box(s14, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.3),
-        "3 Titik Ujung (6.4)",
-        latex=r"f'(x_0) \approx \frac{-3f_0 + 4f_1 - f_2}{2h}",
-        subtext="Galat: (h²/3) f''' => O(h²)")
-    add_math_box(s14, Inches(4.8), Inches(1.8), Inches(3.6), Inches(2.3),
-        "5 Titik Tengah (6.7)",
-        latex=r"f'(x_0) \approx \frac{f_{-2} - 8f_{-1} + 8f_1 - f_2}{12h}",
-        subtext="Galat: (h⁴/30) f⁽⁵⁾ => O(h⁴)")
-    add_math_box(s14, Inches(8.8), Inches(1.8), Inches(3.733), Inches(2.3),
-        "5 Titik Ujung (6.6)",
+    s14 = add_base_slide("Rumus Titik Data", "Rumus Tiga Titik: Akhir & Tengah", 14,
+        "Rumus tiga titik tengah memakai tiga POSISI data: x₀−h, x₀, x₀+h. Koefisien f(x₀) adalah 0, sehingga hanya f(x₀+h) dan f(x₀−h) yang muncul di rumus. Itulah alasan disebut tiga titik walaupun hanya dua nilai fungsi yang dihitung. Rumus akhir dengan h negatif menjadi versi mundur dari ujung kanan data.")
+    add_math_box(s14, Inches(0.8), Inches(1.8), Inches(5.6), Inches(2.3),
+        "A. Tiga Titik Akhir (Endpoint)",
+        latex=r"f'(x_0) \approx \frac{-3f(x_0) + 4f(x_0+h) - f(x_0+2h)}{2h}",
+        subtext="Galat: (h²/3) f'''(ξ₀)  =>  Orde O(h²)")
+    add_table_data(s14, Inches(0.8), Inches(4.2), Inches(5.6), Inches(1.4),
+        ["Bobot Koefisien", "-3", "+4", "-1"],
+        [
+            ["Posisi Titik", "x₀", "x₀ + h", "x₀ + 2h"]
+        ])
+    add_callout_banner(s14, Inches(0.8), Inches(5.75), Inches(5.6), Inches(0.7),
+        "Faktor: x 1/(2h) | Dipakai di batas ujung tabel data (satu sisi).")
+
+    add_math_box(s14, Inches(6.8), Inches(1.8), Inches(5.733), Inches(2.3),
+        "B. Tiga Titik Tengah (Midpoint)",
+        latex=r"f'(x_0) \approx \frac{f(x_0+h) - f(x_0-h)}{2h}",
+        subtext="Galat: -(h²/6) f'''(ξ₁)  =>  Orde O(h²)")
+    add_table_data(s14, Inches(6.8), Inches(4.2), Inches(5.733), Inches(1.4),
+        ["Bobot Koefisien", "-1", "0", "+1"],
+        [
+            ["Posisi Titik", "x₀ - h", "x₀", "x₀ + h"]
+        ])
+    add_callout_banner(s14, Inches(6.8), Inches(5.75), Inches(5.733), Inches(0.7),
+        "Simetris kiri-kanan. Koefisien f(x₀)=0 sehingga nilainya tidak dihitung.")
+
+    # =========================================================================
+    # SLIDE 15: RUMUS LIMA TITIK: AKHIR & TENGAH
+    # =========================================================================
+    s15 = add_base_slide("Rumus Titik Data", "Rumus Lima Titik: Akhir & Tengah", 15,
+        "Memakai polinomial Lagrange melalui lima titik sehingga galat turun ke orde h⁴. Lima titik akhir: x₀ sampai x₀+4h. Lima titik tengah: x₀−2h sampai x₀+2h, f(x₀) berkoefisien 0.")
+    add_math_box(s15, Inches(0.8), Inches(1.8), Inches(5.6), Inches(2.3),
+        "A. Lima Titik Akhir (Endpoint)",
         latex=r"f'(x_0) \approx \frac{-25f_0 + 48f_1 - 36f_2 + 16f_3 - 3f_4}{12h}",
-        subtext="Galat: (h⁴/5) f⁽⁵⁾ => O(h⁴)")
-
-    add_table_data(s14, Inches(0.8), Inches(4.4), Inches(11.733), Inches(2.1),
-        ["Aspek", "Tiga Titik Ujung (6.4)", "Lima Titik Tengah (6.7)", "Lima Titik Ujung (6.6)"],
+        subtext="Galat: (h⁴/5) f⁽⁵⁾(ξ)  =>  Orde O(h⁴)")
+    add_table_data(s15, Inches(0.8), Inches(4.2), Inches(5.6), Inches(1.4),
+        ["Bobot", "-25", "+48", "-36", "+16", "-3"],
         [
-            ["Jumlah Titik", "3 titik", "5 titik", "5 titik"],
-            ["Posisi", "Ujung batas interval", "Titik dalam (interior)", "Ujung batas interval"],
-            ["Orde Galat", "O(h²)", "O(h⁴) ⭐", "O(h⁴) ⭐"]
+            ["Posisi", "x₀", "x₀+h", "x₀+2h", "x₀+3h", "x₀+4h"]
         ])
+    add_callout_banner(s15, Inches(0.8), Inches(5.75), Inches(5.6), Inches(0.7),
+        "Faktor: x 1/(12h) | Butuh 4 titik data di depan x₀ (ujung data).")
 
-    # =========================================================================
-    # SLIDE 15: CONTOH 6.1.1 f(x) = ln x
-    # =========================================================================
-    s15 = add_base_slide("Contoh 6.1.1", "Contoh: Selisih Maju untuk f(x) = ln x", 15,
-        "Substitusikan x₀ = 1,8 dan h = 0,1 ke rumus beda maju: ln 1,9 dikurangi ln 1,8, dibagi 0,1, hasilnya 0,5406722. Bandingkan dengan eksak 1/1,8 = 0,5555556.")
-    add_math_box(s15, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.8),
-        "Perhitungan Kasus x₀ = 1,8 ; h = 0,1",
-        latex=r"f'(1.8) \approx \frac{\ln(1.9) - \ln(1.8)}{0.1} = \frac{0.64185 - 0.58779}{0.1} = 0.5406722",
-        subtext="Nilai Eksak: f'(x) = 1/x => f'(1,8) = 1/1,8 ≈ 0,5555556")
-    add_table_data(s15, Inches(0.8), Inches(3.8), Inches(11.733), Inches(2.2),
-        ["Langkah h", "Nilai Pendekatan", "Galat Aktual |Eksak - Pend.|", "Batas Atas Galat |h| / [2(1,8)²]"],
+    add_math_box(s15, Inches(6.8), Inches(1.8), Inches(5.733), Inches(2.3),
+        "B. Lima Titik Tengah (Midpoint)",
+        latex=r"f'(x_0) \approx \frac{f_{-2} - 8f_{-1} + 8f_1 - f_2}{12h}",
+        subtext="Galat: (h⁴/30) f⁽⁵⁾(ξ)  =>  Orde O(h⁴)")
+    add_table_data(s15, Inches(6.8), Inches(4.2), Inches(5.733), Inches(1.4),
+        ["Bobot", "+1", "-8", "0", "+8", "-1"],
         [
-            ["0,10", "0,5406722", "0,0148834", "0,0154321"],
-            ["0,05", "0,5479795", "0,0075761", "0,0077160"],
-            ["0,01", "0,5540180", "0,0015376 ⭐", "0,0015432"]
+            ["Posisi", "x₀-2h", "x₀-h", "x₀", "x₀+h", "x₀+2h"]
         ])
-    add_card(s15, Inches(0.8), Inches(6.1), Inches(11.733), Inches(0.65), "Keterangan", [
-        "Makin kecil h, pendekatan makin dekat ke eksak. Batas atas teoritis terbukti selalu lebih besar dari galat aktual."
-    ], accent_color=COLOR_PRIMARY)
+    add_callout_banner(s15, Inches(6.8), Inches(5.75), Inches(5.733), Inches(0.7),
+        "Simetris penuh. Bobot f(x₀)=0. Konstanta galat 1/30 sangat kecil!")
 
     # =========================================================================
-    # SLIDE 16: ANALISIS GALAT
+    # SLIDE 16: TIGA TITIK VS LIMA TITIK
     # =========================================================================
-    s16 = add_base_slide("Analisis Galat", "Galat atau Kesalahan Pendekatan", 16,
+    s16 = add_base_slide("Rumus Titik Data", "Perbandingan: Tiga Titik vs Lima Titik", 16,
+        "Gambar memakai contoh tengah x₀ = 2.0, h = 0.1. Pada tiga titik hanya 2 nilai fungsi dihitung (1.9 dan 2.1), pada lima titik 4 nilai (1.8, 1.9, 2.1, 2.2). Orde galat O(h²) dan O(h⁴) cukup disebut sekilas; analisis galat dibahas anggota lain.")
+    add_table_data(s16, Inches(0.8), Inches(1.8), Inches(6.0), Inches(4.7),
+        ["Karakteristik", "Rumus Tiga Titik", "Rumus Lima Titik"],
+        [
+            ["Orde Galat", "O(h²)", "O(h⁴) ⭐"],
+            ["Kebutuhan Titik", "3 posisi data", "5 posisi data"],
+            ["Evaluasi Fungsi", "2 atau 3 nilai", "4 atau 5 nilai"],
+            ["Kesesuaian", "Tabel pendek / batas data", "Data padat / akurasi tinggi"],
+            ["Reduksi Galat (h/2)", "Turun 4x lipat", "Turun 16x lipat ⭐"]
+        ])
+    add_card(s16, Inches(7.1), Inches(1.8), Inches(5.433), Inches(4.7), "Bukti Numerik pada f(x) = x eˣ", [
+        "Kondisi Uji: x₀ = 2,0 ; h = 0,1 (Metode Tengah)",
+        "Nilai Eksak f'(2,0) = 3e² ≈ 22,167168",
+        "",
+        "• Tiga Titik Tengah: Hasil 22,228790",
+        "  Galat Absolut = 6,16 x 10⁻² (0,061622)",
+        "",
+        "• Lima Titik Tengah: Hasil 22,166999",
+        "  Galat Absolut = 1,69 x 10⁻⁴ (0,000169)",
+        "",
+        "Kesimpulan: Lima titik menghasilkan ketelitian > 364x LEBIH AKURAT pada nilai langkah h yang persis sama!"
+    ], "Studi Kasus Komparasi", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 17: PANDUAN MEMILIH RUMUS
+    # =========================================================================
+    s17 = add_base_slide("Rumus Titik Data", "Panduan Memilih Rumus", 17,
+        "Pilih rumus berdasarkan posisi titik yang dicari: ujung data memakai rumus akhir, di dalam data memakai rumus tengah. Untuk f′(1.5) data hanya ada di kiri, maka rumus akhir dipakai dengan h negatif (memakai 1.5, 1.4, 1.3 untuk tiga titik).")
+    add_table_data(s17, Inches(0.8), Inches(1.8), Inches(11.733), Inches(3.6),
+        ["Rumus", "Posisi Titik yang Dipakai", "Distribusi Data", "Kriteria Penggunaan"],
+        [
+            ["Tiga Titik Akhir", "x₀, x₀+h, x₀+2h", "Satu sisi", "Titik berada di batas ujung tabel (O(h²))"],
+            ["Tiga Titik Tengah", "x₀-h, x₀, x₀+h (f₀ koef 0)", "Simetris", "Ada 1 data di kiri & kanan (O(h²))"],
+            ["Lima Titik Akhir", "x₀ s.d. x₀+4h", "Satu sisi", "Ujung tabel & minimal 4 data di satu sisi (O(h⁴))"],
+            ["Lima Titik Tengah", "x₀-2h s.d. x₀+2h (f₀ koef 0)", "Simetris", "Ada minimal 2 data di kiri & kanan (O(h⁴))"]
+        ])
+    add_callout_banner(s17, Inches(0.8), Inches(5.65), Inches(11.733), Inches(0.95),
+        "Aturan Penggunaan Nilai h:\\n"
+        "• Titik di ujung kiri: gunakan rumus akhir dengan h > 0 (bergerak maju ke kanan).\\n"
+        "• Titik di ujung kanan (mis. x = 1,5): gunakan rumus akhir dengan h < 0 (bergerak mundur ke kiri).")
+
+    # =========================================================================
+    # SLIDE 18: CARA MENGHITUNG: PROSEDUR 4 LANGKAH
+    # =========================================================================
+    s18 = add_base_slide("Rumus Titik Data", "Cara Menghitung: Prosedur 4 Langkah", 18,
+        "Empat langkah yang sama untuk keempat rumus. h adalah jarak antar-data, bukan nilai fungsi dan bukan hasil turunan. h negatif dipakai saat rumus akhir diterapkan dari ujung kanan data.")
+    add_card(s18, Inches(0.8), Inches(1.8), Inches(5.6), Inches(2.2), "Langkah 1: Tentukan x₀ dan h", [
+        "x₀ adalah absis titik yang dicari turunannya.",
+        "h = x_{i+1} - x_i adalah jarak seragam antar-data tabel (misal 2,1 - 2,0 = 0,1)."
+    ], "Step 1", accent_color=COLOR_PRIMARY)
+    add_card(s18, Inches(6.8), Inches(1.8), Inches(5.733), Inches(2.2), "Langkah 2: Pilih Rumus yang Sesuai", [
+        "Data satu sisi: gunakan rumus akhir.",
+        "Data simetris mengapit: gunakan rumus tengah.",
+        "Pilih orde presisi: Tiga Titik (O(h²)) atau Lima Titik (O(h⁴))."
+    ], "Step 2", accent_color=COLOR_PRIMARY)
+    add_card(s18, Inches(0.8), Inches(4.2), Inches(5.6), Inches(2.2), "Langkah 3: Substitusi Nilai Fungsi", [
+        "Ambil nilai f(x) dari tabel sesuai posisi titik yang dipersyaratkan.",
+        "Kalikan masing-masing nilai dengan koefisien bobotnya."
+    ], "Step 3", accent_color=COLOR_EMERALD)
+    add_card(s18, Inches(6.8), Inches(4.2), Inches(5.733), Inches(2.2), "Langkah 4: Hitung dan Lakukan Pembagian", [
+        "Jumlahkan seluruh hasil kali nilai fungsi.",
+        "Bagi dengan faktor pembagi: 2h (tiga titik) atau 12h (lima titik)."
+    ], "Step 4", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 19: SOAL 1: TIGA TITIK AKHIR
+    # =========================================================================
+    s19 = add_base_slide("Rumus Titik Data", "Soal 1: Tiga Titik Akhir", 19,
+        "Soal 1. Pastikan siswa membaca dulu: rumus apa (tiga titik akhir), x₀ berapa, h berapa. Empat instruksi di slide ini sama urutannya dengan empat langkah di slide penyelesaian. Beri waktu sekitar 3 menit sebelum membuka slide berikutnya.")
+    add_table_data(s19, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.4),
+        ["x", "1,8", "1,9", "2,0 (x₀)", "2,1", "2,2"],
+        [
+            ["f(x)", "10,889365", "12,703199", "14,778112", "17,148957", "19,855030"]
+        ])
+    add_card(s19, Inches(0.8), Inches(3.4), Inches(5.6), Inches(3.2), "Deskripsi Soal", [
+        "Fungsi: f(x) = x eˣ",
+        "Titik Evaluasi: x₀ = 2,0 ; Ukuran Langkah: h = 0,1",
+        "Nilai Eksak: f'(2,0) = 3e² ≈ 22,167168",
+        "",
+        "Soal: Hitunglah hampiran turunan f'(2,0) menggunakan rumus tiga titik akhir dan tentukan galatnya terhadap nilai eksak!"
+    ], "Soal 1", accent_color=COLOR_PRIMARY)
+    add_card(s19, Inches(6.8), Inches(3.4), Inches(5.733), Inches(3.2), "Instruksi Pengerjaan (4 Langkah)", [
+        "1. Substitusi f(2,0), f(2,1), f(2,2) ke rumus [-3f₀ + 4f₁ - f₂] / 2h.",
+        "2. Kalikan nilai fungsi dengan bobot: -3, +4, dan -1.",
+        "3. Jumlahkan ketiga hasil kali, lalu bagi dengan 2h = 0,2.",
+        "4. Hitung galat absolut = |nilai eksak - nilai hampiran|."
+    ], "Instruksi", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 20: PENYELESAIAN 1: TIGA TITIK AKHIR
+    # =========================================================================
+    s20 = add_base_slide("Rumus Titik Data", "Penyelesaian 1: Tiga Titik Akhir", 20,
+        "Dengan h = −0.1 hasilnya 22.054525, galat 1.13×10⁻¹. Langkah sama: masukkan nilai, kalikan, jumlahkan, bagi 2h.")
+    add_math_box(s20, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.6),
+        "Rumus Tiga Titik Akhir (x₀ = 2,0 ; h = 0,1)",
+        latex=r"f'(2.0) \approx \frac{-3f(2.0) + 4f(2.1) - f(2.2)}{2(0.1)}",
+        subtext="Nilai Eksak: f'(2,0) = 3e² ≈ 22,167168")
+    add_card(s20, Inches(0.8), Inches(3.6), Inches(6.0), Inches(3.0), "Tahapan Perhitungan", [
+        "1. Masukkan Nilai dari Tabel:",
+        "   = [-3(14,778112) + 4(17,148957) - 19,855030] / 0,2",
+        "",
+        "2. Kalikan Bobot Koefisien:",
+        "   = [-44,334336 + 68,595828 - 19,855030] / 0,2",
+        "",
+        "3. Jumlahkan & Bagi 2h:",
+        "   = 4,406462 / 0,2 = 22,032310"
+    ], "Langkah 1-3", accent_color=COLOR_PRIMARY)
+    add_card(s20, Inches(7.1), Inches(3.6), Inches(5.433), Inches(3.0), "Evaluasi Hasil & Galat", [
+        "Hasil Hampiran = 22,032310",
+        "Nilai Eksak     = 22,167168",
+        "",
+        "Galat Absolut:",
+        "|22,167168 - 22,032310| = 1,35 x 10⁻¹  (0,134858)",
+        "",
+        "Catatan: Dengan h = -0,1 hasilnya 22,054525 (galat 1,13 x 10⁻¹)."
+    ], "Langkah 4", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 21: SOAL 2: TIGA TITIK TENGAH
+    # =========================================================================
+    s21 = add_base_slide("Rumus Titik Data", "Soal 2: Tiga Titik Tengah", 21,
+        "Soal 2. Pertanyaan pancingan: mengapa f(2.0) tidak muncul padahal x₀ = 2.0? Jawaban: koefisiennya 0. Minta siswa membandingkan galat dengan Soal 1 sebelum melihat penyelesaian.")
+    add_table_data(s21, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.4),
+        ["x", "1,8", "1,9 (x₀-h)", "2,0 (x₀)", "2,1 (x₀+h)", "2,2"],
+        [
+            ["f(x)", "10,889365", "12,703199", "14,778112", "17,148957", "19,855030"]
+        ])
+    add_card(s21, Inches(0.8), Inches(3.4), Inches(5.6), Inches(3.2), "Deskripsi Soal", [
+        "Fungsi: f(x) = x eˣ ; Titik Tengah: x₀ = 2,0 ; h = 0,1",
+        "Nilai Eksak: f'(2,0) = 3e² ≈ 22,167168",
+        "",
+        "Soal: Dengan tabel data yang sama, hitunglah hampiran f'(2,0) menggunakan rumus tiga titik tengah dan bandingkan galatnya dengan Soal 1!",
+        "",
+        "Pertanyaan: Mengapa f(2,0) tidak muncul dalam rumus? Koefisiennya = 0!"
+    ], "Soal 2", accent_color=COLOR_PRIMARY)
+    add_card(s21, Inches(6.8), Inches(3.4), Inches(5.733), Inches(3.2), "Instruksi Pengerjaan (4 Langkah)", [
+        "1. Substitusi f(2,1) dan f(1,9) ke rumus [f(x₀+h) - f(x₀-h)] / 2h.",
+        "2. Kurangkan f(2,1) - f(1,9). Nilai f(2,0) tidak dipakai.",
+        "3. Bagi hasil selisih dengan 2h = 0,2.",
+        "4. Tentukan galat dan bandingkan dengan Soal 1 (1,35 x 10⁻¹): mana yang lebih teliti?"
+    ], "Instruksi", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 22: PENYELESAIAN 2: TIGA TITIK TENGAH
+    # =========================================================================
+    s22 = add_base_slide("Rumus Titik Data", "Penyelesaian 2: Tiga Titik Tengah", 22,
+        "Dengan h = 0.2 hasilnya 22.414163, galat −2.47×10⁻¹. Galat naik sekitar 4 kali saat h dua kali lebih besar (sesuai orde h²). f(2.0) tidak dipakai karena koefisiennya 0.")
+    add_math_box(s22, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.6),
+        "Rumus Tiga Titik Tengah (x₀ = 2,0 ; h = 0,1)",
+        latex=r"f'(2.0) \approx \frac{f(2.1) - f(1.9)}{2(0.1)}",
+        subtext="Nilai Eksak: f'(2,0) = 3e² ≈ 22,167168")
+    add_card(s22, Inches(0.8), Inches(3.6), Inches(6.0), Inches(3.0), "Tahapan Perhitungan", [
+        "1. Masukkan Nilai dari Tabel:",
+        "   = (17,148957 - 12,703199) / 0,2",
+        "",
+        "2. Kurangkan Pembilang:",
+        "   = 4,445758 / 0,2",
+        "",
+        "3. Bagi dengan 2h = 0,2:",
+        "   = 22,228790"
+    ], "Langkah 1-3", accent_color=COLOR_PRIMARY)
+    add_card(s22, Inches(7.1), Inches(3.6), Inches(5.433), Inches(3.0), "Evaluasi & Komparasi Galat", [
+        "Hasil Hampiran = 22,228790",
+        "Nilai Eksak     = 22,167168",
+        "",
+        "Galat Bertanda = -6,16 x 10⁻²",
+        "Galat Absolut  = 0,061622",
+        "",
+        "Perbandingan: Galat tiga titik tengah LEBIH DARI 2x LEBIH KECIL dibanding tiga titik akhir (0,134858)!"
+    ], "Langkah 4", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 23: SOAL 3: LIMA TITIK AKHIR
+    # =========================================================================
+    s23 = add_base_slide("Rumus Titik Data", "Soal 3: Lima Titik Akhir", 23,
+        "Soal 3. Jawaban pertanyaan 'mengapa bukan 2.0': rumus lima titik akhir membutuhkan x₀ sampai x₀+4h, yaitu 2.0 sampai 2.4, sedangkan tabel hanya sampai 2.2. Hanya x₀ = 1.8 yang punya empat data di kanannya.")
+    add_table_data(s23, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.4),
+        ["x", "1,8 (x₀)", "1,9", "2,0", "2,1", "2,2"],
+        [
+            ["f(x)", "10,889365", "12,703199", "14,778112", "17,148957", "19,855030"]
+        ])
+    add_card(s23, Inches(0.8), Inches(3.4), Inches(5.6), Inches(3.2), "Deskripsi Soal", [
+        "Fungsi: f(x) = x eˣ ; Titik Ujung: x₀ = 1,8 ; h = 0,1",
+        "Nilai Eksak: f'(1,8) = 2,8 e^{1,8} ≈ 16,939013",
+        "",
+        "Soal: Hitunglah hampiran f'(1,8) dengan rumus lima titik akhir!",
+        "",
+        "Diskusi: Mengapa x₀ = 2,0 tidak dapat dipakai? Rumus butuh x₀ s.d. x₀+4h (2,0 s.d. 2,4), data hanya sampai 2,2!"
+    ], "Soal 3", accent_color=COLOR_PRIMARY)
+    add_card(s23, Inches(6.8), Inches(3.4), Inches(5.733), Inches(3.2), "Instruksi Pengerjaan (4 Langkah)", [
+        "1. Ambil 5 nilai data f(1,8) s.d. f(2,2).",
+        "2. Kalikan dengan bobot: -25, +48, -36, +16, dan -3.",
+        "3. Jumlahkan kelima hasil kali, lalu bagi dengan 12h = 1,2.",
+        "4. Hitung galat dan bandingkan dengan tiga titik akhir di x₀=1,8 (1,06 x 10⁻¹)."
+    ], "Instruksi", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 24: PENYELESAIAN 3: LIMA TITIK AKHIR
+    # =========================================================================
+    s24 = add_base_slide("Rumus Titik Data", "Penyelesaian 3: Lima Titik Akhir", 24,
+        "Contoh tambahan di x₀ = 1.8 karena x₀ = 2.0 tidak punya empat titik di kanannya. Rumus sama dengan Contoh 6.1.3 buku untuk f′(1.1).")
+    add_math_box(s24, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.6),
+        "Rumus Lima Titik Akhir (x₀ = 1,8 ; h = 0,1)",
+        latex=r"f'(1.8) \approx \frac{-25f(1.8) + 48f(1.9) - 36f(2.0) + 16f(2.1) - 3f(2.2)}{12(0.1)}",
+        subtext="Nilai Eksak: f'(1,8) = 2,8 e^{1,8} ≈ 16,939013")
+    add_card(s24, Inches(0.8), Inches(3.6), Inches(6.2), Inches(3.0), "Tahapan Perhitungan", [
+        "1. Masukkan Nilai dari Tabel:",
+        "   = [-25(10,889365) + 48(12,703199) - 36(14,778112)",
+        "      + 16(17,148957) - 3(19,855030)] / 1,2",
+        "2. Kalikan Bobot: = 20,325617 / 1,2",
+        "3. Bagi dengan 12h = 1,2:",
+        "   = 16,938014"
+    ], "Langkah 1-3", accent_color=COLOR_PRIMARY)
+    add_card(s24, Inches(7.3), Inches(3.6), Inches(5.233), Inches(3.0), "Evaluasi & Komparasi Galat", [
+        "Hasil Lima Titik Akhir = 16,938014",
+        "Nilai Eksak            = 16,939013",
+        "",
+        "Galat Absolut:",
+        "|16,939013 - 16,938014| = 9,99 x 10⁻⁴ (0,000999)",
+        "",
+        "Komparasi: Tiga titik akhir di x₀=1,8 bergalat 1,06 x 10⁻¹. Lima titik akhir > 106x LEBIH TELITI!"
+    ], "Langkah 4", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 25: SOAL 4: LIMA TITIK TENGAH
+    # =========================================================================
+    s25 = add_base_slide("Rumus Titik Data", "Soal 4: Lima Titik Tengah", 25,
+        "Soal 4. Tekankan kesimpulan: dengan data dan h yang sama, lima titik tengah memberi galat sekitar 10⁻⁴, sedangkan tiga titik tengah sekitar 10⁻².")
+    add_table_data(s25, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.4),
+        ["x", "1,8 (x₀-2h)", "1,9 (x₀-h)", "2,0 (x₀)", "2,1 (x₀+h)", "2,2 (x₀+2h)"],
+        [
+            ["f(x)", "10,889365", "12,703199", "14,778112", "17,148957", "19,855030"]
+        ])
+    add_card(s25, Inches(0.8), Inches(3.4), Inches(5.6), Inches(3.2), "Deskripsi Soal", [
+        "Fungsi: f(x) = x eˣ ; Titik Tengah: x₀ = 2,0 ; h = 0,1",
+        "Nilai Eksak: f'(2,0) = 3e² ≈ 22,167168",
+        "",
+        "Soal: Hitunglah hampiran f'(2,0) menggunakan rumus lima titik tengah dan bandingkan ketelitiannya dengan tiga titik tengah (Soal 2)!",
+        "",
+        "Kondisi: Tersedia 2 data di kiri dan 2 data di kanan x₀ (simetris)."
+    ], "Soal 4", accent_color=COLOR_PRIMARY)
+    add_card(s25, Inches(6.8), Inches(3.4), Inches(5.733), Inches(3.2), "Instruksi Pengerjaan (4 Langkah)", [
+        "1. Ambil 4 nilai data: f(1,8), f(1,9), f(2,1), f(2,2).",
+        "2. Kalikan dengan bobot: +1, -8, +8, dan -1 (f(2,0) berbobot 0).",
+        "3. Jumlahkan keempat hasil kali, lalu bagi dengan 12h = 1,2.",
+        "4. Tentukan galat dan bandingkan dengan Soal 2 (-6,16 x 10⁻²)."
+    ], "Instruksi", accent_color=COLOR_EMERALD)
+
+    # =========================================================================
+    # SLIDE 26: PENYELESAIAN 4: LIMA TITIK TENGAH
+    # =========================================================================
+    s26 = add_base_slide("Rumus Titik Data", "Penyelesaian 4: Lima Titik Tengah", 26,
+        "Contoh 6.1.2 buku. Perbandingan: galat lima titik sekitar 10⁻⁴, tiga titik sekitar 10⁻².")
+    add_math_box(s26, Inches(0.8), Inches(1.8), Inches(11.733), Inches(1.6),
+        "Rumus Lima Titik Tengah (x₀ = 2,0 ; h = 0,1)",
+        latex=r"f'(2.0) \approx \frac{f(1.8) - 8f(1.9) + 8f(2.1) - f(2.2)}{12(0.1)}",
+        subtext="Nilai Eksak: f'(2,0) = 3e² ≈ 22,167168")
+    add_card(s26, Inches(0.8), Inches(3.6), Inches(6.2), Inches(3.0), "Tahapan Perhitungan", [
+        "1. Masukkan Nilai dari Tabel:",
+        "   = [10,889365 - 8(12,703199) + 8(17,148957) - 19,855030] / 1,2",
+        "2. Kalikan Bobot: = 26,600399 / 1,2",
+        "3. Bagi dengan 12h = 1,2:",
+        "   = 22,166999"
+    ], "Langkah 1-3", accent_color=COLOR_PRIMARY)
+    add_card(s26, Inches(7.3), Inches(3.6), Inches(5.233), Inches(3.0), "Evaluasi & Komparasi Galat", [
+        "Hasil Lima Titik Tengah = 22,166999",
+        "Nilai Eksak             = 22,167168",
+        "",
+        "Galat Absolut:",
+        "|22,167168 - 22,166999| = 1,69 x 10⁻⁴ (0,000169)",
+        "",
+        "Perbandingan: Tiga titik tengah bergalat 6,16 x 10⁻². Lima titik tengah > 364x LEBIH AKURAT!"
+    ], "Langkah 4", accent_color=COLOR_EMERALD)
+
+# =========================================================================
+    # SLIDE 27: ANALISIS GALAT
+    # =========================================================================
+    s27 = add_base_slide("Analisis Galat", "Galat atau Kesalahan Pendekatan", 27,
         "Setiap rumus yang kita pakai hanya pendekatan. Galat pemotongan muncul karena suku dibuang. Orde O(h), O(h²), O(h⁴) menunjukkan kecepatan galat mengecil.")
-    add_card(s16, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Konsep Dasar Galat", [
+    add_card(s27, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Konsep Dasar Galat", [
         "Turunan numerik selalu berupa hampiran / pendekatan.",
         "Galat Pemotongan (Truncation Error): Akibat memutus deret tak hingga Taylor.",
         "Galat Bertanda = Eksak - Pendekatan.",
         "Galat Absolut = |Eksak - Pendekatan|.",
         "Pengaruh h: h makin kecil -> galat pemotongan umumnya turun."
     ], "Teori", accent_color=COLOR_PRIMARY)
-    add_card(s16, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Perbandingan Orde Galat O(h^p)", [
+    add_card(s27, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7), "Perbandingan Orde Galat O(h^p)", [
         "Selisih Maju  : O(h)    [Linear, penurunan lambat]",
         "Selisih Mundur: O(h)    [Linear, penurunan lambat]",
         "Selisih Tengah: O(h²)   [Kuadratik, h/2 -> galat / 4]",
@@ -950,18 +1247,18 @@ def create_presentation():
     ], "Orde", accent_color=COLOR_EMERALD)
 
     # =========================================================================
-    # SLIDE 17: PENGARUH h & DILEMA PEMBULATAN
+    # SLIDE 28: PENGARUH h & DILEMA PEMBULATAN
     # =========================================================================
-    s17 = add_base_slide("Analisis Galat Tambahan", "Pengaruh Nilai h dan Sumber Galat", 17,
+    s28 = add_base_slide("Analisis Galat Tambahan", "Pengaruh Nilai h dan Sumber Galat", 28,
         "Ada dua sumber galat berlawanan: pemotongan (mengecil saat h turun) vs pembulatan/noise (membesar saat h turun). Tabel dihitung sendiri dengan e^x di x=1.")
-    add_card(s17, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Trade-off Komputasi", [
+    add_card(s28, Inches(0.8), Inches(1.8), Inches(5.6), Inches(4.7), "Trade-off Komputasi", [
         "Galat Pemotongan ~ h^p: Turun saat h mengecil.",
         "Galat Pembulatan / Noise ~ δ/h: Naik saat h mengecil!",
         "Total Galat (Tengah): E(h) ≤ (M h² / 6) + (δ / h)",
         "Langkah Optimum: h* ≈ ³√(3δ / M)",
         "Peringatan: Nilai h yang terlalu kecil TIDAK SELALU lebih akurat!"
     ], "Model", accent_color=COLOR_AMBER)
-    add_table_data(s17, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7),
+    add_table_data(s28, Inches(6.8), Inches(1.8), Inches(5.733), Inches(4.7),
         ["Langkah h", "Galat Maju", "Galat Tengah"],
         [
             ["10⁻¹", "1,41 × 10⁻¹", "4,53 × 10⁻³"],
@@ -973,24 +1270,24 @@ def create_presentation():
         ])
 
     # =========================================================================
-    # SLIDE 18: GALAT ABSOLUT, RELATIF, PERSENTASE
+    # SLIDE 29: GALAT ABSOLUT, RELATIF, PERSENTASE
     # =========================================================================
-    s18 = add_base_slide("Analisis Galat Tambahan", "Galat Absolut, Relatif, dan Persentase", 18,
+    s29 = add_base_slide("Analisis Galat Tambahan", "Galat Absolut, Relatif, dan Persentase", 29,
         "Slide ini melengkapi slide galat: Ea memberi satuan turunan, Er membandingkan dengan besar turunan, E_% adalah Er x 100. Jika turunan nol, Er tidak terdefinisi.")
-    add_math_box(s18, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.2),
+    add_math_box(s29, Inches(0.8), Inches(1.8), Inches(3.6), Inches(2.2),
         "Galat Absolut (Ea)",
         latex=r"E_a = |f'(x) - D(h)|",
         subtext="Satuan sama dengan turunan f'")
-    add_math_box(s18, Inches(4.8), Inches(1.8), Inches(3.6), Inches(2.2),
+    add_math_box(s29, Inches(4.8), Inches(1.8), Inches(3.6), Inches(2.2),
         "Galat Relatif (Er)",
         latex=r"E_r = \frac{|f'(x) - D(h)|}{|f'(x)|}",
         subtext="Ukuran proporsional tanpa satuan")
-    add_math_box(s18, Inches(8.8), Inches(1.8), Inches(3.733), Inches(2.2),
+    add_math_box(s29, Inches(8.8), Inches(1.8), Inches(3.733), Inches(2.2),
         "Galat Persentase (E%)",
         latex=r"E_{\%} = E_r \times 100\%",
         subtext="Format persentase praktis")
 
-    add_card(s18, Inches(0.8), Inches(4.3), Inches(11.733), Inches(2.3), "Contoh Aplikasi: Kasus ln x di x = 1,8 (h = 0,1)", [
+    add_card(s29, Inches(0.8), Inches(4.3), Inches(11.733), Inches(2.3), "Contoh Aplikasi: Kasus ln x di x = 1,8 (h = 0,1)", [
         "Dh = 0,5406722  dan  f'(1,8) = 0,5555556",
         "Ea = |0,5555556 - 0,5406722| = 0,0148834",
         "Er = 0,0148834 / 0,5555556 ≈ 0,0267901",
@@ -999,22 +1296,22 @@ def create_presentation():
     ], "Aplikasi", accent_color=COLOR_PRIMARY)
 
     # =========================================================================
-    # SLIDE 19: METODE EKSTRAPOLASI RICHARDSON
+    # SLIDE 30: METODE EKSTRAPOLASI RICHARDSON
     # =========================================================================
-    s19 = add_base_slide("Ekstrapolasi Richardson", "Metode Ekstrapolasi Richardson", 19,
+    s30 = add_base_slide("Ekstrapolasi Richardson", "Metode Ekstrapolasi Richardson", 30,
         "Richardson tidak membuat rumus turunan baru dari data; ia menggabungkan dua hasil yang sudah ada. Hitung D(h) dan D(2h), lalu tambahkan koreksi [D(h) − D(2h)]/(2ⁿ − 1). Untuk selisih tengah galatnya O(h²), jadi n = 2 dan rumusnya (4D(h) − D(2h))/3 dengan orde O(h⁴). Untuk selisih maju n = 1. Di buku, langkah besar ditulis h dan langkah kecil h/2, jadi D(h) di slide ini sama dengan N₁(h/2) di buku. Pilih n sesuai bentuk galat pendekatan awal.")
 
-    add_custom_card(s19, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.8), "Pengertian", [
+    add_custom_card(s30, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.8), "Pengertian", [
         "Menggabungkan dua pendekatan dengan ukuran langkah berbeda untuk membuang suku galat utama, sehingga hasilnya lebih teliti."
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    add_custom_card(s19, Inches(0.8), Inches(3.8), Inches(5.6), Inches(2.6), "Prinsip kerja", [
+    add_custom_card(s30, Inches(0.8), Inches(3.8), Inches(5.6), Inches(2.6), "Prinsip kerja", [
         "1. Hitung pendekatan turunan dengan langkah h → D(h)",
         "2. Hitung pendekatan dengan langkah 2h → D(2h)",
         "3. Gabungkan keduanya untuk mengurangi galat utama"
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    add_custom_card(s19, Inches(6.8), Inches(1.8), Inches(5.733), Inches(3.1), "Rumus umum", [
+    add_custom_card(s30, Inches(6.8), Inches(1.8), Inches(5.733), Inches(3.1), "Rumus umum", [
         "• f′₀ : nilai turunan di x₀ setelah ekstrapolasi",
         "• D(h) : hasil pendekatan turunan langkah h (lebih kecil)",
         "• D(2h) : hasil pendekatan turunan langkah 2h (dua kali lebih besar)",
@@ -1023,12 +1320,12 @@ def create_presentation():
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD,
     latex=r"f'_0 \approx D(h) + \frac{D(h) - D(2h)}{2^n - 1}")
 
-    add_custom_card(s19, Inches(6.8), Inches(5.05), Inches(5.733), Inches(1.35), "Contoh: selisih tengah (n = 2)", [
+    add_custom_card(s30, Inches(6.8), Inches(5.05), Inches(5.733), Inches(1.35), "Contoh: selisih tengah (n = 2)", [
         "Orde galat naik secara signifikan: O(h²) → O(h⁴) ⭐"
     ], border_color=COLOR_AMBER, title_color=COLOR_AMBER,
     latex=r"f'_0 \approx \frac{4 D(h) - D(2h)}{3}")
 
-    fn_box = s19.shapes.add_textbox(Inches(0.8), Inches(6.5), Inches(11.733), Inches(0.25))
+    fn_box = s30.shapes.add_textbox(Inches(0.8), Inches(6.5), Inches(11.733), Inches(0.25))
     fn_tf = fn_box.text_frame
     fn_p = fn_tf.paragraphs[0]
     fn_p.text = "Kaitan notasi slide berikut: D(h) = N₁(h/2), D(2h) = N₁(h). Untuk n = 1 (selisih maju): 2D(h) − D(2h)."
@@ -1037,34 +1334,34 @@ def create_presentation():
     fn_p.font.color.rgb = COLOR_MUTED
 
     # =========================================================================
-    # SLIDE 20: CONTOH 6.2.1 RICHARDSON f(x) = ln x
+    # SLIDE 31: CONTOH 6.2.1 RICHARDSON f(x) = ln x
     # =========================================================================
-    s20 = add_base_slide("Contoh 6.2.1", "Contoh Richardson pada f(x) = ln x", 20,
-        "Galat awal selisih maju berorde h, jadi pakai rumus n = 1: dua kali hasil yang lebih teliti dikurangi hasil yang kurang teliti. Hitung: 2 × 0,5479795 = 1,0959590; dikurangi 0,5406722 menghasilkan 0,5552868. Galat tiap hasil dihitung dari nilai eksak 0,5555556. Buku menulis hasil 0,555287 dan galat 0,000258; hitung ulang dari angka buku memberi 0,0002688, dan kami memakai angka yang konsisten dengan digit di slide.")
+    s31 = add_base_slide("Contoh 6.2.1", "Contoh Richardson pada f(x) = ln x", 31,
+        "Galat awal selisih maju berorde h, jadi pakai rumus n = 1: dua kali hasil yang lebih teliti dikurangi hasil yang kurang teliti. Hitung: 2 × 0,5479795 = 1,0959590; dikurangi 0,5406722 menghasilkan 0,5553968. Galat tiap hasil dihitung dari nilai eksak 0,5555556. Buku menulis hasil 0,555397 dan galat 0,000258; hitung ulang dari angka buku memberi 0,0002688, dan kami memakai angka yang konsisten dengan digit di slide.")
 
-    add_custom_card(s20, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.6), "Diketahui:", [
+    add_custom_card(s31, Inches(0.8), Inches(1.8), Inches(5.6), Inches(1.6), "Diketahui:", [
         "f(x) = ln x,  x₀ = 1,8",
         "N₁(0,1) = 0,5406722  ·  N₁(0,05) = 0,5479795",
         "Selisih maju: galat O(h), jadi n = 1"
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    add_custom_card(s20, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.1), "Perhitungan", [
+    add_custom_card(s31, Inches(0.8), Inches(3.6), Inches(5.6), Inches(2.1), "Perhitungan", [
         "= 2(0,5479795) - 0,5406722",
-        "= 0,5552868 ⭐ (28x lebih teliti dari N₁(0,05))"
+        "= 0,5553968 ⭐ (39x lebih teliti dari N₁(0,05))"
     ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD,
     latex=r"N_2(0.1) = 2 N_1(0.05) - N_1(0.1)")
 
-    add_table_data(s20, Inches(6.8), Inches(1.8), Inches(5.733), Inches(1.9),
+    add_table_data(s31, Inches(6.8), Inches(1.8), Inches(5.733), Inches(1.9),
         ["Metode", "Hasil", "Galat absolut"],
         [
             ["Selisih maju, h = 0,1", "0,5406722", "0,0148834"],
             ["Selisih maju, h = 0,05", "0,5479795", "0,0075761"],
-            ["Richardson", "0,5552868", "0,0002688 ⭐"],
+            ["Richardson", "0,5553968", "0,0002688 ⭐"],
             ["Nilai eksak", "0,5555556", "—"]
         ])
 
     buf_chart, chart_w, chart_h = generate_error_bar_chart()
-    chart_card = s20.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(3.9), Inches(5.733), Inches(1.85))
+    chart_card = s31.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(3.9), Inches(5.733), Inches(1.85))
     chart_card.fill.solid()
     chart_card.fill.fore_color.rgb = COLOR_CARD
     chart_card.line.color.rgb = COLOR_BORDER
@@ -1072,23 +1369,23 @@ def create_presentation():
 
     chart_target_w = 5.5
     chart_target_h = chart_target_w * (chart_h / chart_w)
-    s20.shapes.add_picture(buf_chart, Inches(6.9), Inches(3.95), Inches(chart_target_w), Inches(chart_target_h))
+    s31.shapes.add_picture(buf_chart, Inches(6.9), Inches(3.95), Inches(chart_target_w), Inches(chart_target_h))
 
-    add_callout_banner(s20, Inches(0.8), Inches(5.95), Inches(11.733), Inches(0.68),
-        "Kesimpulan: Richardson mengurangi galat sekitar 28 kali dibanding selisih maju dengan h = 0,05 (0,0075761 ÷ 0,0002688 ≈ 28).")
+    add_callout_banner(s31, Inches(0.8), Inches(5.95), Inches(11.733), Inches(0.68),
+        "Kesimpulan: Richardson mengurangi galat sekitar 39 kali dibanding selisih maju dengan h = 0,05 (0,0075761 ÷ 0,0002688 ≈ 39).")
 
     # =========================================================================
-    # SLIDE 21: CONTOH 6.1.2 DATA TABEL f(x) = x e^x
+    # SLIDE 32: CONTOH 6.1.2 DATA TABEL f(x) = x e^x
     # =========================================================================
-    s21 = add_base_slide("Contoh 6.1.2", "Perbandingan Metode Diferensiasi pada Data Tabel", 21,
+    s32 = add_base_slide("Contoh 6.1.2", "Perbandingan Metode Diferensiasi pada Data Tabel", 32,
         "Semua hasil dihitung dari lima nilai tabel, bukan dari rumus fungsi. Nilai eksak 3e² ≈ 22,167168 hanya dipakai sebagai pembanding. Galat absolut dihitung |eksak − pendekatan|: 0,134858; 0,061622; 0,000169. Lima titik tengah paling dekat karena galatnya O(h⁴), sedangkan dua rumus lain O(h²). Tiga titik tengah dengan h berbeda nantinya menjadi bahan Richardson pada slide 23.")
 
-    left_box = s21.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.8), Inches(4.6), Inches(4.7))
+    left_box = s32.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.8), Inches(4.6), Inches(4.7))
     left_box.fill.solid()
     left_box.fill.fore_color.rgb = COLOR_CARD
     left_box.line.color.rgb = COLOR_BORDER
 
-    tb_fn = s21.shapes.add_textbox(Inches(1.0), Inches(1.95), Inches(4.2), Inches(0.4))
+    tb_fn = s32.shapes.add_textbox(Inches(1.0), Inches(1.95), Inches(4.2), Inches(0.4))
     tf_fn = tb_fn.text_frame
     p_fn = tf_fn.paragraphs[0]
     p_fn.text = "f(x) = xeˣ,  x₀ = 2,0,  h = 0,1"
@@ -1097,7 +1394,7 @@ def create_presentation():
     p_fn.font.bold = True
     p_fn.font.color.rgb = COLOR_PRIMARY
 
-    add_table_data(s21, Inches(1.0), Inches(2.45), Inches(4.2), Inches(3.8),
+    add_table_data(s32, Inches(1.0), Inches(2.45), Inches(4.2), Inches(3.8),
         ["x", "f(x)"],
         [
             ["1,8", "10,889365"],
@@ -1107,30 +1404,30 @@ def create_presentation():
             ["2,2", "19,855030"]
         ])
 
-    add_table_data(s21, Inches(5.8), Inches(1.8), Inches(6.733), Inches(2.1),
+    add_table_data(s32, Inches(5.8), Inches(1.8), Inches(6.733), Inches(2.1),
         ["Metode", "f′(2)", "Galat absolut"],
         [
             ["Tiga titik ujung", "22,032310", "0,134858"],
-            ["Tiga titik tengah", "22,228790", "0,061622"],
+            ["Tiga titik tengah", "22,239790", "0,061622"],
             ["Lima titik tengah", "22,166999", "0,000169 ⭐"],
             ["Nilai eksak 3e²", "22,167168", "—"]
         ])
 
-    add_callout_banner(s21, Inches(5.8), Inches(4.15), Inches(6.733), Inches(0.65),
+    add_callout_banner(s32, Inches(5.8), Inches(4.15), Inches(6.733), Inches(0.65),
         "Kesimpulan: di antara ketiga metode, lima titik tengah paling akurat.")
 
-    add_custom_card(s21, Inches(5.8), Inches(5.0), Inches(6.733), Inches(1.5),
+    add_custom_card(s32, Inches(5.8), Inches(5.0), Inches(6.733), Inches(1.5),
         "Kaitan dengan Richardson:", [
             "Hasil pendekatan turunan dapat dipakai sebagai dasar (N₁) untuk meningkatkan ketelitian lewat ekstrapolasi (slide 23)."
         ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
 
     # =========================================================================
-    # SLIDE 22: CONTOH 6.1.3 STRATEGI PEMILIHAN RUMUS
+    # SLIDE 33: CONTOH 6.1.3 STRATEGI PEMILIHAN RUMUS
     # =========================================================================
-    s22 = add_base_slide("Contoh 6.1.3", "Strategi Pemilihan Rumus Diferensiasi", 22,
+    s33 = add_base_slide("Contoh 6.1.3", "Strategi Pemilihan Rumus Diferensiasi", 33,
         "Lihat posisi titik dulu. Di ujung tidak ada data di salah satu sisi, jadi pakai rumus ujung. Di titik dalam bisa pakai rumus tengah, dan lima titik tengah hanya pada x = 1,3 karena butuh dua titik di tiap sisi. Hitungan memakai nilai tabel penuh; buku menampilkannya dibulatkan. Hubungan dengan Richardson: untuk membentuk N₁ dengan h dan h/2, data pada kedua ukuran langkah itu harus ada; ini akan terlihat jelas di slide 24.")
 
-    add_table_data(s22, Inches(0.8), Inches(1.8), Inches(5.3), Inches(2.1),
+    add_table_data(s33, Inches(0.8), Inches(1.8), Inches(5.3), Inches(2.1),
         ["x", "f(x)", "Posisi titik"],
         [
             ["1,1", "9,025013", "ujung kiri"],
@@ -1140,7 +1437,7 @@ def create_presentation():
             ["1,5", "20,08554", "ujung kanan"]
         ])
 
-    tb_h = s22.shapes.add_textbox(Inches(0.8), Inches(3.95), Inches(5.3), Inches(0.3))
+    tb_h = s33.shapes.add_textbox(Inches(0.8), Inches(3.95), Inches(5.3), Inches(0.3))
     tf_h = tb_h.text_frame
     p_h = tf_h.paragraphs[0]
     p_h.text = "h = 0,1; di ujung kanan h dibuat negatif"
@@ -1148,7 +1445,7 @@ def create_presentation():
     p_h.font.size = Pt(10)
     p_h.font.color.rgb = COLOR_MUTED
 
-    add_table_data(s22, Inches(6.4), Inches(1.8), Inches(6.133), Inches(2.2),
+    add_table_data(s33, Inches(6.4), Inches(1.8), Inches(6.133), Inches(2.2),
         ["Titik", "Rumus yang tersedia"],
         [
             ["1,1 (ujung kiri)", "Tiga titik ujung (6.4) · lima titik ujung (6.6)"],
@@ -1158,28 +1455,28 @@ def create_presentation():
             ["1,5 (ujung kanan)", "6.4 · 6.6 (h negatif)"]
         ])
 
-    add_custom_card(s22, Inches(0.8), Inches(4.35), Inches(5.6), Inches(1.35),
+    add_custom_card(s33, Inches(0.8), Inches(4.35), Inches(5.6), Inches(1.35),
         "Tiga titik ujung, x = 1,1:", [
             "[-3(9,025013) + 4(11,02318) - 13,46374] / 0,2",
             "= 17,76971"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    add_custom_card(s22, Inches(6.8), Inches(4.35), Inches(5.733), Inches(1.35),
+    add_custom_card(s33, Inches(6.8), Inches(4.35), Inches(5.733), Inches(1.35),
         "Lima titik tengah, x = 1,3:", [
             "[9,025013 - 8(11,02318) + 8(16,44465) - 20,08554] / 1,2",
             "= 26,92603 ⭐"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    add_callout_banner(s22, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
+    add_callout_banner(s33, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
         "Kesimpulan: pilih rumus menurut posisi titik dan ketersediaan data. Kaitan dengan Richardson: ekstrapolasi membutuhkan data yang sesuai dengan ukuran langkah yang dipakai (h dan setengahnya).")
 
     # =========================================================================
-    # SLIDE 23: CONTOH 6.2.2 RICHARDSON BERTINGKAT PADA f(x) = xeˣ
+    # SLIDE 34: CONTOH 6.2.2 RICHARDSON BERTINGKAT PADA f(x) = xeˣ
     # =========================================================================
-    s23 = add_base_slide("Contoh 6.2.2", "Richardson Bertingkat pada f(x) = xeˣ", 23,
-        "Tiga tahap: (1) hitung N₁ dengan selisih tengah untuk h = 0,2; 0,1; 0,05; (2) gabungkan pasangan yang bertetangga dengan pembagi 3 → N₂(0,2) dan N₂(0,1); (3) gabungkan kedua N₂ dengan pembagi 15 → N₃(0,2). Angka dalam kurung adalah ukuran langkah. Ini angka buku; hitung ulang dari tabel Contoh 6.1.2 memberi N₁(0,2) = 22,414163 dan N₁(0,1) = 22,228790 (selisih kecil di digit ke-6). Rumus N₃ di buku tertulis memakai N₁(0,2), tetapi angkanya cocok dengan N₂(0,2). Galat N₃ nol hanya pada enam desimal yang ditampilkan, bukan bukti kesamaan matematis.")
+    s34 = add_base_slide("Contoh 6.2.2", "Richardson Bertingkat pada f(x) = xeˣ", 34,
+        "Tiga tahap: (1) hitung N₁ dengan selisih tengah untuk h = 0,2; 0,1; 0,05; (2) gabungkan pasangan yang bertetangga dengan pembagi 3 → N₂(0,2) dan N₂(0,1); (3) gabungkan kedua N₂ dengan pembagi 15 → N₃(0,2). Angka dalam kurung adalah ukuran langkah. Ini angka buku; hitung ulang dari tabel Contoh 6.1.2 memberi N₁(0,2) = 22,414163 dan N₁(0,1) = 22,239790 (selisih kecil di digit ke-6). Rumus N₃ di buku tertulis memakai N₁(0,2), tetapi angkanya cocok dengan N₂(0,2). Galat N₃ nol hanya pada enam desimal yang ditampilkan, bukan bukti kesamaan matematis.")
 
-    tb_sub = s23.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(11.733), Inches(0.35))
+    tb_sub = s34.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(11.733), Inches(0.35))
     tf_sub = tb_sub.text_frame
     p_sub = tf_sub.paragraphs[0]
     p_sub.text = "x = 2, nilai eksak f′(2) = 22,167168  ·  N₁: selisih tengah, galat pangkat genap"
@@ -1187,57 +1484,57 @@ def create_presentation():
     p_sub.font.size = Pt(11)
     p_sub.font.color.rgb = COLOR_MUTED
 
-    add_custom_card(s23, Inches(0.8), Inches(1.8), Inches(3.4), Inches(2.4),
+    add_custom_card(s34, Inches(0.8), Inches(1.8), Inches(3.4), Inches(2.4),
         "Tahap 1 — N₁", [
             "N₁(0,2) = 22,414160",
-            "N₁(0,1) = 22,228786",
+            "N₁(0,1) = 22,239786",
             "N₁(0,05) = 22,182564",
             "Nilai N₁(0,05) dihitung menggunakan f(x) = xeˣ karena titik x = 1,95 dan 2,05 tidak ada pada tabel."
         ], border_color=COLOR_BLUE, title_color=COLOR_BLUE)
 
-    arr1 = s23.shapes.add_textbox(Inches(4.25), Inches(2.7), Inches(0.5), Inches(0.5))
+    arr1 = s34.shapes.add_textbox(Inches(4.25), Inches(2.7), Inches(0.5), Inches(0.5))
     arr1.text_frame.paragraphs[0].text = "→"
     arr1.text_frame.paragraphs[0].font.size = Pt(22)
     arr1.text_frame.paragraphs[0].font.bold = True
     arr1.text_frame.paragraphs[0].font.color.rgb = COLOR_MUTED
 
-    add_custom_card(s23, Inches(4.75), Inches(1.8), Inches(3.7), Inches(2.4),
+    add_custom_card(s34, Inches(4.75), Inches(1.8), Inches(3.7), Inches(2.4),
         "Tahap 2 — N₂ (÷3)", [
-            "N₂(0,2) = 22,228786 + (22,228786 − 22,414160)/3 = 22,166995",
+            "N₂(0,2) = 22,239786 + (22,239786 − 22,414160)/3 = 22,166995",
             "",
-            "N₂(0,1) = 22,182564 + (22,182564 − 22,228786)/3 = 22,167157"
+            "N₂(0,1) = 22,182564 + (22,182564 − 22,239786)/3 = 22,167157"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    arr2 = s23.shapes.add_textbox(Inches(8.5), Inches(2.7), Inches(0.5), Inches(0.5))
+    arr2 = s34.shapes.add_textbox(Inches(8.5), Inches(2.7), Inches(0.5), Inches(0.5))
     arr2.text_frame.paragraphs[0].text = "→"
     arr2.text_frame.paragraphs[0].font.size = Pt(22)
     arr2.text_frame.paragraphs[0].font.bold = True
     arr2.text_frame.paragraphs[0].font.color.rgb = COLOR_MUTED
 
-    add_custom_card(s23, Inches(9.0), Inches(1.8), Inches(3.533), Inches(2.4),
+    add_custom_card(s34, Inches(9.0), Inches(1.8), Inches(3.533), Inches(2.4),
         "Tahap 3 — N₃ (÷15)", [
             "N₃(0,2) = 22,167157 + (22,167157 − 22,166995)/15",
             "",
             "= 22,167168 ⭐ (Identik Eksak)"
         ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
 
-    add_table_data(s23, Inches(0.8), Inches(4.35), Inches(11.733), Inches(1.35),
+    add_table_data(s34, Inches(0.8), Inches(4.35), Inches(11.733), Inches(1.35),
         ["Tingkat", "N₁(0,2)", "N₁(0,1)", "N₁(0,05)", "N₂(0,2)", "N₂(0,1)", "N₃(0,2)", "Eksak"],
         [
-            ["Hasil", "22,414160", "22,228786", "22,182564", "22,166995", "22,167157", "22,167168 ⭐", "22,167168"],
+            ["Hasil", "22,414160", "22,239786", "22,182564", "22,166995", "22,167157", "22,167168 ⭐", "22,167168"],
             ["Galat absolut", "0,246992", "0,061618", "0,015396", "0,000173", "0,000011", "0,000000", "—"]
         ])
 
-    add_callout_banner(s23, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
+    add_callout_banner(s34, Inches(0.8), Inches(5.85), Inches(11.733), Inches(0.75),
         "Kesimpulan: Richardson bertingkat meningkatkan ketelitian secara bertahap: N₁ → N₂ → N₃ (N₃ sama dengan eksak pada enam desimal yang ditampilkan).")
 
     # =========================================================================
-    # SLIDE 24: CONTOH 6.2.3 RICHARDSON DENGAN KETERBATASAN DATA
+    # SLIDE 35: CONTOH 6.2.3 RICHARDSON DENGAN KETERBATASAN DATA
     # =========================================================================
-    s24 = add_base_slide("Contoh 6.2.3", "Richardson dengan Keterbatasan Data", 24,
+    s35 = add_base_slide("Contoh 6.2.3", "Richardson dengan Keterbatasan Data", 35,
         "Titik x₀ = 1,3 dengan h = 0,2 dan 0,1; N₁(0,2) memakai f(1,5) dan f(1,1), N₁(0,1) memakai f(1,4) dan f(1,2). Gabungkan dengan pembagi 3 untuk N₂(0,2). Tingkat ketiga butuh N₁(0,05) dengan f(1,35) dan f(1,25), yang tidak ada di tabel, sehingga berhenti di N₂. Catatan untuk penyaji: Slide menampilkan hasil hitung ulang 26,926027 (dari data tabel yang tersedia); angka 26,920273 adalah yang tercetak di buku.")
 
-    add_table_data(s24, Inches(0.8), Inches(1.8), Inches(4.5), Inches(2.4),
+    add_table_data(s35, Inches(0.8), Inches(1.8), Inches(4.5), Inches(2.4),
         ["x", "f(x)"],
         [
             ["1,1", "9,025013"],
@@ -1247,39 +1544,39 @@ def create_presentation():
             ["1,5", "20,08554"]
         ])
 
-    tb_x0 = s24.shapes.add_textbox(Inches(0.8), Inches(4.25), Inches(4.5), Inches(0.35))
+    tb_x0 = s35.shapes.add_textbox(Inches(0.8), Inches(4.25), Inches(4.5), Inches(0.35))
     tb_x0.text_frame.paragraphs[0].text = "x₀ = 1,3;  h = 0,2"
     tb_x0.text_frame.paragraphs[0].font.name = FONT_MAIN
     tb_x0.text_frame.paragraphs[0].font.size = Pt(11)
     tb_x0.text_frame.paragraphs[0].font.bold = True
     tb_x0.text_frame.paragraphs[0].font.color.rgb = COLOR_PRIMARY
 
-    add_custom_card(s24, Inches(5.6), Inches(1.8), Inches(6.933), Inches(1.2),
+    add_custom_card(s35, Inches(5.6), Inches(1.8), Inches(6.933), Inches(1.2),
         "Tahap 1 — N₁", [
             "N₁(0,2) = (20,08554 − 9,025013) / 0,4 = 27,651318",
             "N₁(0,1) = (16,44465 − 11,02318) / 0,2 = 27,107350"
         ], border_color=COLOR_BLUE, title_color=COLOR_BLUE)
 
-    add_custom_card(s24, Inches(5.6), Inches(3.1), Inches(6.933), Inches(1.2),
+    add_custom_card(s35, Inches(5.6), Inches(3.1), Inches(6.933), Inches(1.2),
         "Tahap 2 — N₂", [
             "N₂(0,2) = 27,107350 + (27,107350 − 27,651318) / 3",
             "= 26,926027 ⭐ (Orde O(h⁴))"
         ], border_color=COLOR_EMERALD, title_color=COLOR_EMERALD)
 
-    add_custom_card(s24, Inches(0.8), Inches(4.65), Inches(11.733), Inches(0.95),
+    add_custom_card(s35, Inches(0.8), Inches(4.65), Inches(11.733), Inches(0.95),
         "Mengapa N₃ tidak dapat dihitung?", [
             "N₃ membutuhkan N₁(0,05) = [f(1,35) − f(1,25)] / 0,1, sedangkan f(1,25) dan f(1,35) tidak tersedia pada tabel."
         ], border_color=COLOR_AMBER, title_color=COLOR_AMBER)
 
-    add_callout_banner(s24, Inches(0.8), Inches(5.8), Inches(11.733), Inches(0.8),
+    add_callout_banner(s35, Inches(0.8), Inches(5.8), Inches(11.733), Inches(0.8),
         "Kesimpulan: Richardson tidak dapat dilanjutkan ke tingkat berikutnya bila data yang diperlukan tidak tersedia.\nCatatan: Hasil perhitungan menggunakan data tabel yang tersedia.")
 
     # =========================================================================
-    # SLIDE 25: RINGKASAN METODE: PERBANDINGAN
+    # SLIDE 36: RINGKASAN METODE: PERBANDINGAN
     # =========================================================================
-    s25 = add_base_slide("Ringkasan Metode", "Perbandingan Metode Diferensiasi Numerik", 25,
+    s36 = add_base_slide("Ringkasan Metode", "Perbandingan Metode Diferensiasi Numerik", 36,
         "Gunakan tabel ini untuk merangkum. Maju/mundur O(h), tengah & 3 titik ujung O(h²), lima titik O(h⁴). Richardson memperbaiki hasil rumus lain.")
-    add_table_data(s25, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.8),
+    add_table_data(s36, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.8),
         ["Metode", "Titik / Data", "Galat", "Kelebihan", "Keterbatasan"],
         [
             ["Selisih Maju", "x, x+h", "O(h)", "Sederhana, 2 nilai", "Kurang teliti"],
@@ -1292,11 +1589,11 @@ def create_presentation():
         ])
 
     # =========================================================================
-    # SLIDE 26: MEMILIH METODE & KONDISI
+    # SLIDE 37: MEMILIH METODE & KONDISI
     # =========================================================================
-    s26 = add_base_slide("Ringkasan Metode", "Memilih Metode: Rumus & Kondisi Penggunaan", 26,
+    s37 = add_base_slide("Ringkasan Metode", "Memilih Metode: Rumus & Kondisi Penggunaan", 37,
         "Slide ini fokus pada kapan rumus dipakai. Pesan penutup: jangan menyimpulkan satu metode selalu paling baik. Lima titik memiliki koefisien besar sehingga lebih sensitif terhadap noise.")
-    add_table_data(s26, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.3),
+    add_table_data(s37, Inches(0.8), Inches(1.8), Inches(11.733), Inches(4.3),
         ["Metode", "Rumus Dasar", "Orde", "Kondisi Penggunaan"],
         [
             ["Selisih Maju", "[f(x+h) - f(x)] / h", "O(h)", "Ujung kiri data; hanya ada data ke depan"],
@@ -1307,16 +1604,16 @@ def create_presentation():
             ["5 Titik Ujung", "[-25f₀ + 48f₁ - 36f₂ + 16f₃ - 3f₄]/12h", "O(h⁴)", "Ujung interval yang membutuhkan akurasi orde 4"],
             ["Richardson", "Eliminasi galat N₁(h) & N₁(h/2)", "Tinggi", "Tersedia multi-langkah & bentuk galat sesuai"]
         ])
-    add_card(s26, Inches(0.8), Inches(6.2), Inches(11.733), Inches(0.55), "Keterangan", [
+    add_card(s37, Inches(0.8), Inches(6.2), Inches(11.733), Inches(0.55), "Keterangan", [
         "Tidak ada metode yang selalu terbaik di segala situasi: perhatikan noise data dan kestabilan pembulatan!"
     ], accent_color=COLOR_PRIMARY)
 
     # =========================================================================
-    # SLIDE 27: KESIMPULAN
+    # SLIDE 38: KESIMPULAN
     # =========================================================================
-    s27 = add_base_slide("Penutup", "Kesimpulan", 27,
+    s38 = add_base_slide("Penutup", "Kesimpulan", 38,
         "Rangkum perjalanan dari definisi, deret, rumus 2, 3, 5 titik, galat, lalu Richardson. Tutup dengan kutipan penting.")
-    add_card(s27, Inches(0.8), Inches(1.8), Inches(6.0), Inches(4.7), "Poin-Poin Kunci", [
+    add_card(s38, Inches(0.8), Inches(1.8), Inches(6.0), Inches(4.7), "Poin-Poin Kunci", [
         "Diferensiasi numerik memperkirakan turunan dari nilai fungsi diskret.",
         "Pendekatan deret (Lagrange & Taylor) menjadi fondasi matematis utama.",
         "Selisih maju dan mundur: galat pemotongan O(h).",
@@ -1325,7 +1622,7 @@ def create_presentation():
         "Ekstrapolasi Richardson meningkatkan ketelitian secara signifikan.",
         "Pilih h dengan cermat mengingat trade-off pemotongan vs pembulatan."
     ], "Ringkasan", accent_color=COLOR_PRIMARY)
-    add_card(s27, Inches(7.2), Inches(1.8), Inches(5.333), Inches(4.7), "Prinsip Utama", [
+    add_card(s38, Inches(7.2), Inches(1.8), Inches(5.333), Inches(4.7), "Prinsip Utama", [
         "\"Ketelitian diferensiasi numerik tidak hanya ditentukan oleh rumus yang digunakan, tetapi juga oleh ukuran langkah, data yang tersedia, dan sifat fungsi.\"",
         "",
         "Keseimbangan Komputasi:",
@@ -1335,23 +1632,23 @@ def create_presentation():
     ], "Intisari", accent_color=COLOR_EMERALD)
 
     # =========================================================================
-    # SLIDE 28: PENUTUP / TERIMA KASIH (HERO CENTERED & MINIMALIST)
+    # SLIDE 39: PENUTUP / TERIMA KASIH (HERO CENTERED & MINIMALIST)
     # =========================================================================
-    s28 = prs.slides.add_slide(blank_layout)
-    bg28 = s28.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
-    bg28.fill.solid()
-    bg28.fill.fore_color.rgb = COLOR_BG
-    bg28.line.fill.background()
+    s39 = prs.slides.add_slide(blank_layout)
+    bg39 = s39.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
+    bg39.fill.solid()
+    bg39.fill.fore_color.rgb = COLOR_BG
+    bg39.line.fill.background()
 
-    notes_slide28 = s28.notes_slide
-    tf_notes28 = notes_slide28.notes_text_frame
-    tf_notes28.text = "Ucapkan terima kasih kepada dosen pengampu dan rekan-rekan mahasiswa atas perhatian selama presentasi berlangsung. Buka kesempatan bagi audiens untuk sesi tanya jawab dan diskusi mengenai materi diferensiasi numerik."
+    notes_slide39 = s39.notes_slide
+    tf_notes39 = notes_slide39.notes_text_frame
+    tf_notes39.text = "Ucapkan terima kasih kepada dosen pengampu dan rekan-rekan mahasiswa atas perhatian selama presentasi berlangsung. Buka kesempatan bagi audiens untuk sesi tanya jawab dan diskusi mengenai materi diferensiasi numerik."
 
-    pill28 = s28.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(4.3), Inches(1.1), Inches(4.733), Inches(0.42))
-    pill28.fill.solid()
-    pill28.fill.fore_color.rgb = COLOR_PRIMARY_SOFT
-    pill28.line.color.rgb = COLOR_BORDER
-    p_pill = pill28.text_frame.paragraphs[0]
+    pill39 = s39.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(4.3), Inches(1.1), Inches(4.733), Inches(0.42))
+    pill39.fill.solid()
+    pill39.fill.fore_color.rgb = COLOR_PRIMARY_SOFT
+    pill39.line.color.rgb = COLOR_BORDER
+    p_pill = pill39.text_frame.paragraphs[0]
     p_pill.text = "DIFERENSIASI NUMERIK & EKSTRAPOLASI RICHARDSON"
     p_pill.font.name = FONT_MAIN
     p_pill.font.size = Pt(10)
@@ -1359,7 +1656,7 @@ def create_presentation():
     p_pill.font.color.rgb = COLOR_PRIMARY
     p_pill.alignment = PP_ALIGN.CENTER
 
-    hero_box = s28.shapes.add_textbox(Inches(1.0), Inches(1.85), Inches(11.333), Inches(3.2))
+    hero_box = s39.shapes.add_textbox(Inches(1.0), Inches(1.85), Inches(11.333), Inches(3.2))
     htf = hero_box.text_frame
     htf.word_wrap = True
     htf.margin_top = Inches(0)
@@ -1390,7 +1687,7 @@ def create_presentation():
     hp3.font.color.rgb = COLOR_MUTED
     hp3.alignment = PP_ALIGN.CENTER
 
-    credit_box = s28.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.2), Inches(5.35), Inches(8.933), Inches(0.95))
+    credit_box = s39.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.2), Inches(5.35), Inches(8.933), Inches(0.95))
     credit_box.fill.solid()
     credit_box.fill.fore_color.rgb = COLOR_CARD
     credit_box.line.color.rgb = COLOR_BORDER
@@ -1414,25 +1711,25 @@ def create_presentation():
     cp2.font.color.rgb = COLOR_MUTED
     cp2.alignment = PP_ALIGN.CENTER
 
-    line28 = s28.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.8), Inches(11.733), Inches(0.015))
-    line28.fill.solid()
-    line28.fill.fore_color.rgb = COLOR_BORDER
-    line28.line.fill.background()
+    line39 = s39.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.8), Inches(11.733), Inches(0.015))
+    line39.fill.solid()
+    line39.fill.fore_color.rgb = COLOR_BORDER
+    line39.line.fill.background()
 
-    footer28 = s28.shapes.add_textbox(Inches(0.8), Inches(6.85), Inches(11.733), Inches(0.4))
-    ftf28 = footer28.text_frame
-    ftf28.margin_top = Inches(0)
-    fp28 = ftf28.paragraphs[0]
-    fp28.text = "Metode Numerik — Imron dkk. (2022) | Slide 28 dari 28"
-    fp28.font.name = FONT_MAIN
-    fp28.font.size = Pt(10)
-    fp28.font.color.rgb = COLOR_MUTED
-    fp28.alignment = PP_ALIGN.CENTER
+    footer39 = s39.shapes.add_textbox(Inches(0.8), Inches(6.85), Inches(11.733), Inches(0.4))
+    ftf39 = footer39.text_frame
+    ftf39.margin_top = Inches(0)
+    fp39 = ftf39.paragraphs[0]
+    fp39.text = "Metode Numerik — Imron dkk. (2022) | Slide 39 dari 39"
+    fp39.font.name = FONT_MAIN
+    fp39.font.size = Pt(10)
+    fp39.font.color.rgb = COLOR_MUTED
+    fp39.alignment = PP_ALIGN.CENTER
 
     # Save presentation
     output_path = "Diferensiasi_Numerik.pptx"
     prs.save(output_path)
-    print(f"Base presentation (28 slides) saved successfully to: {output_path}")
+    print(f"Base presentation (39 slides) saved successfully to: {output_path}")
 
     # Apply slide transitions & shape build animations
     abs_path = os.path.abspath(output_path)
@@ -1450,7 +1747,7 @@ try {{
     $ppt = New-Object -ComObject PowerPoint.Application
     $pres = $ppt.Presentations.Open("{pptx_path}", [Microsoft.Office.Core.MsoTriState]::msoFalse, [Microsoft.Office.Core.MsoTriState]::msoFalse, [Microsoft.Office.Core.MsoTriState]::msoFalse)
     
-    # 28 Transition sequence matching web presentation 3D effects
+    # 39 Transition sequence matching web presentation 3D effects
     $effects = @(
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectFadeSmoothly,          # 1: Cover
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 2: Center-fold
@@ -1479,7 +1776,7 @@ try {{
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 25: 3D Box / Cube
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectPageCurlSingleRight,   # 26: Center-fold
         [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectBoxLeft,               # 27: 3D Box / Cube
-        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains               # 28: Curtain roll
+        [Microsoft.Office.Interop.PowerPoint.PpEntryEffect]::ppEffectCurtains               # 39: Curtain roll
     )
     
     for ($i = 1; $i -le $pres.Slides.Count; $i++) {{
@@ -1510,7 +1807,7 @@ try {{
     }}
     $pres.Close()
     $ppt.Quit()
-    Write-Output "PowerPoint COM: Applied slide transitions and entrance animations to all 28 slides."
+    Write-Output "PowerPoint COM: Applied slide transitions and entrance animations to all 39 slides."
 }} catch {{
     if ($ppt) {{ $ppt.Quit() }}
     Write-Warning "PowerPoint COM unavailable or encountered error: $_"
